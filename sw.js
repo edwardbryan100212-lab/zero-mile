@@ -1,5 +1,5 @@
 // Offline support for the ad site (/) and the app (/app/): files are cached on first visit so Zero Mile works without a connection.
-const V = 'zeromile-v7';
+const V = 'zeromile-v8';
 const SHELL = [
   // ad site (built in the main session)
   './', 'index.html', 'css/site.css?v=5', 'js/site.js?v=5',
@@ -20,10 +20,16 @@ self.addEventListener('fetch', (e) => {
   if (e.request.method !== 'GET') return;
   // the optional smart-check model is cached by Transformers.js itself
   if (u.hostname.includes('huggingface') || u.hostname.includes('hf.co')) return;
-  e.respondWith(caches.match(e.request).then((hit) => hit || fetch(e.request).then((res) => {
+  const keep = (res) => {
     if (res.ok && (u.origin === location.origin || u.hostname.endsWith('gstatic.com') || u.hostname.endsWith('googleapis.com') || u.hostname.endsWith('jsdelivr.net'))) {
       const copy = res.clone(); caches.open(V).then((c) => c.put(e.request, copy));
     }
     return res;
-  }).catch(() => caches.match(u.pathname.includes('/app/') ? 'app/index.html' : 'index.html'))));
+  };
+  const offline = () => caches.match(e.request).then((hit) => hit || caches.match(u.pathname.includes('/app/') ? 'app/index.html' : 'index.html'));
+  // pages, code, styles and data: always try the network first so a new version shows up at once; the cache is for offline
+  const fresh = e.request.mode === 'navigate' || /\.(html|js|css|json|webmanifest)$/.test(u.pathname) || u.pathname.endsWith('/');
+  if (fresh) { e.respondWith(fetch(e.request).then(keep).catch(offline)); return; }
+  // pictures, models, fonts: cache first, they rarely change and are versioned
+  e.respondWith(caches.match(e.request).then((hit) => hit || fetch(e.request).then(keep)).catch(offline));
 });

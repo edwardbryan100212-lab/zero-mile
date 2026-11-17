@@ -1,7 +1,7 @@
 // Zero Mile ad site: a calm product page. Green fluted-glass hero with the app beside it, a fly-through of
 // individual fruits, three working pieces of the app, season colour wipes, the food-miles receipt, and a CTA.
 import { $, $$, esc, fmt, data, plantById, trip, state, save, rise } from './core.js?v=5';
-import { mountScene, seg, sm, easeIO, cosEase, seeded, put, hide, fade, clamp, RM } from './scene.js?v=5';
+import { mountScene, seg, sm, easeIO, cosEase, seeded, put, hide, fade, clamp, RM } from './scene.js?v=8';
 import { fluted } from './fluted.js?v=5';
 import { modelManifest } from './models.js?v=5';
 
@@ -18,6 +18,10 @@ const SEASONS = [
   { name: 'Autumn', months: [9, 10, 11], bg: '#f7d9c9', note: 'Plant garlic and fruit bushes, and bring the last tomatoes in.' },
   { name: 'Winter', months: [12, 1, 2], bg: '#dde8e1', note: 'Plant bare-root trees and plan next year’s windowsill.' },
 ];
+const TREES = P.filter((p) => p.group === 'tree');
+const NATIVE = ['oak', 'birch', 'rowan', 'beech', 'scots-pine'];
+const EEA = P.flatMap((p) => p.tree?.sources || []).find((s) => /European Environment Agency/.test(s.publisher));
+const photo = (f) => `img/photos/${f}.webp`;
 const sows = (p, ms) => [...(p.grow?.sow_months_north || []), ...(p.grow?.plant_months_north || [])].some((m) => ms.includes(m));
 const pickFruit = (list, n) => [...list.filter(real), ...list.filter((p) => !real(p) && p.group !== 'herb')].slice(0, n);
 
@@ -59,6 +63,11 @@ main.innerHTML = `
   <div class="cap" id="tunnel-cap"><h3>What will you grow first?</h3><p>See any plant fully grown, in 3D.</p><a class="btn btn-green" href="${APP}#/find">Find my plant</a></div>
 </section>
 
+<section class="band" aria-label="A tomato leaf, up close">
+  <figure class="frame wide rise"><img src="${photo('leaf-veins')}" alt="A tomato leaf lit from behind, its fine veins glowing green" width="1200" height="800" loading="lazy"></figure>
+  <p class="band-line rise" style="--d:80ms">Your plant talks through its leaves. <span>A photo a day helps you listen.</span></p>
+</section>
+
 <section class="sec" id="how" aria-labelledby="how-title">
   <div class="wrap">
     <h2 class="sec-head rise" id="how-title">Two minutes a day</h2>
@@ -70,7 +79,7 @@ main.innerHTML = `
         <ul class="rise" style="--d:140ms"><li>Spots yellow or dry leaves</li><li>Tips for that exact plant</li><li>Missed a day? Add it later, no streak shame</li></ul>
       </div>
       <div class="card panel-card rise" style="--d:120ms">
-        <div class="diary"><figure><video src="video/sprout.mp4" poster="video/sprout-poster.jpg" width="200" height="200" muted loop playsinline preload="metadata" ${reduce ? '' : 'autoplay'} aria-label="Time-lapse of a seedling opening its first leaves"></video><figcaption>Day 1</figcaption></figure>${[['windowsill-herbs', 'Day 4'], ['balcony-pots', 'Day 9'], ['tomatoes-board', 'Day 75']].map(([f, d]) => `<figure><img src="img/${f}.png" alt="" width="200" height="200"><figcaption>${d}</figcaption></figure>`).join('')}</div>
+        <div class="diary"><figure><video src="video/sprout.mp4" poster="video/sprout-poster.jpg" width="200" height="200" muted loop playsinline preload="metadata" ${reduce ? '' : 'autoplay'} aria-label="Time-lapse of a seedling opening its first leaves"></video><figcaption>Day 1</figcaption></figure>${[['windowsill-herbs', 'Day 4'], ['balcony-pots', 'Day 9'], ['tomatoes-board', 'Day 75']].map(([f, d]) => `<figure><img src="${photo(f)}" alt="" width="200" height="200" loading="lazy"><figcaption>${d}</figcaption></figure>`).join('')}</div>
         <p class="note"><b>Looking good.</b> Mostly fresh green leaves. Turn the pot toward the light so it grows straight.</p>
       </div>
     </div>
@@ -101,6 +110,7 @@ main.innerHTML = `
         <p class="cite" id="r-cite"></p>
       </div>
     </div>
+    <div class="closeups">${[['basil-drop', 'Basil, just watered', 'A basil leaf holding one drop of water'], ['pea-tendril', 'A pea, reaching to climb', 'A curling pea tendril beside a small leaf'], ['fern', 'A frond, unrolling', 'A young fern frond unrolling in a spiral']].map(([f, t, a], i) => `<figure class="rise" style="--d:${i * 80}ms"><div class="frame"><img src="${photo(f)}" alt="${a}" width="900" height="600" loading="lazy"></div><figcaption>${t}</figcaption></figure>`).join('')}</div>
   </div>
 </section>
 
@@ -113,6 +123,22 @@ main.innerHTML = `
       <div class="fruits">${pickFruit(list, 3).map((p) => `<img data-src="${fruit(p.id)}" alt="${esc(p.name)}" width="420" height="420">`).join('')}</div>
     </div>`;
   }).join('')}
+</section>
+
+<section class="sec trees" id="trees" aria-labelledby="trees-title">
+  <div class="wrap feature">
+    <div>
+      <h2 class="sec-head rise" id="trees-title">Plant a tree, too</h2>
+      <p class="sec-lead rise" style="--d:80ms">Zero Mile is for trees as well as pots. Grow an apple, plum or cherry for fruit, or a native tree like oak, birch, rowan, beech or Scots pine for birds and shade.</p>
+      <div class="co2"><b>22 kg</b><span>of CO2 taken up in a year by one mature tree${EEA ? `, says the <a href="${esc(EEA.url)}" rel="noopener">European Environment Agency</a>` : ''}.</span></div>
+      <ul class="treechips rise" style="--d:160ms" aria-label="Trees in the app">${[...TREES.filter((p) => NATIVE.includes(p.id)), ...TREES.filter((p) => !NATIVE.includes(p.id))].slice(0, 9).map((p) => `<li><a href="${APP}#/plant/${p.id}">${esc(p.name)}</a></li>`).join('')}</ul>
+      <a class="btn btn-green rise" style="--d:200ms;margin-top:26px" href="${APP}#/find/tree">Find a tree to plant</a>
+    </div>
+    <div class="tree-art">
+      <figure class="frame tall"><img src="${photo('oak-leaf')}" alt="A young oak leaf and a small acorn on a twig" width="1200" height="800" loading="lazy"></figure>
+      <figure class="frame inset"><img src="${photo('bark-leaf')}" alt="A new leaf in front of white birch bark" width="1200" height="800" loading="lazy"></figure>
+    </div>
+  </div>
 </section>
 
 <section class="cta" aria-labelledby="cta-title">
@@ -132,7 +158,7 @@ main.innerHTML = `
   <div class="wrap">
     <div><a class="mark" href="#top"><img src="icons/icon.svg" alt="" width="28" height="28">Zero Mile</a><p style="margin-top:12px">Grow food at home and skip the food miles.</p></div>
     <nav aria-label="Footer"><a href="${APP}">Open the app</a><a href="${APP}#/find">All ${P.length} plants</a><a href="${APP}#/sources">Sources and method</a></nav>
-    <p>Every number comes from a cited source (USDA, Our World in Data, UK DESNZ, UN Comtrade, RHS). Pictures are AI illustrations made with Comfy and printed in Ditherlab. 3D model credits are on the Sources page.</p>
+    <p>Every number comes from a cited source (USDA, Our World in Data, UK DESNZ, UN Comtrade, RHS). Photos and leaf close-ups are AI illustrations made with Comfy. 3D model credits are on the Sources page.</p>
   </div>
 </footer>`;
 
@@ -181,7 +207,7 @@ $('#grow-t').addEventListener('input', (e) => { const [t, n] = STAGES[+e.target.
   if (!ids.length) ids.push(...P.map((p) => p.id));
   const rnd = seeded(11);
   const small = innerWidth < 700;
-  const n = Math.min(small ? 36 : 60, ids.length * 2);
+  const n = Math.min(small ? 44 : 60, ids.length * 2);
   const items = [];
   for (let i = 0; i < n; i++) {
     const id = ids[(i * 7) % ids.length];
@@ -194,22 +220,38 @@ $('#grow-t').addEventListener('input', (e) => { const [t, n] = STAGES[+e.target.
   const nodes = $$('.it', field);
   items.forEach((it, i) => { it.node = nodes[i]; });
   const intro = $('.tunnel .intro'), cap = $('#tunnel-cap');
-  let W = 1, H = 1, w = 200;
+  let W = 1, H = 1, w = 200, top = 0, rIntro = null, rCap = null;
+  const box = (el) => ({ x0: el.offsetLeft - 10, y0: el.offsetTop - 10, x1: el.offsetLeft + el.offsetWidth + 10, y1: el.offsetTop + el.offsetHeight + 10 });
+  // distance from a fruit to a card: positive outside, negative when they overlap
+  const gap = (r, x0, y0, x1, y1) => Math.max(r.x0 - x1, x0 - r.x1, r.y0 - y1, y0 - r.y1);
   const opts = {
     height: 320,
-    layout(w0, h0) { W = w0; H = h0; w = Math.min(W, H) * (W < 700 ? .5 : .32); nodes.forEach((nd) => { nd.style.width = w + 'px'; }); },
+    layout(w0, h0) {
+      W = w0; H = h0; w = Math.min(W, H) * (W < 700 ? .5 : .32); nodes.forEach((nd) => { nd.style.width = w + 'px'; });
+      top = $('.nav').offsetHeight; rIntro = box(intro); rCap = box(cap);
+    },
     draw(f) {
       const t = cosEase(seg(f, .04, .84));
       const camZ = -.35 + (end.z - .8 + .35) * t;
+      const aIntro = 1 - seg(f, .02, .12), aCap = seg(f, .86, .96);
+      const sx = W > H ? H * 1.3 : W * 1.05, sy = W > H ? H : Math.min(H, W * 1.5); // a tall phone keeps the tunnel narrow so fruit stays on screen longer
       for (const it of items) {
         const d = it.z - camZ;
         if (d <= .12) { hide(it.node); continue; }
-        const k = 1 / d;
-        const o = sm(clamp((4.2 - d) / 1.4)) * sm(clamp((d - .12) / .3));
-        put(it.node, W / 2 + it.x * H * k * (W / H > 1 ? 1.3 : 1) - w / 2 * k, H / 2 + it.y * H * k - w / 2 * k, k, o);
+        const k = 1 / d, s = w * k, pad = s * .14; // the renders have a soft empty margin round the fruit
+        const x = W / 2 + it.x * sx * k - s / 2, y = H / 2 + it.y * sy * k - s / 2;
+        let o = sm(clamp((4.2 - d) / 1.4)) * sm(clamp((d - .12) / .3));
+        // never cut off: a fruit has faded away before it reaches an edge of the screen or the nav
+        const x0 = x + pad, y0 = y + pad, x1 = x + s - pad, y1 = y + s - pad;
+        o *= sm(clamp(Math.min(x0, W - x1, y0 - top, H - y1) / Math.max(24, s * .12)));
+        // and never under a card: fade where the intro or the caption sits while it shows
+        if (aIntro > .01) o *= 1 - aIntro * (1 - sm(clamp(gap(rIntro, x0, y0, x1, y1) / 24)));
+        if (aCap > .01) o *= 1 - aCap * (1 - sm(clamp(gap(rCap, x0, y0, x1, y1) / 24)));
+        if (o < .004) { hide(it.node); continue; }
+        put(it.node, x, y, k, o);
       }
-      fade(intro, 1 - seg(f, .02, .12));
-      fade(cap, seg(f, .86, .96));
+      fade(intro, aIntro);
+      fade(cap, aCap);
     },
     still() { opts.draw(.3); fade(cap, 1); },
   };
@@ -233,7 +275,8 @@ $('#grow-t').addEventListener('input', (e) => { const [t, n] = STAGES[+e.target.
       });
       panels.forEach((p, i) => {
         const next = i < panels.length - 1 ? panels[i + 1]._x || 0 : 0;
-        const op = 1 - Math.min(1, next * 5);
+        // words fade in as their colour settles and out as the next one arrives, so no text ever slides past the screen edge
+        const op = Math.min(sm(clamp((p._x - .8) / .2)), 1 - Math.min(1, next * 5));
         p.firstElementChild.style.opacity = op.toFixed(3);
         p.firstElementChild.style.visibility = op < .02 ? 'hidden' : '';
         if (next >= 1) p.style.visibility = 'hidden';

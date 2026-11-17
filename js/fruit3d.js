@@ -21,10 +21,10 @@ export function showHarvest(viewer, id) {
   const item = buildHarvest(id);
   item.userData.harvest = true;
   const box = new THREE.Box3().setFromObject(item), size = box.getSize(new THREE.Vector3());
-  const plate = board(Math.max(size.x, size.z) * .75 + .01);
+  const plate = board(Math.max(size.x, size.z) * .6 + .008);
   viewer.stage.add(plate, item);
   viewer.stage.rotation.y = .4;
-  viewer.frame();
+  viewer.frame({ pad: .82 }); // the harvest should fill the view
   viewer.kick();
   if (!viewer._harvestPatched) { // make setPlant tidy the harvest away first
     const orig = viewer.setPlant;

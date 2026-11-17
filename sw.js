@@ -1,5 +1,5 @@
 // Offline support for the ad site (/) and the app (/app/): files are cached on first visit so Zero Mile works without a connection.
-const V = 'zeromile-v3';
+const V = 'zeromile-v4';
 const SHELL = [
   // ad site (built in the main session)
   './', 'index.html', 'css/site.css?v=3', 'js/site.js?v=3',
@@ -8,7 +8,7 @@ const SHELL = [
   'js/app.js?v=3', 'js/core.js?v=3', 'js/garden.js?v=3', 'js/find.js?v=3', 'js/impact.js?v=3', 'js/sources.js?v=3',
   'js/viewer.js?v=3', 'js/ditherbg.js?v=3', 'js/pot3d.js?v=2', 'js/analyze.js?v=2', 'js/ascii.js?v=2',
   'js/plants3d.js', 'js/plants3d-rng.js', 'js/textures.js',
-  'vendor/three/three.module.js', 'vendor/three/addons/controls/OrbitControls.js', 'vendor/three/addons/environments/RoomEnvironment.js',
+  'vendor/three/three.module.min.js', 'vendor/three/addons/controls/OrbitControls.js', 'vendor/three/addons/environments/RoomEnvironment.js',
   'data/data.json?v=2', 'manifest.webmanifest', 'icons/icon.svg', 'icons/icon-192.png',
   'img/px/herbs.png', 'img/px/seedling.png', 'img/px/birch.png',
 ];

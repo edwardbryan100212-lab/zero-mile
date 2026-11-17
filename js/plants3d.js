@@ -23,8 +23,8 @@ export const LOOKS = {
   chilli:     { habit: 'fork', h: .6, leaf: 'lance', leafSize: .08, leafColor: '#33702e', fruit: F('chilli', .014, '#d61c12', { count: 16 }), flower: '#f6f4ea' },
   aubergine:  { habit: 'fork', glossy: true, calyx: true, h: .8, leaf: 'oval', leafSize: .15, leafColor: '#4b6e48', fruit: F('aubergine', .032, '#3b1a46', { count: 4 }), flower: '#9a6bc0' },
   cucumber:   { habit: 'climber', h: 1.8, leaf: 'heart', leafSize: .17, leafColor: '#3c7d33', support: 'trellis', fruit: F('cucumber', .025, '#2d5e1f', { len: .26 }), flower: '#f2cf1d' },
-  'green-beans': { habit: 'climber', h: 2.0, leaf: 'trifoliate', leafSize: .14, leafColor: '#46852f', support: 'canes', fruit: F('pod', .007, '#58a33a', { len: .15 }), flower: '#e64a3a' },
-  peas:       { habit: 'climber', h: 1.2, leaf: 'pinnate', leafSize: .05, leafColor: '#6aa349', support: 'twigs', fruit: F('pod', .011, '#6fb24a', { len: .08 }), flower: '#f7f5f0' },
+  'green-beans': { habit: 'climber', h: 2.0, leaf: 'trifoliate', leafSize: .2, dense: true, leafColor: '#46852f', support: 'canes', fruit: F('pod', .007, '#58a33a', { len: .15 }), flower: '#e64a3a' },
+  peas:       { habit: 'climber', h: 1.2, leaf: 'pinnate', leafSize: .085, dense: true, leafColor: '#6aa349', support: 'twigs', fruit: F('pod', .011, '#6fb24a', { len: .08 }), flower: '#f7f5f0' },
   'broad-beans': { habit: 'canes', caneColor: '#4f7a3c', h: 1.0, leaf: 'pinnate', leafSize: .07, leafColor: '#6f8f68', fruit: F('pod', .012, '#5f9a3d', { len: .13, hang: true }), flower: '#f4f2ee', canes: 4 },
   courgette:  { habit: 'giantleaf', h: .7, leaf: 'lobed', leafSize: .3, leafK: 1.3, leafColor: '#2d6a2a', fruit: F('courgette', .045, '#2f5a22', { len: .3, count: 3 }), flower: '#f2b01d' },
   sweetcorn:  { habit: 'corn', h: 2.0, leaf: 'strap', leafSize: .7, leafK: 1, leafColor: '#4f8c37', fruit: F('cob', .025, '#ffffff', { len: .2 }) },
@@ -87,7 +87,7 @@ export const LOOKS = {
   lemon:      { habit: 'tree', glossy: true, h: 2.4, leaf: 'oval', leafSize: .08, leafColor: '#2d5f2a', bark: 'apple', fruit: F('lemon', .04, '#f3d221', { count: 26 }), flower: '#ffffff', depth: 4, dense: true },
   orange:     { habit: 'tree', glossy: true, h: 3.0, leaf: 'oval', leafSize: .09, leafColor: '#2a5a28', bark: 'apple', fruit: F('orange', .04, '#f08a12', { count: 34 }), flower: '#ffffff', depth: 4, dense: true },
   rowan:      { habit: 'tree', h: 9, leaf: 'pinnate', leafSize: .16, leafColor: '#4a7f36', bark: 'beech', fruit: F('sphere', .05, '#d9341c', { count: 12, bunch: 16 }), depth: 4 },
-  birch:      { habit: 'tree', h: 14, leaf: 'birch', leafSize: .24, leafColor: '#6c9636', bark: 'birch', depth: 5, slender: true },
+  birch:      { habit: 'tree', h: 14, leaf: 'birch', leafSize: .15, airy: true, leafColor: '#6c9636', bark: 'birch', depth: 5, slender: true },
   oak:        { habit: 'tree', h: 16, leaf: 'oak', leafSize: .42, leafColor: '#3c6a2c', bark: 'oak', fruit: F('acorn', .12, '#8a6a2c', { count: 30 }), depth: 5, wide: true },
   beech:      { habit: 'tree', h: 18, leaf: 'oval', leafSize: .32, leafColor: '#4f8a35', bark: 'beech', depth: 5, wide: true, dense: true },
   'scots-pine': { habit: 'tree', conifer: true, h: 18, leaf: 'needle', leafSize: 1.5, leafK: 1, leafColor: '#2f5a44', bark: 'pine', fruit: F('cone', .1, '#ffffff', { count: 24 }), depth: 3 },
@@ -452,7 +452,7 @@ const BUILD = {
       }
       return;
     }
-    const n = Math.max(3, Math.round(lerp(3, 22, b.t)));
+    const n = Math.max(3, Math.round(lerp(3, L.dense ? 34 : 22, b.t)));
     const pts = [];
     for (let i = 0; i <= n; i++) { const k = i / n, a = k * 9 + .5; const rad = L.support === 'canes' ? .15 * (1 - k) + .02 : .06; pts.push(V(Math.cos(a) * rad, H * k, Math.sin(a) * rad - .02)); }
     b.stem(pts, .006 * (.5 + b.t));
@@ -807,7 +807,7 @@ Object.assign(BUILD, {
       }
     };
     grow(V(), UP.clone(), H * (L.slender ? .55 : .42), H * (L.slender ? .018 : .03), 0);
-    const per = L.dense ? 34 : L.slender ? 28 : 28;
+    const per = L.airy ? 60 : L.dense ? 34 : L.slender ? 28 : 28; // birch: many small leaves, not clumps
     const fruitTips = L.fruit ? Math.ceil(L.fruit.count / tips.length) : 0;
     tips.forEach(({ p }) => {
       for (let i = 0; i < per; i++) {

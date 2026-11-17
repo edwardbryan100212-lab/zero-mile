@@ -13,7 +13,7 @@ const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', '
 const SEASONS = [
   { name: 'Spring', months: [3, 4, 5], bg: '#e3f1d3', ink: '#12301f', note: 'Seeds go in as the soil warms. The busiest, happiest season.' },
   { name: 'Summer', months: [6, 7, 8], bg: '#f6c935', ink: '#12301f', note: 'Long days. Sow quick crops and pick something almost every day.' },
-  { name: 'Autumn', months: [9, 10, 11], bg: '#e8742a', ink: '#ffffff', note: 'Plant garlic and fruit bushes, and bring the last tomatoes in.' },
+  { name: 'Autumn', months: [9, 10, 11], bg: '#7a2448', ink: '#ffffff', note: 'Plant garlic and fruit bushes, and bring the last tomatoes in.' },
   { name: 'Winter', months: [12, 1, 2], bg: '#1d4a2b', ink: '#ffffff', note: 'Plant bare-root trees and plan next year’s windowsill.' },
 ];
 const sows = (p, ms) => [...(p.grow?.sow_months_north || []), ...(p.grow?.plant_months_north || [])].some((m) => ms.includes(m));
@@ -70,12 +70,12 @@ main.innerHTML = `
       <p class="sec-note rise" style="--d:80ms">Snap your plant each day. Zero Mile looks at the leaves right on your phone and your robot pot tells you how it feels.</p>
       <div class="ritual-media rise" style="--d:160ms">
         <video src="video/sprout.mp4" poster="video/sprout-poster.jpg" width="480" height="480" muted loop playsinline preload="metadata" ${reduce ? '' : 'autoplay'} aria-label="Time-lapse of a tomato seedling opening its first leaves (AI illustration)"></video>
-        <img class="px" src="img/px/herbs.png" alt="Basil, mint and chives on a windowsill, in pixel blocks" width="100" height="133" loading="lazy">
+        <img class="px" src="img/px/herbs.png" alt="Basil, mint and chives on a windowsill, in pixel blocks" width="100" height="133">
       </div>
     </div>
     <div class="app-peek rise" style="--d:120ms" aria-label="A preview of the app">
-      <div class="peek-top"><span>Tomato · day 12</span><span class="peek-face" aria-hidden="true">[^ ‿ ^]</span></div>
-      <div class="peek-streak"><b>12</b><span>days in your<br>growth journal</span></div>
+      <div class="peek-streak"><b>12</b><span>days in your<br>growth journal</span><span class="peek-face" aria-hidden="true">[^ ‿ ^]</span></div>
+      <p class="peek-plant">Tomato, day 12 since planting</p>
       <div class="peek-week" aria-hidden="true">${['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((d, i) => `<i class="${i < 6 ? 'done' : 'now'}">${d}</i>`).join('')}</div>
       <p class="peek-note"><b>Looking good, 86/100.</b> Mostly fresh green leaves. Turn the pot toward the light so it grows straight.</p>
       <a class="btn btn-accent" href="${APP}">Open the app</a>
@@ -98,20 +98,20 @@ main.innerHTML = `
 <section class="sec miles" id="miles" aria-labelledby="miles-title">
   <div class="wrap grid">
     <div>
-      <h2 class="sec-head rise" id="miles-title">How far did the shop one travel?</h2>
-      <p class="sec-note rise" style="--d:80ms">Pick where you live and a plant. We show where most of it in your shops comes from.</p>
-      <div class="pickers rise" style="--d:140ms">
+      <h2 class="sec-head" id="miles-title">How far did the shop one travel?</h2>
+      <p class="sec-note" style="--d:80ms">Pick where you live and a plant. We show where most of it in your shops comes from.</p>
+      <div class="pickers" style="--d:140ms">
         <label class="select"><span class="vh">Where you live</span><select id="r-region">${Object.entries(D.regions).map(([k, r]) => `<option value="${k}"${k === state.region ? ' selected' : ''}>${esc(r.name)}</option>`).join('')}</select></label>
         <label class="select"><span class="vh">Plant</span><select id="r-plant">${P.filter((p) => Object.keys(p.origins || {}).length).map((p) => `<option value="${p.id}"${p.id === 'tomato' ? ' selected' : ''}>${esc(p.name)}</option>`).join('')}</select></label>
       </div>
-      <div class="versus rise" style="--d:200ms">
-        <figure><img class="px" src="img/px/lorry.png" alt="A refrigerated lorry on a motorway, in pixel blocks" width="200" height="133" loading="lazy"><figcaption id="v-shop">Shop one</figcaption></figure>
-        <span class="vs" aria-hidden="true">vs</span>
-        <figure><img class="px" src="img/px/pot.png" alt="A seedling in a pot, in pixel blocks" width="60" height="60" loading="lazy"><figcaption>Yours: 0 miles</figcaption></figure>
-      </div>
       <div class="big" aria-live="polite"><b id="r-total">0</b><span id="r-caption"></span></div>
+      <div class="versus" style="--d:200ms">
+        <figure><img class="px" src="img/px/lorry.png" alt="A refrigerated lorry on a motorway, in pixel blocks" width="200" height="133"><figcaption id="v-shop">Shop one</figcaption></figure>
+        <span class="vs" aria-hidden="true">vs</span>
+        <figure><img class="px" src="img/px/pot.png" alt="A seedling in a pot, in pixel blocks" width="60" height="60"><figcaption>Yours: 0 miles</figcaption></figure>
+      </div>
     </div>
-    <div class="slip rise" style="--d:120ms" id="r-slip"></div>
+    <div class="slip" style="--d:120ms" id="r-slip"></div>
   </div>
 </section>
 
@@ -131,7 +131,7 @@ main.innerHTML = `
   <div class="foot-row">
     <nav aria-label="Footer"><a href="${APP}">Open the app</a><a href="${APP}#/find">Find a plant</a><a href="${APP}#/sources">Sources and method</a></nav>
     <div><p>Every number comes from a cited source: USDA, Our World in Data, UK DESNZ, UN Comtrade, RHS and more.</p><p style="margin-top:12px">Pictures are AI illustrations made with Comfy and printed in Ditherlab, not photos of real farms. The 3D plants are drawn in code.</p></div>
-    <img class="px" src="img/px/strawberry.png" alt="Strawberries in a basket, in pixel blocks" width="100" height="100" loading="lazy">
+    <img class="px" src="img/px/strawberry.png" alt="Strawberries in a basket, in pixel blocks" width="100" height="100">
   </div>
   <div class="foot-legal"><span>Zero Mile, 2026</span><a href="#main" id="to-top">Back to top</a></div>
 </footer>`;
@@ -190,7 +190,7 @@ else { addEventListener('scroll', () => { tgt = prog(); if (!raf) raf = requestA
     const a = i * 2.39996 + (rnd() - .5) * .5, r = .32 + Math.sqrt(rnd()) * .62;
     items.push({ id, x: Math.cos(a) * r, y: Math.sin(a) * r * .8, z: .55 + i * (innerWidth < 700 ? .13 : .1) });
   }
-  const end = { id: 'tomato', x: 0, y: -.04, z: items[items.length - 1].z + .5, end: true };
+  const end = { id: 'tomato', x: 0, y: -.12, z: items[items.length - 1].z + .5, end: true };
   items.push(end);
   field.innerHTML = items.map((it, i) => `<div class="it" style="z-index:${1000 - i}"><img data-src="${thumb(it.id)}" alt="" width="420" height="420"></div>`).join('');
   const nodes = $$('.it', field);
@@ -202,7 +202,7 @@ else { addEventListener('scroll', () => { tgt = prog(); if (!raf) raf = requestA
     layout(w0, h0) { W = w0; H = h0; w = Math.min(W, H) * (W < 700 ? .72 : .46); nodes.forEach((n) => { n.style.width = w + 'px'; }); },
     draw(f) {
       const t = cosEase(seg(f, .04, .84));
-      const camZ = -.35 + (end.z - .55 + .35) * t;
+      const camZ = -.35 + (end.z - .72 + .35) * t;
       for (const it of items) {
         const d = it.z - camZ;
         if (d <= .12) { hide(it.node); continue; }
@@ -233,6 +233,16 @@ else { addEventListener('scroll', () => { tgt = prog(); if (!raf) raf = requestA
         p.style.transform = `translateX(${((1 - x) * 100).toFixed(2)}%)`;
         p.style.zIndex = i + 1;
         p.style.visibility = x <= 0 ? 'hidden' : 'visible';
+        p._x = x;
+      });
+      // a panel fully covered by the next one is not drawn
+      panels.forEach((p, i) => {
+        const next = i < panels.length - 1 ? panels[i + 1]._x || 0 : 0;
+        // the words leave before the next colour covers them
+        const op = 1 - Math.min(1, next * 5);
+        p.firstElementChild.style.opacity = op.toFixed(3);
+        p.firstElementChild.style.visibility = op < .02 ? 'hidden' : '';
+        if (next >= 1) p.style.visibility = 'hidden'; else if (i === 0 || p._x > 0) p.style.visibility = 'visible';
       });
     },
     still() { panels.forEach((p) => { p.style.position = 'relative'; p.style.transform = 'none'; p.style.minHeight = '100svh'; }); },

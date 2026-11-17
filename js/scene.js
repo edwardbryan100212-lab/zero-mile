@@ -71,6 +71,7 @@ export function mountScene(el, { height = 300, layout = () => {}, draw = () => {
     if (Math.abs(fol.value - drawn) > 1e-4) { drawn = fol.value; draw(drawn); }
   };
   const start = () => {
+    el.classList.add('is-live'); // the scene is running (checked by the page inspector)
     measure();
     if (RM) { showStill(); return; }
     // arrive at the current place, not the start: a link or a fast scroll into the scene must not replay it
@@ -86,7 +87,8 @@ export function mountScene(el, { height = 300, layout = () => {}, draw = () => {
     if (!e.isIntersecting || ready) return; ready = true; obs.disconnect();
     const imgs = [...el.querySelectorAll('img[data-src]')];
     imgs.forEach(im => { im.src = im.dataset.src; });
-    Promise.all(imgs.map(im => (im.decode ? im.decode() : Promise.resolve()).catch(() => {}))).then(() => { el.classList.add('ok'); start(); });
+    start(); // draw positions at once; the field fades in when its pictures are decoded
+    Promise.all(imgs.map(im => (im.decode ? im.decode() : Promise.resolve()).catch(() => {}))).then(() => el.classList.add('ok'));
   }, { rootMargin: '200% 0px' }).observe(el);
 
   addEventListener('resize', () => { if (!ready) return; measure(); RM ? showStill() : draw(fol.value); });

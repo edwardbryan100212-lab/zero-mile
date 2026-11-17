@@ -2,45 +2,32 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Zero Mile · grow your own food</title>
-<meta name="description" content="Pick a plant, see it fully grown in 3D, snap it every day for a streak with on-device plant feedback, and see the food miles you save against the supermarket.">
-<meta name="theme-color" content="#1d4a2b">
+<meta name="description" content="Grow food at home, snap it every day, and see the food miles you save. Free for every age, on phone and computer.">
+<meta name="theme-color" content="#f3f8ec">
 <meta name="color-scheme" content="light">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta property="og:title" content="Zero Mile · grow your own food">
+<meta property="og:description" content="Grow it, snap it, eat it. See how far the shop one travelled.">
+<meta property="og:image" content="img/hero-sunny.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/app.css?v=2">
+<link rel="stylesheet" href="css/scene.css?v=3">
+<link rel="stylesheet" href="css/site.css?v=3">
 <script type="importmap">{"imports":{"three":"./vendor/three/three.module.js","three/addons/":"./vendor/three/addons/"}}</script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
-<header class="bar" id="bar">
-  <a class="mark" href="#/" aria-label="Zero Mile home">Zero Mile</a>
-  <nav class="nav" aria-label="Main">
-    <a href="#/" data-nav="home">Home</a>
-    <a href="#/find" data-nav="find">Find a plant</a>
-    <a href="#/garden" data-nav="garden">My garden</a>
-    <a href="#/sources" data-nav="sources">Sources</a>
-  </nav>
-  <a class="btn btn-accent bar-cta" href="#/garden" id="bar-streak">Snap today</a>
+<header class="nav">
+  <a class="mark" href="./" aria-label="Zero Mile home"><img src="icons/icon.svg" alt="" width="28" height="28">Zero Mile</a>
+  <nav aria-label="Sections"><a href="#story">How it grows</a><a href="#plants">Plants</a><a href="#miles">Food miles</a></nav>
+  <a class="btn btn-accent" href="app/">Open the app</a>
 </header>
-
 <main id="main" tabindex="-1"></main>
-
-<nav class="tabs" aria-label="App">
-  <a href="#/" data-nav="home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11l8-6 8 6v8a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z"/></svg>Home</a>
-  <a href="#/find" data-nav="find"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="M16 16l4 4"/></svg>Find</a>
-  <a href="#/garden" data-nav="garden"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 13h12l-1.5 7h-9z"/><path d="M12 13V7M12 9c-3 0-4-2-4-4 2 0 4 1 4 4zm0 0c3 0 4-2 4-4-2 0-4 1-4 4z"/></svg>Garden</a>
-  <a href="#/sources" data-nav="sources"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4h9l3 3v13H6z"/><path d="M9 11h6M9 15h6"/></svg>Sources</a>
-</nav>
-
-<div class="toast" id="toast" role="status" aria-live="polite"></div>
-<script type="module" src="js/app.js?v=2"></script>
+<script type="module" src="js/site.js?v=3"></script>
 </body>
 </html>

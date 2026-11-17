@@ -1,5 +1,5 @@
 // Home: the seed packet, the seed-to-supper story, the daily slip, the food-miles receipt, the menu of plants.
-import { $, $$, esc, fmt, data, plantById, trip, state, save, rise } from './app.js?v=2';
+import { $, $$, esc, fmt, data, plantById, trip, state, save, rise } from './core.js?v=2';
 import { GROW, CAN, LORRY, POT, LEAF_LINE } from './ascii.js?v=2';
 import { STRAWBERRY } from './ascii-photos.js?v=2';
 

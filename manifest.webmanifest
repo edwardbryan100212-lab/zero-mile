@@ -2,7 +2,7 @@
   "name": "Zero Mile: grow your own food",
   "short_name": "Zero Mile",
   "description": "Grow food at home, snap it every day, see the food miles you save.",
-  "start_url": "./#/garden",
+  "start_url": "./app/",
   "scope": "./",
   "display": "standalone",
   "background_color": "#ffffff",
@@ -13,5 +13,5 @@
     { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
     { "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml" }
   ],
-  "shortcuts": [{ "name": "Snap today", "url": "./#/garden" }, { "name": "Find a plant", "url": "./#/find" }]
+  "shortcuts": [{ "name": "Snap today", "url": "./app/#/snap" }, { "name": "Find a plant", "url": "./app/#/find" }]
 }

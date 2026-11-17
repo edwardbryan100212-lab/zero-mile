@@ -105,7 +105,7 @@ export function createViewer(host, { controls = false, spin = true, background =
   }
 
   const api = {
-    scene, stage, camera: cam, renderer, setPlant, frame: () => frame(stage), kick, onFrame: null,
+    scene, stage, camera: cam, renderer, setPlant, frame: (o) => frame(stage, o), kick, onFrame: null,
     setSpin(v) { spin = v; kick(); },
     dispose() { cancelAnimationFrame(raf); io.disconnect(); ro.disconnect(); if (plant) disposeTree(plant); orbit?.dispose(); pmrem.dispose(); renderer.dispose(); renderer.domElement.remove(); },
   };
@@ -127,6 +127,7 @@ export async function plantThumb(id, size = 360) {
     thumbR = host;
   }
   thumbV.setPlant(id, 1);
+  thumbV.frame({ pad: .78 });
   thumbV.stage.rotation.y = .5;
   thumbV.renderer.render(thumbV.scene, thumbV.camera);
   const url = thumbV.renderer.domElement.toDataURL('image/webp', .85);

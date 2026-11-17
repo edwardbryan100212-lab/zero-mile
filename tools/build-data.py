@@ -6,10 +6,20 @@ R = os.path.join(os.path.dirname(__file__), '..', 'research')
 load = lambda f: json.load(open(os.path.join(R, f)))
 nut = load('nutrition-carbon.json')['crops']
 grow = load('growing-emissions.json')
+# round 2: 41 more food plants and 9 more trees, merged into the same shapes
+r2p = os.path.join(R, 'round2-growing-nutrition.json')
+if os.path.exists(r2p):
+    r2 = json.load(open(r2p))
+    nut.update({k: v for k, v in r2.get('crops', {}).items() if not k.startswith('_')})
+    grow['plants'].update({k: v for k, v in r2.get('plants', {}).items() if not k.startswith('_')})
+    grow['trees'].update({k: v for k, v in r2.get('trees', {}).items() if not k.startswith('_')})
 origins = []
 for f in glob.glob(os.path.join(R, 'origins-*.json')):
     origins += json.load(open(f))
 
+NAMES2 = {'beetroot':'Beetroot','broccoli':'Broccoli','cabbage':'Cabbage','cauliflower':'Cauliflower','brussels-sprouts':'Brussels sprouts','leek':'Leek','celery':'Celery','sweetcorn':'Sweetcorn','pumpkin':'Pumpkin','butternut-squash':'Butternut squash','aubergine':'Aubergine','sweet-potato':'Sweet potato','parsnip':'Parsnip','turnip':'Turnip','swiss-chard':'Swiss chard','rocket':'Rocket','pak-choi':'Pak choi','spring-onion':'Spring onion','asparagus':'Asparagus','broad-beans':'Broad beans','rhubarb':'Rhubarb','gooseberry':'Gooseberry','blackcurrant':'Blackcurrant','blackberry':'Blackberry','grape':'Grape vine','melon':'Melon','watermelon':'Watermelon','fig':'Fig tree','pear':'Pear tree','plum':'Plum tree','cherry':'Cherry tree','peach':'Peach tree','orange':'Orange tree','parsley':'Parsley','coriander':'Coriander','chives':'Chives','rosemary':'Rosemary','thyme':'Thyme','sage':'Sage','dill':'Dill','sunflower':'Sunflower','rowan':'Rowan','scots-pine':'Scots pine','beech':'Beech'}
+GROUP2 = {**{k:'fruit' for k in ['rhubarb','gooseberry','blackcurrant','blackberry','grape','melon','watermelon']}, **{k:'tree' for k in ['fig','pear','plum','cherry','peach','orange','rowan','scots-pine','beech']}, **{k:'herb' for k in ['parsley','coriander','chives','rosemary','thyme','sage','dill']}, 'sunflower':'veg'}
+ALIASES2 = {'aubergine':['eggplant','brinjal'],'rocket':['arugula'],'coriander':['cilantro'],'butternut-squash':['squash'],'sweetcorn':['corn','maize'],'beetroot':['beet'],'spring-onion':['scallion','green onion'],'swiss-chard':['chard'],'pak-choi':['bok choy'],'broad-beans':['fava beans'],'grape':['grapes']}
 NAMES = {'tomato':'Tomato','lettuce':'Lettuce','potato':'Potato','carrot':'Carrot','strawberry':'Strawberry','basil':'Basil','mint':'Mint','courgette':'Courgette','cucumber':'Cucumber','pepper':'Sweet pepper','chilli':'Chilli','onion':'Onion','garlic':'Garlic','peas':'Peas','green-beans':'Green beans','kale':'Kale','spinach':'Spinach','radish':'Radish','blueberry':'Blueberry','raspberry':'Raspberry','apple':'Apple tree','lemon':'Lemon tree','birch':'Silver birch','oak':'English oak'}
 GROUP = {'basil':'herb','mint':'herb','strawberry':'fruit','blueberry':'fruit','raspberry':'fruit','apple':'tree','lemon':'tree','birch':'tree','oak':'tree'}
 ALIASES = {'courgette':['zucchini'],'pepper':['capsicum','bell pepper'],'green-beans':['french beans','string beans'],'chilli':['chili','hot pepper'],'birch':['birch','betula'],'oak':['oak','quercus'],'apple':['apple'],'lemon':['lemon']}
@@ -31,6 +41,7 @@ MODES = {
   'air': [{'mode':'air_long','share':.9},{'mode':'hgv','share':.1}],
   'rail+road': [{'mode':'rail','share':.8},{'mode':'hgv','share':.2}],
 }
+NAMES.update(NAMES2); GROUP.update(GROUP2); ALIASES.update(ALIASES2)
 plants = []
 for pid, name in NAMES.items():
     g = grow['plants'].get(pid) or {}

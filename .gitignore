@@ -3,3 +3,4 @@ art/
 .DS_Store
 __pycache__/
 .claude/
+models-src/

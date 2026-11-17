@@ -14,7 +14,7 @@ export async function data() {
   if (!DATA) {
     const [d, man] = await Promise.all([
       fetch(new URL('data/data.json?v=5', ROOT)).then((r) => r.json()),
-      fetch(new URL('models/manifest.json?v=5', ROOT)).then((r) => (r.ok ? r.json() : {})).catch(() => ({})),
+      fetch(new URL('models/manifest.json?v=6', ROOT)).then((r) => (r.ok ? r.json() : {})).catch(() => ({})),
     ]);
     DATA = d;
     for (const [id, m] of Object.entries(man || {})) if (m?.harvest) REAL.add(id);
@@ -22,7 +22,7 @@ export async function data() {
   return DATA;
 }
 // plants with a real downloaded model of their harvest show it as their picture; the rest show the drawn plant
-const REAL = new Set();
+const REAL = new Set(['basil', 'mint', 'parsley', 'coriander', 'chives', 'rosemary', 'thyme', 'sage', 'dill', 'kale', 'spinach', 'rocket', 'swiss-chard', 'pak-choi', 'rhubarb']); // + low-poly herbs (js/herbs3d.js)
 export const thumb = (id) => new URL(REAL.has(id) ? `img/fruits/${id}.webp` : `img/plants/${id}.webp`, ROOT).href;
 export const plantById = (id) => DATA.plants.find((p) => p.id === id);
 

@@ -2,7 +2,7 @@
  "apple": {
   "harvest": "models/apple-harvest.glb",
   "plant": "models/apple-plant.glb",
-  "source": "Kenney Food Kit 2.0 — apple | plant: Poly Pizza — \"Apple tree\"",
+  "source": "Kenney Food Kit 2.0 \u2014 apple | plant: Poly Pizza \u2014 \"Apple tree\"",
   "author": "Kenney (kenney.nl) | plant: Poly by Google",
   "license": "CC0-1.0 | plant: CC-BY-3.0",
   "url": "https://kenney.nl/assets/food-kit | plant: https://poly.pizza/m/cpg6wP8JCyQ",
@@ -12,7 +12,7 @@
  "asparagus": {
   "harvest": "models/asparagus-harvest.glb",
   "plant": null,
-  "source": "Poly Pizza — \"Asaparagus\"",
+  "source": "Poly Pizza \u2014 \"Asaparagus\"",
   "author": "Poly by Google",
   "license": "CC-BY-3.0",
   "url": "https://poly.pizza/m/0YBn5gq0OE6",
@@ -22,17 +22,27 @@
  "aubergine": {
   "harvest": "models/aubergine-harvest.glb",
   "plant": null,
-  "source": "Kenney Food Kit 2.0 — eggplant",
+  "source": "Kenney Food Kit 2.0 \u2014 eggplant",
   "author": "Kenney (kenney.nl)",
   "license": "CC0-1.0",
   "url": "https://kenney.nl/assets/food-kit",
   "upAxis": "y",
   "notes": "Normalised: bottom-centred at origin, largest dimension 1 unit."
  },
+ "basil": {
+  "harvest": "models/basil-harvest.glb",
+  "plant": null,
+  "source": "Poly Pizza \u2014 \"Small Plant\"",
+  "author": "Quaternius",
+  "license": "CC0-1.0",
+  "url": "https://poly.pizza/m/MZdeiQApSb",
+  "upAxis": "y",
+  "notes": "Normalised: bottom-centred at origin, largest dimension 1 unit. Harvest is a stand-in: two broad leaves (Quaternius 'Small Plant'). Plant: replaced by the app's low-poly herb (clearer)."
+ },
  "beech": {
   "harvest": "models/beech-harvest.glb",
   "plant": "models/beech-plant.glb",
-  "source": "Poly Pizza — \"Leaf\" | plant: Poly Pizza — \"Beech tree\"",
+  "source": "Poly Pizza \u2014 \"Leaf\" | plant: Poly Pizza \u2014 \"Beech tree\"",
   "author": "Poly by Google",
   "license": "CC-BY-3.0",
   "url": "https://poly.pizza/m/4_FetA14dDV | plant: https://poly.pizza/m/8ICCdgc7CQd",
@@ -42,7 +52,7 @@
  "beetroot": {
   "harvest": "models/beetroot-harvest.glb",
   "plant": null,
-  "source": "Kenney Food Kit 2.0 — beet",
+  "source": "Kenney Food Kit 2.0 \u2014 beet",
   "author": "Kenney (kenney.nl)",
   "license": "CC0-1.0",
   "url": "https://kenney.nl/assets/food-kit",
@@ -52,7 +62,7 @@
  "birch": {
   "harvest": "models/birch-harvest.glb",
   "plant": "models/birch-plant.glb",
-  "source": "Poly Pizza — \"Leaf\" | plant: Poly Pizza — \"Birch Tree\"",
+  "source": "Poly Pizza \u2014 \"Leaf\" | plant: Poly Pizza \u2014 \"Birch Tree\"",
   "author": "Poly by Google | plant: Quaternius",
   "license": "CC-BY-3.0 | plant: CC0-1.0",
   "url": "https://poly.pizza/m/4_FetA14dDV | plant: https://poly.pizza/m/k6cozoNfLH",
@@ -62,7 +72,7 @@
  "blueberry": {
   "harvest": "models/blueberry-harvest.glb",
   "plant": null,
-  "source": "Poly Pizza — \"Blueberries\"",
+  "source": "Poly Pizza \u2014 \"Blueberries\"",
   "author": "Jarlan Perez",
   "license": "CC-BY-3.0",
   "url": "https://poly.pizza/m/6i0oxEqEUVk",
@@ -72,7 +82,7 @@
  "broad-beans": {
   "harvest": "models/broad-beans-harvest.glb",
   "plant": null,
-  "source": "Poly Pizza — \"Peas\"",
+  "source": "Poly Pizza \u2014 \"Peas\"",
   "author": "Poly by Google",
   "license": "CC-BY-3.0",
   "url": "https://poly.pizza/m/bPyUc6_zlFi",
@@ -82,7 +92,7 @@
  "broccoli": {
   "harvest": "models/broccoli-harvest.glb",
   "plant": null,
-  "source": "Kenney Food Kit 2.0 — broccoli",
+  "source": "Kenney Food Kit 2.0 \u2014 broccoli",
   "author": "Kenney (kenney.nl)",
   "license": "CC0-1.0",
   "url": "https://kenney.nl/assets/food-kit",
@@ -92,7 +102,7 @@
  "cabbage": {
   "harvest": "models/cabbage-harvest.glb",
   "plant": null,
-  "source": "Kenney Food Kit 2.0 — cabbage",
+  "source": "Kenney Food Kit 2.0 \u2014 cabbage",
   "author": "Kenney (kenney.nl)",
   "license": "CC0-1.0",
   "url": "https://kenney.nl/assets/food-kit",
@@ -102,7 +112,7 @@
  "carrot": {
   "harvest": "models/carrot-harvest.glb",
   "plant": null,
-  "source": "Kenney Food Kit 2.0 — carrot",
+  "source": "Kenney Food Kit 2.0 \u2014 carrot",
   "author": "Kenney (kenney.nl)",
   "license": "CC0-1.0",
   "url": "https://kenney.nl/assets/food-kit",
@@ -112,7 +122,7 @@
  "cauliflower": {
   "harvest": "models/cauliflower-harvest.glb",
   "plant": null,
-  "source": "Kenney Food Kit 2.0 — cauliflower",
+  "source": "Kenney Food Kit 2.0 \u2014 cauliflower",
   "author": "Kenney (kenney.nl)",
   "license": "CC0-1.0",
   "url": "https://kenney.nl/assets/food-kit",
@@ -122,7 +132,7 @@
  "celery": {
   "harvest": "models/celery-harvest.glb",
   "plant": null,
-  "source": "Kenney Food Kit 2.0 — celery-stick",
+  "source": "Kenney Food Kit 2.0 \u2014 celery-stick",
   "author": "Kenney (kenney.nl)",
   "license": "CC0-1.0",
   "url": "https://kenney.nl/assets/food-kit",
@@ -132,7 +142,7 @@
  "cherry": {
   "harvest": "models/cherry-harvest.glb",
   "plant": "models/cherry-plant.glb",
-  "source": "Kenney Food Kit 2.0 — cherries | plant: Poly Pizza — \"Cherry tree\"",
+  "source": "Kenney Food Kit 2.0 \u2014 cherries | plant: Poly Pizza \u2014 \"Cherry tree\"",
   "author": "Kenney (kenney.nl) | plant: Poly by Google",
   "license": "CC0-1.0 | plant: CC-BY-3.0",
   "url": "https://kenney.nl/assets/food-kit | plant: https://poly.pizza/m/1FSDzk-LRdA",
@@ -142,17 +152,37 @@
  "chilli": {
   "harvest": "models/chilli-harvest.glb",
   "plant": null,
-  "source": "Kenney Food Kit 2.0 — pepper",
+  "source": "Kenney Food Kit 2.0 \u2014 pepper",
   "author": "Kenney (kenney.nl)",
   "license": "CC0-1.0",
   "url": "https://kenney.nl/assets/food-kit",
   "upAxis": "y",
   "notes": "Normalised: bottom-centred at origin, largest dimension 1 unit. Kenney 'pepper' (red chilli)."
  },
+ "chives": {
+  "harvest": "models/chives-harvest.glb",
+  "plant": "models/chives-plant.glb",
+  "source": "Poly Pizza \u2014 \"Tuft of grass\" | plant: Poly Pizza \u2014 \"Small Indoor Grass Plant\"",
+  "author": "Poly by Google | plant: Jarlan Perez",
+  "license": "CC-BY-3.0",
+  "url": "https://poly.pizza/m/3tyh15Fbmsx | plant: https://poly.pizza/m/2B_cWu5_G12",
+  "upAxis": "y",
+  "notes": "Normalised: bottom-centred at origin, largest dimension 1 unit. Harvest is a tuft of thin blades (Poly by Google 'Tuft of grass'). Plant is a potted clump of thin blades."
+ },
+ "coriander": {
+  "harvest": "models/coriander-harvest.glb",
+  "plant": null,
+  "source": "Poly Pizza \u2014 \"Clover\"",
+  "author": "Quaternius",
+  "license": "CC0-1.0",
+  "url": "https://poly.pizza/m/u5SOgBFiut",
+  "upAxis": "y",
+  "notes": "Normalised: bottom-centred at origin, largest dimension 1 unit. Harvest is a stand-in: long stems with leaf tufts (Quaternius 'Clover', second variant). Plant is a GENERIC potted herb (shared with parsley and sage). Plant: replaced by the app's low-poly herb (clearer)."
+ },
  "courgette": {
   "harvest": "models/courgette-harvest.glb",
   "plant": null,
-  "source": "Poly Pizza — \"Cucumber\"",
+  "source": "Poly Pizza \u2014 \"Cucumber\"",
   "author": "Poly by Google",
   "license": "CC-BY-3.0",
   "url": "https://poly.pizza/m/6tIy7yd7SPa",
@@ -162,17 +192,27 @@
  "cucumber": {
   "harvest": "models/cucumber-harvest.glb",
   "plant": null,
-  "source": "Poly Pizza — \"Cucumber\"",
+  "source": "Poly Pizza \u2014 \"Cucumber\"",
   "author": "Quaternius",
   "license": "CC0-1.0",
   "url": "https://poly.pizza/m/nyGEAKs590",
   "upAxis": "y",
   "notes": "Normalised: bottom-centred at origin, largest dimension 1 unit."
  },
+ "dill": {
+  "harvest": "models/dill-harvest.glb",
+  "plant": null,
+  "source": "Poly Pizza \u2014 \"Fern\"",
+  "author": "Danni Bittman",
+  "license": "CC-BY-3.0",
+  "url": "https://poly.pizza/m/6ttropQuVzQ",
+  "upAxis": "y",
+  "notes": "Normalised: bottom-centred at origin, largest dimension 1 unit. Harvest is a stand-in: a feathery fern frond. Plant is a stand-in: wispy feathery plant (Geoffrey Bell 'fern plant'). Plant: replaced by the app's low-poly herb (clearer)."
+ },
  "garlic": {
   "harvest": "models/garlic-harvest.glb",
   "plant": null,
-  "source": "Poly Pizza — \"Garlic\"",
+  "source": "Poly Pizza \u2014 \"Garlic\"",
   "author": "Poly by Google",
   "license": "CC-BY-3.0",
   "url": "https://poly.pizza/m/0obkpR0BuEa",
@@ -182,7 +222,7 @@
  "grape": {
   "harvest": "models/grape-harvest.glb",
   "plant": null,
-  "source": "Kenney Food Kit 2.0 — grapes",
+  "source": "Kenney Food Kit 2.0 \u2014 grapes",
   "author": "Kenney (kenney.nl)",
   "license": "CC0-1.0",
   "url": "https://kenney.nl/assets/food-kit",
@@ -192,17 +232,27 @@
  "green-beans": {
   "harvest": "models/green-beans-harvest.glb",
   "plant": null,
-  "source": "Poly Pizza — \"Beans\"",
+  "source": "Poly Pizza \u2014 \"Beans\"",
   "author": "apelab",
   "license": "CC-BY-3.0",
   "url": "https://poly.pizza/m/9GPqSJryjTo",
   "upAxis": "y",
   "notes": "Normalised: bottom-centred at origin, largest dimension 1 unit."
  },
+ "kale": {
+  "harvest": "models/kale-harvest.glb",
+  "plant": null,
+  "source": "Poly Pizza \u2014 \"Shrub\"",
+  "author": "Poly by Google",
+  "license": "CC-BY-3.0",
+  "url": "https://poly.pizza/m/aMGUklRjpyo",
+  "upAxis": "y",
+  "notes": "Normalised: bottom-centred at origin, largest dimension 1 unit. Harvest is a stand-in: a crinkly dark-green head (Poly by Google 'Shrub'). Plant is a stand-in: a crinkly leafy bush (Quaternius 'Bush'). Plant: replaced by the app's low-poly herb (clearer)."
+ },
  "leek": {
   "harvest": "models/leek-harvest.glb",
   "plant": null,
-  "source": "Kenney Food Kit 2.0 — leek",
+  "source": "Kenney Food Kit 2.0 \u2014 leek",
   "author": "Kenney (kenney.nl)",
   "license": "CC0-1.0",
   "url": "https://kenney.nl/assets/food-kit",
@@ -212,7 +262,7 @@
  "lemon": {
   "harvest": "models/lemon-harvest.glb",
   "plant": null,
-  "source": "Kenney Food Kit 2.0 — lemon",
+  "source": "Kenney Food Kit 2.0 \u2014 lemon",
   "author": "Kenney (kenney.nl)",
   "license": "CC0-1.0",
   "url": "https://kenney.nl/assets/food-kit",
@@ -222,7 +272,7 @@
  "lettuce": {
   "harvest": "models/lettuce-harvest.glb",
   "plant": "models/lettuce-plant.glb",
-  "source": "Poly Pizza — \"Head of lettuce\" | plant: Poly Pizza — \"Lettuce\"",
+  "source": "Poly Pizza \u2014 \"Head of lettuce\" | plant: Poly Pizza \u2014 \"Lettuce\"",
   "author": "jeremy | plant: Quaternius",
   "license": "CC-BY-3.0 | plant: CC0-1.0",
   "url": "https://poly.pizza/m/7_SB4QHJvBR | plant: https://poly.pizza/m/MEmUwHUHNR",
@@ -232,17 +282,27 @@
  "melon": {
   "harvest": "models/melon-harvest.glb",
   "plant": null,
-  "source": "Poly Pizza — \"Slice of cantaloupe\"",
+  "source": "Poly Pizza \u2014 \"Slice of cantaloupe\"",
   "author": "Poly by Google",
   "license": "CC-BY-3.0",
   "url": "https://poly.pizza/m/097UT6ny1Fa",
   "upAxis": "y",
   "notes": "Normalised: bottom-centred at origin, largest dimension 1 unit. Cantaloupe slice."
  },
+ "mint": {
+  "harvest": null,
+  "plant": "models/mint-plant.glb",
+  "source": "Poly Pizza \u2014 \"Potted Plant\"",
+  "author": "CreativeTrio",
+  "license": "CC0-1.0",
+  "url": "https://poly.pizza/m/GJ3Bm5FDE4",
+  "upAxis": "y",
+  "notes": "Normalised: bottom-centred at origin, largest dimension 1 unit. Harvest is a stand-in: a sprig with paired leaves (Isa Lousberg 'ZZ Leaf'). Harvest: replaced by the app's low-poly herb (clearer)."
+ },
  "oak": {
   "harvest": "models/oak-harvest.glb",
   "plant": "models/oak-plant.glb",
-  "source": "Poly Pizza — \"Acorn\" | plant: Poly Pizza — \"Tree\"",
+  "source": "Poly Pizza \u2014 \"Acorn\" | plant: Poly Pizza \u2014 \"Tree\"",
   "author": "Poly by Google | plant: Quaternius",
   "license": "CC-BY-3.0 | plant: CC0-1.0",
   "url": "https://poly.pizza/m/cQ-FnrdHHVw | plant: https://poly.pizza/m/1BkD9JnKrE",
@@ -252,7 +312,7 @@
  "onion": {
   "harvest": "models/onion-harvest.glb",
   "plant": null,
-  "source": "Kenney Food Kit 2.0 — onion",
+  "source": "Kenney Food Kit 2.0 \u2014 onion",
   "author": "Kenney (kenney.nl)",
   "license": "CC0-1.0",
   "url": "https://kenney.nl/assets/food-kit",
@@ -262,17 +322,33 @@
  "orange": {
   "harvest": "models/orange-harvest.glb",
   "plant": "models/orange-plant.glb",
-  "source": "Kenney Food Kit 2.0 — orange | plant: Poly Pizza — \"Orange tree\"",
+  "source": "Kenney Food Kit 2.0 \u2014 orange | plant: Poly Pizza \u2014 \"Orange tree\"",
   "author": "Kenney (kenney.nl) | plant: Poly by Google",
   "license": "CC0-1.0 | plant: CC-BY-3.0",
   "url": "https://kenney.nl/assets/food-kit | plant: https://poly.pizza/m/8zS7mfHS0i7",
   "upAxis": "y",
   "notes": "Normalised: bottom-centred at origin, largest dimension 1 unit."
  },
+ "pak-choi": {
+  "harvest": null,
+  "plant": null,
+  "upAxis": "y",
+  "notes": "Normalised: bottom-centred at origin, largest dimension 1 unit. Harvest is a stand-in: an upright pale-green head (jeremy 'Cabbage'). Harvest: replaced by the app's low-poly herb (clearer)."
+ },
+ "parsley": {
+  "harvest": "models/parsley-harvest.glb",
+  "plant": null,
+  "source": "Poly Pizza \u2014 \"Clover\"",
+  "author": "Quaternius",
+  "license": "CC0-1.0",
+  "url": "https://poly.pizza/m/IQ9NVyVpUw",
+  "upAxis": "y",
+  "notes": "Normalised: bottom-centred at origin, largest dimension 1 unit. Harvest is a stand-in: long stems with leaf tufts (Quaternius 'Clover'). Plant is a GENERIC potted herb (shared with coriander and sage). Plant: replaced by the app's low-poly herb (clearer)."
+ },
  "pear": {
   "harvest": "models/pear-harvest.glb",
   "plant": "models/pear-plant.glb",
-  "source": "Kenney Food Kit 2.0 — pear | plant: Poly Pizza — \"Pear tree\"",
+  "source": "Kenney Food Kit 2.0 \u2014 pear | plant: Poly Pizza \u2014 \"Pear tree\"",
   "author": "Kenney (kenney.nl) | plant: Poly by Google",
   "license": "CC0-1.0 | plant: CC-BY-3.0",
   "url": "https://kenney.nl/assets/food-kit | plant: https://poly.pizza/m/44lGuM746Zi",
@@ -282,7 +358,7 @@
  "peas": {
   "harvest": "models/peas-harvest.glb",
   "plant": null,
-  "source": "Poly Pizza — \"Peapod\"",
+  "source": "Poly Pizza \u2014 \"Peapod\"",
   "author": "Poly by Google",
   "license": "CC-BY-3.0",
   "url": "https://poly.pizza/m/5NbJiEDdCuJ",
@@ -292,7 +368,7 @@
  "pepper": {
   "harvest": "models/pepper-harvest.glb",
   "plant": null,
-  "source": "Kenney Food Kit 2.0 — paprika",
+  "source": "Kenney Food Kit 2.0 \u2014 paprika",
   "author": "Kenney (kenney.nl)",
   "license": "CC0-1.0",
   "url": "https://kenney.nl/assets/food-kit",
@@ -302,7 +378,7 @@
  "potato": {
   "harvest": "models/potato-harvest.glb",
   "plant": null,
-  "source": "Poly Pizza — \"Potato\"",
+  "source": "Poly Pizza \u2014 \"Potato\"",
   "author": "Jarlan Perez",
   "license": "CC-BY-3.0",
   "url": "https://poly.pizza/m/1RHF_eF3U0U",
@@ -312,7 +388,7 @@
  "pumpkin": {
   "harvest": "models/pumpkin-harvest.glb",
   "plant": null,
-  "source": "Kenney Food Kit 2.0 — pumpkin",
+  "source": "Kenney Food Kit 2.0 \u2014 pumpkin",
   "author": "Kenney (kenney.nl)",
   "license": "CC0-1.0",
   "url": "https://kenney.nl/assets/food-kit",
@@ -322,7 +398,7 @@
  "radish": {
   "harvest": "models/radish-harvest.glb",
   "plant": null,
-  "source": "Kenney Food Kit 2.0 — radish",
+  "source": "Kenney Food Kit 2.0 \u2014 radish",
   "author": "Kenney (kenney.nl)",
   "license": "CC0-1.0",
   "url": "https://kenney.nl/assets/food-kit",
@@ -332,27 +408,51 @@
  "raspberry": {
   "harvest": "models/raspberry-harvest.glb",
   "plant": "models/raspberry-plant.glb",
-  "source": "Poly Pizza — \"Raspberry\" | plant: Poly Pizza — \"Bush with Berries\"",
+  "source": "Poly Pizza \u2014 \"Raspberry\" | plant: Poly Pizza \u2014 \"Bush with Berries\"",
   "author": "jeremy | plant: Quaternius",
   "license": "CC-BY-3.0 | plant: CC0-1.0",
   "url": "https://poly.pizza/m/fnuWrFddqLb | plant: https://poly.pizza/m/TSbIxkDtxF",
   "upAxis": "y",
   "notes": "Normalised: bottom-centred at origin, largest dimension 1 unit. Generic berry bush."
  },
+ "rocket": {
+  "harvest": null,
+  "plant": null,
+  "upAxis": "y",
+  "notes": "Normalised: bottom-centred at origin, largest dimension 1 unit. Harvest is a stand-in: a single lobed leaf (jeremy 'Leaf'). Harvest: replaced by the app's low-poly herb (clearer)."
+ },
+ "rosemary": {
+  "harvest": null,
+  "plant": null,
+  "upAxis": "y",
+  "notes": "Normalised: bottom-centred at origin, largest dimension 1 unit. Harvest is cut rosemary sprigs in a cup; mesh simplified. Plant is a stand-in: Kenney conical shrub in a terracotta pot. Plant: replaced by the app's low-poly herb (clearer). Harvest: replaced by the app's low-poly herb (clearer)."
+ },
+ "sage": {
+  "harvest": null,
+  "plant": null,
+  "upAxis": "y",
+  "notes": "Normalised: bottom-centred at origin, largest dimension 1 unit. Plant is a GENERIC potted herb (shared with parsley and coriander). Plant: replaced by the app's low-poly herb (clearer)."
+ },
  "scots-pine": {
   "harvest": "models/scots-pine-harvest.glb",
   "plant": "models/scots-pine-plant.glb",
-  "source": "Poly Pizza — \"Pine cone\" | plant: Poly Pizza — \"Pine tree\"",
+  "source": "Poly Pizza \u2014 \"Pine cone\" | plant: Poly Pizza \u2014 \"Pine tree\"",
   "author": "Poly by Google",
   "license": "CC-BY-3.0",
   "url": "https://poly.pizza/m/06dagPn-QYn | plant: https://poly.pizza/m/fCT73jIf5jN",
   "upAxis": "y",
   "notes": "Normalised: bottom-centred at origin, largest dimension 1 unit. Pine cone."
  },
+ "spinach": {
+  "harvest": null,
+  "plant": null,
+  "upAxis": "y",
+  "notes": "Normalised: bottom-centred at origin, largest dimension 1 unit. Harvest is a stand-in: a few loose salad leaves (Kay Lousberg 'Lettuce cut'). Plant is a stand-in: a low rosette of leaves (Zsky 'Plant'). Plant: replaced by the app's low-poly herb (clearer). Harvest: replaced by the app's low-poly herb (clearer)."
+ },
  "spring-onion": {
   "harvest": "models/spring-onion-harvest.glb",
   "plant": null,
-  "source": "Kenney Food Kit 2.0 — leek",
+  "source": "Kenney Food Kit 2.0 \u2014 leek",
   "author": "Kenney (kenney.nl)",
   "license": "CC0-1.0",
   "url": "https://kenney.nl/assets/food-kit",
@@ -362,7 +462,7 @@
  "strawberry": {
   "harvest": "models/strawberry-harvest.glb",
   "plant": null,
-  "source": "Kenney Food Kit 2.0 — strawberry",
+  "source": "Kenney Food Kit 2.0 \u2014 strawberry",
   "author": "Kenney (kenney.nl)",
   "license": "CC0-1.0",
   "url": "https://kenney.nl/assets/food-kit",
@@ -372,7 +472,7 @@
  "sunflower": {
   "harvest": null,
   "plant": "models/sunflower-plant.glb",
-  "source": "Poly Pizza — \"Sunflower\"",
+  "source": "Poly Pizza \u2014 \"Sunflower\"",
   "author": "Poly by Google",
   "license": "CC-BY-3.0",
   "url": "https://poly.pizza/m/ce4GXw3VYE5",
@@ -382,17 +482,23 @@
  "sweetcorn": {
   "harvest": "models/sweetcorn-harvest.glb",
   "plant": "models/sweetcorn-plant.glb",
-  "source": "Kenney Food Kit 2.0 — corn | plant: Poly Pizza — \"Corn\"",
+  "source": "Kenney Food Kit 2.0 \u2014 corn | plant: Poly Pizza \u2014 \"Corn\"",
   "author": "Kenney (kenney.nl) | plant: Quaternius",
   "license": "CC0-1.0",
   "url": "https://kenney.nl/assets/food-kit | plant: https://poly.pizza/m/IhhB7kGaAQ",
   "upAxis": "y",
   "notes": "Normalised: bottom-centred at origin, largest dimension 1 unit."
  },
+ "thyme": {
+  "harvest": null,
+  "plant": null,
+  "upAxis": "y",
+  "notes": "Normalised: bottom-centred at origin, largest dimension 1 unit. Plant is a stand-in: small woody shrub in a planter. Plant: replaced by the app's low-poly herb (clearer)."
+ },
  "tomato": {
   "harvest": "models/tomato-harvest.glb",
   "plant": null,
-  "source": "Kenney Food Kit 2.0 — tomato",
+  "source": "Kenney Food Kit 2.0 \u2014 tomato",
   "author": "Kenney (kenney.nl)",
   "license": "CC0-1.0",
   "url": "https://kenney.nl/assets/food-kit",
@@ -402,7 +508,7 @@
  "turnip": {
   "harvest": "models/turnip-harvest.glb",
   "plant": null,
-  "source": "Poly Pizza — \"Turnip\"",
+  "source": "Poly Pizza \u2014 \"Turnip\"",
   "author": "Poly by Google",
   "license": "CC-BY-3.0",
   "url": "https://poly.pizza/m/5brWxvZdGsz",
@@ -412,7 +518,7 @@
  "watermelon": {
   "harvest": "models/watermelon-harvest.glb",
   "plant": null,
-  "source": "Kenney Food Kit 2.0 — watermelon",
+  "source": "Kenney Food Kit 2.0 \u2014 watermelon",
   "author": "Kenney (kenney.nl)",
   "license": "CC0-1.0",
   "url": "https://kenney.nl/assets/food-kit",
@@ -427,172 +533,292 @@
    "url": "https://kenney.nl/assets/food-kit"
   },
   {
-   "title": "Poly Pizza — \"Acorn\"",
+   "title": "Poly Pizza \u2014 \"Acorn\"",
    "author": "Poly by Google",
    "license": "CC-BY-3.0",
    "url": "https://poly.pizza/m/cQ-FnrdHHVw"
   },
   {
-   "title": "Poly Pizza — \"Apple tree\"",
+   "title": "Poly Pizza \u2014 \"Apple tree\"",
    "author": "Poly by Google",
    "license": "CC-BY-3.0",
    "url": "https://poly.pizza/m/cpg6wP8JCyQ"
   },
   {
-   "title": "Poly Pizza — \"Asaparagus\"",
+   "title": "Poly Pizza \u2014 \"Asaparagus\"",
    "author": "Poly by Google",
    "license": "CC-BY-3.0",
    "url": "https://poly.pizza/m/0YBn5gq0OE6"
   },
   {
-   "title": "Poly Pizza — \"Beans\"",
+   "title": "Poly Pizza \u2014 \"Beans\"",
    "author": "apelab",
    "license": "CC-BY-3.0",
    "url": "https://poly.pizza/m/9GPqSJryjTo"
   },
   {
-   "title": "Poly Pizza — \"Beech tree\"",
+   "title": "Poly Pizza \u2014 \"Beech tree\"",
    "author": "Poly by Google",
    "license": "CC-BY-3.0",
    "url": "https://poly.pizza/m/8ICCdgc7CQd"
   },
   {
-   "title": "Poly Pizza — \"Birch Tree\"",
+   "title": "Poly Pizza \u2014 \"Birch Tree\"",
    "author": "Quaternius",
    "license": "CC0-1.0",
    "url": "https://poly.pizza/m/k6cozoNfLH"
   },
   {
-   "title": "Poly Pizza — \"Blueberries\"",
+   "title": "Poly Pizza \u2014 \"Blueberries\"",
    "author": "Jarlan Perez",
    "license": "CC-BY-3.0",
    "url": "https://poly.pizza/m/6i0oxEqEUVk"
   },
   {
-   "title": "Poly Pizza — \"Bush with Berries\"",
+   "title": "Poly Pizza \u2014 \"Bush with Berries\"",
    "author": "Quaternius",
    "license": "CC0-1.0",
    "url": "https://poly.pizza/m/TSbIxkDtxF"
   },
   {
-   "title": "Poly Pizza — \"Cherry tree\"",
+   "title": "Poly Pizza \u2014 \"Cherry tree\"",
    "author": "Poly by Google",
    "license": "CC-BY-3.0",
    "url": "https://poly.pizza/m/1FSDzk-LRdA"
   },
   {
-   "title": "Poly Pizza — \"Corn\"",
+   "title": "Poly Pizza \u2014 \"Corn\"",
    "author": "Quaternius",
    "license": "CC0-1.0",
    "url": "https://poly.pizza/m/IhhB7kGaAQ"
   },
   {
-   "title": "Poly Pizza — \"Cucumber\"",
+   "title": "Poly Pizza \u2014 \"Cucumber\"",
    "author": "Poly by Google",
    "license": "CC-BY-3.0",
    "url": "https://poly.pizza/m/6tIy7yd7SPa"
   },
   {
-   "title": "Poly Pizza — \"Cucumber\"",
+   "title": "Poly Pizza \u2014 \"Cucumber\"",
    "author": "Quaternius",
    "license": "CC0-1.0",
    "url": "https://poly.pizza/m/nyGEAKs590"
   },
   {
-   "title": "Poly Pizza — \"Garlic\"",
+   "title": "Poly Pizza \u2014 \"Garlic\"",
    "author": "Poly by Google",
    "license": "CC-BY-3.0",
    "url": "https://poly.pizza/m/0obkpR0BuEa"
   },
   {
-   "title": "Poly Pizza — \"Head of lettuce\"",
+   "title": "Poly Pizza \u2014 \"Head of lettuce\"",
    "author": "jeremy",
    "license": "CC-BY-3.0",
    "url": "https://poly.pizza/m/7_SB4QHJvBR"
   },
   {
-   "title": "Poly Pizza — \"Leaf\"",
+   "title": "Poly Pizza \u2014 \"Leaf\"",
    "author": "Poly by Google",
    "license": "CC-BY-3.0",
    "url": "https://poly.pizza/m/4_FetA14dDV"
   },
   {
-   "title": "Poly Pizza — \"Lettuce\"",
+   "title": "Poly Pizza \u2014 \"Lettuce\"",
    "author": "Quaternius",
    "license": "CC0-1.0",
    "url": "https://poly.pizza/m/MEmUwHUHNR"
   },
   {
-   "title": "Poly Pizza — \"Orange tree\"",
+   "title": "Poly Pizza \u2014 \"Orange tree\"",
    "author": "Poly by Google",
    "license": "CC-BY-3.0",
    "url": "https://poly.pizza/m/8zS7mfHS0i7"
   },
   {
-   "title": "Poly Pizza — \"Peapod\"",
+   "title": "Poly Pizza \u2014 \"Peapod\"",
    "author": "Poly by Google",
    "license": "CC-BY-3.0",
    "url": "https://poly.pizza/m/5NbJiEDdCuJ"
   },
   {
-   "title": "Poly Pizza — \"Pear tree\"",
+   "title": "Poly Pizza \u2014 \"Pear tree\"",
    "author": "Poly by Google",
    "license": "CC-BY-3.0",
    "url": "https://poly.pizza/m/44lGuM746Zi"
   },
   {
-   "title": "Poly Pizza — \"Peas\"",
+   "title": "Poly Pizza \u2014 \"Peas\"",
    "author": "Poly by Google",
    "license": "CC-BY-3.0",
    "url": "https://poly.pizza/m/bPyUc6_zlFi"
   },
   {
-   "title": "Poly Pizza — \"Pine cone\"",
+   "title": "Poly Pizza \u2014 \"Pine cone\"",
    "author": "Poly by Google",
    "license": "CC-BY-3.0",
    "url": "https://poly.pizza/m/06dagPn-QYn"
   },
   {
-   "title": "Poly Pizza — \"Pine tree\"",
+   "title": "Poly Pizza \u2014 \"Pine tree\"",
    "author": "Poly by Google",
    "license": "CC-BY-3.0",
    "url": "https://poly.pizza/m/fCT73jIf5jN"
   },
   {
-   "title": "Poly Pizza — \"Potato\"",
+   "title": "Poly Pizza \u2014 \"Potato\"",
    "author": "Jarlan Perez",
    "license": "CC-BY-3.0",
    "url": "https://poly.pizza/m/1RHF_eF3U0U"
   },
   {
-   "title": "Poly Pizza — \"Raspberry\"",
+   "title": "Poly Pizza \u2014 \"Raspberry\"",
    "author": "jeremy",
    "license": "CC-BY-3.0",
    "url": "https://poly.pizza/m/fnuWrFddqLb"
   },
   {
-   "title": "Poly Pizza — \"Slice of cantaloupe\"",
+   "title": "Poly Pizza \u2014 \"Slice of cantaloupe\"",
    "author": "Poly by Google",
    "license": "CC-BY-3.0",
    "url": "https://poly.pizza/m/097UT6ny1Fa"
   },
   {
-   "title": "Poly Pizza — \"Sunflower\"",
+   "title": "Poly Pizza \u2014 \"Sunflower\"",
    "author": "Poly by Google",
    "license": "CC-BY-3.0",
    "url": "https://poly.pizza/m/ce4GXw3VYE5"
   },
   {
-   "title": "Poly Pizza — \"Tree\"",
+   "title": "Poly Pizza \u2014 \"Tree\"",
    "author": "Quaternius",
    "license": "CC0-1.0",
    "url": "https://poly.pizza/m/1BkD9JnKrE"
   },
   {
-   "title": "Poly Pizza — \"Turnip\"",
+   "title": "Poly Pizza \u2014 \"Turnip\"",
    "author": "Poly by Google",
    "license": "CC-BY-3.0",
    "url": "https://poly.pizza/m/5brWxvZdGsz"
+  },
+  {
+   "title": "Poly Pizza \u2014 \"A cup of rosemary\"",
+   "author": "Mikael Ganehag Brorsson",
+   "license": "CC-BY-3.0",
+   "url": "https://poly.pizza/m/1YLqlRbgskh"
+  },
+  {
+   "title": "Poly Pizza \u2014 \"Bush\"",
+   "author": "Quaternius",
+   "license": "CC0-1.0",
+   "url": "https://poly.pizza/m/ooG6CkLyE8"
+  },
+  {
+   "title": "Poly Pizza \u2014 \"Cabbage\"",
+   "author": "jeremy",
+   "license": "CC-BY-3.0",
+   "url": "https://poly.pizza/m/dNUS4xC0D6C"
+  },
+  {
+   "title": "Poly Pizza \u2014 \"Clover\"",
+   "author": "Quaternius",
+   "license": "CC0-1.0",
+   "url": "https://poly.pizza/m/IQ9NVyVpUw"
+  },
+  {
+   "title": "Poly Pizza \u2014 \"Clover\"",
+   "author": "Quaternius",
+   "license": "CC0-1.0",
+   "url": "https://poly.pizza/m/u5SOgBFiut"
+  },
+  {
+   "title": "Poly Pizza \u2014 \"fern plant\"",
+   "author": "Geoffrey Bell",
+   "license": "CC-BY-3.0",
+   "url": "https://poly.pizza/m/fQ9cPdkwvAY"
+  },
+  {
+   "title": "Poly Pizza \u2014 \"Fern\"",
+   "author": "Danni Bittman",
+   "license": "CC-BY-3.0",
+   "url": "https://poly.pizza/m/6ttropQuVzQ"
+  },
+  {
+   "title": "Poly Pizza \u2014 \"Leaf\"",
+   "author": "jeremy",
+   "license": "CC-BY-3.0",
+   "url": "https://poly.pizza/m/ekFiuxhSR2i"
+  },
+  {
+   "title": "Poly Pizza \u2014 \"Lettuce cut\"",
+   "author": "Kay Lousberg",
+   "license": "CC0-1.0",
+   "url": "https://poly.pizza/m/9SmuOj79Tt"
+  },
+  {
+   "title": "Poly Pizza \u2014 \"Plant Small\"",
+   "author": "Kenney",
+   "license": "CC0-1.0",
+   "url": "https://poly.pizza/m/4f6vwL8vo9"
+  },
+  {
+   "title": "Poly Pizza \u2014 \"Plant\"",
+   "author": "Isa Lousberg",
+   "license": "CC0-1.0",
+   "url": "https://poly.pizza/m/wSt6PYau5u"
+  },
+  {
+   "title": "Poly Pizza \u2014 \"Plant\"",
+   "author": "Zsky",
+   "license": "CC-BY-3.0",
+   "url": "https://poly.pizza/m/26vyN8EV6Z"
+  },
+  {
+   "title": "Poly Pizza \u2014 \"Pot Plant\"",
+   "author": "Nick Slough",
+   "license": "CC-BY-3.0",
+   "url": "https://poly.pizza/m/pgRbBrjze0"
+  },
+  {
+   "title": "Poly Pizza \u2014 \"Potted plant\"",
+   "author": "scaranto",
+   "license": "CC0-1.0",
+   "url": "https://poly.pizza/m/auhzQHajHd"
+  },
+  {
+   "title": "Poly Pizza \u2014 \"Potted Plant\"",
+   "author": "CreativeTrio",
+   "license": "CC0-1.0",
+   "url": "https://poly.pizza/m/GJ3Bm5FDE4"
+  },
+  {
+   "title": "Poly Pizza \u2014 \"Shrub\"",
+   "author": "Poly by Google",
+   "license": "CC-BY-3.0",
+   "url": "https://poly.pizza/m/aMGUklRjpyo"
+  },
+  {
+   "title": "Poly Pizza \u2014 \"Small Indoor Grass Plant\"",
+   "author": "Jarlan Perez",
+   "license": "CC-BY-3.0",
+   "url": "https://poly.pizza/m/2B_cWu5_G12"
+  },
+  {
+   "title": "Poly Pizza \u2014 \"Small Plant\"",
+   "author": "Quaternius",
+   "license": "CC0-1.0",
+   "url": "https://poly.pizza/m/MZdeiQApSb"
+  },
+  {
+   "title": "Poly Pizza \u2014 \"Tuft of grass\"",
+   "author": "Poly by Google",
+   "license": "CC-BY-3.0",
+   "url": "https://poly.pizza/m/3tyh15Fbmsx"
+  },
+  {
+   "title": "Poly Pizza \u2014 \"ZZ Leaf\"",
+   "author": "Isa Lousberg",
+   "license": "CC0-1.0",
+   "url": "https://poly.pizza/m/U9skL7QJtJ"
   }
  ]
 }

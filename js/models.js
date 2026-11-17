@@ -4,12 +4,24 @@
 import * as THREE from 'three';
 import { ROOT } from './core.js?v=5';
 
-let manifest, loader;
+let manifest, loader, herbs;
+
+// herbs and leafy greens with no downloaded model: built in the same low-poly style (js/herbs3d.js)
+async function lowPolyHerb(id, kind, size) {
+  herbs ||= await import('./herbs3d.js?v=6');
+  if (!herbs.isHerb(id)) return null;
+  const g = kind === 'plant' ? herbs.buildHerbPlant(id) : herbs.buildHerbHarvest(id);
+  const box = new THREE.Box3().setFromObject(g), s = box.getSize(new THREE.Vector3()), c = box.getCenter(new THREE.Vector3());
+  const wrap = new THREE.Group(); g.position.set(-c.x, -box.min.y, -c.z); wrap.add(g);
+  if (size) wrap.scale.setScalar(size / Math.max(s.y, s.x, s.z, 1e-6));
+  wrap.userData.model = { id, kind, credit: null };
+  return wrap;
+}
 const cache = new Map();
 
 export async function modelManifest() {
   if (manifest === undefined) {
-    manifest = await fetch(new URL('models/manifest.json?v=5', ROOT)).then((r) => (r.ok ? r.json() : null)).catch(() => null);
+    manifest = await fetch(new URL('models/manifest.json?v=6', ROOT)).then((r) => (r.ok ? r.json() : null)).catch(() => null);
   }
   return manifest;
 }
@@ -19,7 +31,7 @@ export async function hasModel(id, kind) { const m = await modelManifest(); retu
 export async function loadModel(id, kind = 'harvest', { size } = {}) {
   const m = await modelManifest();
   const path = m?.[id]?.[kind];
-  if (!path) return null;
+  if (!path) return lowPolyHerb(id, kind, size);
   if (!cache.has(path)) {
     cache.set(path, (async () => {
       if (!loader) { const { GLTFLoader } = await import('three/addons/loaders/GLTFLoader.js'); loader = new GLTFLoader(); }

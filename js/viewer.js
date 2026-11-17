@@ -30,7 +30,14 @@ export function createViewer(host, { controls = false, spin = true, background =
   scene.add(sun, sun.target);
   const fill = new THREE.DirectionalLight('#cfe3ff', .7); fill.position.set(-3, 2, -2); scene.add(fill);
 
-  const stage = new THREE.Group(); scene.add(stage);
+  // pivot carries the intro spin and spring pops; stage carries the idle spin and the plant itself
+  const pivot = new THREE.Group(); scene.add(pivot);
+  const stage = new THREE.Group(); pivot.add(stage);
+  const EASE = (x) => { // cubic-bezier(.22,1,.36,1), solved for y at time x
+    let t = x; for (let i = 0; i < 6; i++) { const bx = 3 * .22 * t * (1 - t) ** 2 + 3 * .36 * t * t * (1 - t) + t ** 3 - x; const d = 3 * .22 * (1 - t) ** 2 + 6 * (.36 - .22) * t * (1 - t) + 3 * (1 - .36) * t * t; if (Math.abs(d) < 1e-6) break; t = Math.min(1, Math.max(0, t - bx / d)); }
+    return 3 * 1 * t * (1 - t) ** 2 + 3 * 1 * t * t * (1 - t) + t ** 3;
+  };
+  let intro = null, spring = null;
   let plant = null, base = null, extra = null;
   let orbit = null;
   if (controls) {
@@ -61,7 +68,10 @@ export function createViewer(host, { controls = false, spin = true, background =
   // Frame the camera on whatever is in the stage
   let target = new THREE.Vector3(), dist = 1;
   function frame(obj, { pad = 1.15 } = {}) {
+    // measure without the pivot's animation so a frame taken mid-pop is still right
+    const ps = pivot.scale.x, pr = pivot.rotation.y; pivot.scale.setScalar(1); pivot.rotation.y = 0; pivot.updateMatrixWorld(true);
     const box = new THREE.Box3().setFromObject(obj);
+    pivot.scale.setScalar(ps); pivot.rotation.y = pr; pivot.updateMatrixWorld(true);
     const size = box.getSize(new THREE.Vector3()), centre = box.getCenter(new THREE.Vector3());
     const r = Math.max(size.y * .55, Math.hypot(size.x, size.z) * .5 / Math.min(1, Math.max(.6, cam.aspect)));
     dist = (r * pad) / Math.tan(THREE.MathUtils.degToRad(fov / 2));
@@ -99,14 +109,34 @@ export function createViewer(host, { controls = false, spin = true, background =
     const dt = Math.min(.05, (now - last) / 1000); last = now;
     const spinning = spin && !reduce.matches && !userTouched;
     if (spinning) stage.rotation.y += dt * .35;
+    let animating = false;
+    if (intro) { // spin in: a turn and a gentle scale-up on one ease-out curve
+      const k = Math.min(1, (now - intro) / 1100), e = EASE(k);
+      pivot.rotation.y = (1 - e) * -2.2; pivot.scale.setScalar(.78 + .22 * e);
+      if (k >= 1) { intro = null; pivot.rotation.y = 0; pivot.scale.setScalar(1); } else animating = true;
+    }
+    if (spring) { // a soft spring on the scale (stiffness 220, damping 16: one small overshoot)
+      const a = -220 * (spring.x - 1) - 16 * spring.v; spring.v += a * dt; spring.x += spring.v * dt;
+      pivot.scale.setScalar(spring.x);
+      if (Math.abs(spring.x - 1) < .002 && Math.abs(spring.v) < .01) { spring = null; pivot.scale.setScalar(1); } else animating = true;
+    }
     if (orbit) orbit.update();
-    if (visible) renderer.render(scene, cam);
-    if (visible && (spinning || now < idleUntil || (api.onFrame && !reduce.matches))) { api.onFrame?.(dt); raf = requestAnimationFrame(loop); }
+    if (visible) { renderer.render(scene, cam); api.onRender?.(); }
+    if (visible && (spinning || animating || now < idleUntil || (api.onFrame && !reduce.matches))) { api.onFrame?.(dt); raf = requestAnimationFrame(loop); }
   }
 
   const api = {
     scene, stage, camera: cam, renderer, setPlant, frame: (o) => frame(stage, o), kick, onFrame: null,
     setSpin(v) { spin = v; kick(); },
+    // the model turns in when a page opens
+    intro() { if (reduce.matches) return; intro = performance.now(); spring = null; pivot.rotation.y = -2.2; pivot.scale.setScalar(.78); kick(); },
+    // a soft spring from a scale back to 1 (growth steps, Plant / Harvest swaps)
+    pop(from = .88) { if (reduce.matches || intro) return; spring = { x: from, v: 0 }; pivot.scale.setScalar(from); kick(); },
+    // the stage's box with no animation applied, in world space
+    box() { const ps = pivot.scale.x, pr = pivot.rotation.y, sr = stage.rotation.y; pivot.scale.setScalar(1); pivot.rotation.y = 0; stage.rotation.y = 0; pivot.updateMatrixWorld(true); const b = new THREE.Box3().setFromObject(stage); pivot.scale.setScalar(ps); pivot.rotation.y = pr; stage.rotation.y = sr; pivot.updateMatrixWorld(true); return b; },
+    // a world point to CSS pixels inside the host
+    toScreen(x, y, z) { const v = new THREE.Vector3(x, y, z).project(cam); return { x: (v.x + 1) / 2 * W, y: (1 - v.y) / 2 * H, behind: v.z > 1 }; },
+    get spinning() { return spin && !reduce.matches && !userTouched; },
     dispose() { cancelAnimationFrame(raf); io.disconnect(); ro.disconnect(); if (plant) disposeTree(plant); orbit?.dispose(); pmrem.dispose(); renderer.dispose(); renderer.domElement.remove(); },
   };
   resize();

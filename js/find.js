@@ -10,14 +10,14 @@ const sowMonths = (p) => { if (isTree(p) && p.tree?.regions) return treeMonths(p
 const changed = () => dispatchEvent(new Event('zm:garden'));
 
 export async function findView(main, q0 = '') {
-  const D = await data();
+  const [D, real] = await Promise.all([data(), import('./photos.js?v=9').then((m) => m.photoThumbs()).catch(() => ({}))]);
   const N = D.plants.length, now = new Date().getMonth() + 1;
   const nTrees = D.plants.filter(isTree).length;
   let group = q0 === 'trees' ? 'tree' : 'all', tsub = 'all';
   if (q0 === 'trees') q0 = '';
   main.innerHTML = `
   <div class="page">
-    <header class="page-head"><h1>Find plants</h1><p class="muted">${N} plants, from windowsill herbs to trees. Tap one to see it fully grown and how far the shop one travels.</p></header>
+    <header class="page-head"><h1>Find plants</h1><p class="muted">${N} plants to grow. Tap one, or hold a picture to see it in 3D.</p></header>
     <div class="find-tools">
       <label class="search"><span class="vh">Search plants</span>
         <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="M16 16l4 4"/></svg>
@@ -28,7 +28,7 @@ export async function findView(main, q0 = '') {
     </div>
     <section class="tree-band" id="tree-band" aria-labelledby="tb-t"${group === 'all' && !q0 ? '' : ' hidden'}>
       <img src="${thumb('oak')}" alt="" width="88" height="88">
-      <div><h2 id="tb-t">Plant a tree</h2><p class="muted">${nTrees} trees with a planting guide: when to plant, how much space, and care for the first three years.</p></div>
+      <div><h2 id="tb-t">Plant a tree</h2><p class="muted">${nTrees} trees, each with a planting guide.</p></div>
       <button class="btn btn-sm" data-g="tree" data-band>See the trees</button>
     </section>
     <p class="vh" role="status" id="count"></p>
@@ -63,14 +63,26 @@ export async function findView(main, q0 = '') {
     }
     const mine = new Set(state.garden.map((e) => e.id));
     if (group === 'tree') { const order = bestTrees().map((p) => p.id); hits.sort((a, b) => order.indexOf(a.id) - order.indexOf(b.id)); }
-    list.innerHTML = hits.map((p) => `
-      <a class="pk" href="#/plant/${p.id}">
-        <div class="pk-art"><img src="${thumb(p.id)}" alt="" width="200" height="200" loading="lazy"></div>
+    list.innerHTML = hits.map((p, i) => `
+      <a class="pk pp-pk${real[p.id] ? ' has-photo' : ''}" href="#/plant/${p.id}" style="--i:${Math.min(i, 12)}">
+        <div class="pk-art"><img class="pp-3d" src="${thumb(p.id)}" alt="" width="200" height="200" loading="lazy" decoding="async">${real[p.id] ? `<img class="pp-real" src="${real[p.id]}" alt="" width="200" height="200" loading="lazy" decoding="async"><span class="pp-badge" aria-hidden="true">3D</span>` : ''}</div>
         ${mine.has(p.id) ? '<span class="pill ok">Growing</span>' : p.grow?.difficulty === 'easy' ? '<span class="pill">Easy</span>' : ''}
-        <div class="pk-body"><b>${esc(p.name)}</b><span>${daysText(p)}</span></div>
+        <div class="pk-body"><b>${esc(p.name)}</b><span class="pp-mini"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 7.5V12l3 2"/></svg>${daysText(p)}</span></div>
       </a>`).join('');
   }
   $('#q').addEventListener('input', render);
+  // press and hold a card: the real photo turns into the 3D model; let go to flip back (a hold never opens the page)
+  let holdT = 0, held = null;
+  const unhold = () => { clearTimeout(holdT); if (held) { const h = held; setTimeout(() => h.classList.remove('show3d'), 60); } };
+  list.addEventListener('pointerdown', (e) => {
+    const a = e.target.closest('.pp-pk.has-photo'); if (!a || e.button > 0) return;
+    held = null; clearTimeout(holdT);
+    holdT = setTimeout(() => { held = a; a.classList.add('show3d'); navigator.vibrate?.(8); }, 320);
+  });
+  ['pointerup', 'pointercancel'].forEach((t) => list.addEventListener(t, unhold));
+  list.addEventListener('pointerout', (e) => { const a = e.target.closest('.pp-pk'); if (a && !a.contains(e.relatedTarget)) unhold(); });
+  list.addEventListener('click', (e) => { if (held && e.target.closest('.pp-pk') === held) { e.preventDefault(); held = null; } });
+  list.addEventListener('contextmenu', (e) => { if (e.target.closest('.pp-pk')) e.preventDefault(); });
   $$('[data-g]').forEach((b) => b.addEventListener('click', () => {
     group = b.dataset.g;
     $$('.chips [data-g]').forEach((x) => x.setAttribute('aria-pressed', x.dataset.g === group));
@@ -83,6 +95,7 @@ export async function findView(main, q0 = '') {
   render();
 }
 
+const KIND_WORD = { plant: 'Growing', harvest: 'Harvest', leaf: 'Leaf', flower: 'Flower', tree: 'Tree', fruit: 'Fruit' };
 const STAGES = [[.04, 'Seed'], [.15, 'Sprout'], [.45, 'Young plant'], [.66, 'Flowering'], [1, 'Fully grown']];
 const TREE_STAGES = ['Seed', 'Seedling', 'Sapling', 'Young tree', 'Fully grown'];
 const range = (a, unit = '') => (Array.isArray(a) ? (a[0] === a[1] ? `${fmt(a[0], a[0] % 1 ? 1 : 0)}` : `${fmt(a[0], a[0] % 1 ? 1 : 0)}–${fmt(a[1], a[1] % 1 ? 1 : 0)}`) + unit : '');
@@ -114,6 +127,55 @@ function treeGuide(p, D) {
   return h;
 }
 
+// ---------- small pictures instead of paragraphs ----------
+const I = {
+  sun: '<circle cx="12" cy="12" r="4"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M5.6 18.4L7 17M17 7l1.4-1.4"/>',
+  shade: '<circle cx="9" cy="10" r="3.5"/><path d="M9 3v1.5M3 10h1.5M4.8 5.8l1 1M13.2 5.8l-1 1"/><path d="M10 19h8a3 3 0 0 0 0-6 4.5 4.5 0 0 0-8.6 1.4A2.4 2.4 0 0 0 10 19z"/>',
+  drop: '<path d="M12 3.5c3 4 6 7.3 6 10.5a6 6 0 0 1-12 0c0-3.2 3-6.5 6-10.5z"/>',
+  clock: '<circle cx="12" cy="12" r="8"/><path d="M12 7.5V12l3 2"/>',
+  pot: '<path d="M5 9h14l-1.6 10.2a2 2 0 0 1-2 1.8H8.6a2 2 0 0 1-2-1.8z"/><path d="M4 9h16M12 9V5m0 0c0-1.7 1.3-3 3-3 0 1.7-1.3 3-3 3zm0 0c0-1.7-1.3-3-3-3 0 1.7 1.3 3 3 3z"/>',
+  ground: '<path d="M3 17h18M6 20h12"/><path d="M12 17V9m0 0c0-2.5 2-4.5 4.5-4.5 0 2.5-2 4.5-4.5 4.5zm0 2c0-2-1.6-3.6-3.6-3.6 0 2 1.6 3.6 3.6 3.6z"/>',
+  flame: '<path d="M12 21a6 6 0 0 0 6-6c0-4-3-6-4-9-1 2-2 3-3.5 3.5C9 8 8.5 6.5 9 5c-2.5 2-3 5-3 7 0 5 2.6 9 6 9z"/>',
+  star: '<path d="M12 3.5l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.8l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z"/>',
+  ruler: '<path d="M8 3v18M8 3h4M8 7h3M8 11h4M8 15h3M8 19h4"/><path d="M15 6l2.5-2.5L20 6M17.5 3.5v17M15 18l2.5 2.5L20 18"/>',
+  space: '<path d="M3 12h18M6 9l-3 3 3 3M18 9l3 3-3 3"/><path d="M12 5v3M12 16v3"/>',
+  apple: '<path d="M12 7c-1.5-1.3-6-1.8-6.5 3.3C5 16 8.5 20.5 12 19c3.5 1.5 7-3 6.5-8.7C18 5.2 13.5 5.7 12 7z"/><path d="M12 7c0-2 1-3.5 3-4"/>',
+  leaf: '<path d="M5 19C5 10 10 5 20 4c0 9-5 15-15 15z"/><path d="M5 19l8-8"/>',
+  co2: '<path d="M7 18h10a4 4 0 0 0 .6-8 6 6 0 0 0-11.3 1.6A3.2 3.2 0 0 0 7 18z"/>',
+  lorry: '<path d="M2 7h11v9H2zM13 10h4l3 3v3h-7"/><circle cx="6" cy="17.5" r="1.8"/><circle cx="16.5" cy="17.5" r="1.8"/>',
+  ship: '<path d="M3 15l2 4h14l2-4z"/><path d="M6 15V10h12v5M9 10V6h5v4"/><path d="M2 21c2 0 2-1 4-1s2 1 4 1 2-1 4-1 2 1 4 1 2-1 4-1"/>',
+  plane: '<path d="M21 13.5L13 11V5.5a1.5 1.5 0 0 0-3 0V11l-8 2.5V15l8-1.5V18l-2.5 1.5V21l4-1 4 1v-1.5L13 18v-4.5l8 1.5z"/>',
+  house: '<path d="M4 11l8-7 8 7v9H4z"/><path d="M10 20v-5h4v5"/>',
+  farm: '<path d="M3 20h18M5 20v-8l5-4 5 4v8"/><path d="M15 12h4v8M8 20v-4h4v4"/>',
+  seed: '<path d="M12 20c-4 0-6-3-6-6.5S9 6 12 4c3 2 6 6 6 9.5S16 20 12 20z"/><path d="M12 8v9"/>',
+  camera: '<path d="M4 8h3l2-2.5h6L17 8h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>',
+  cube: '<path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M4 7.5l8 4.5 8-4.5M12 12v9"/>',
+  close: '<path d="M6 6l12 12M18 6L6 18"/>',
+  prev: '<path d="M15 6l-6 6 6 6"/>', next: '<path d="M9 6l6 6-6 6"/>',
+  info: '<circle cx="12" cy="12" r="8.5"/><path d="M12 11v5M12 8h.01"/>',
+};
+export const icon = (k, cls = '') => `<svg class="ic ${cls}" viewBox="0 0 24 24" aria-hidden="true">${I[k] || ''}</svg>`;
+const chip = (ic, value, label, tone = '') => (value ? `<li class="pp-chip ${tone}">${ic}<b>${value}</b><span>${label}</span></li>` : '');
+const drops = (n) => `<span class="pp-drops" aria-hidden="true">${[1, 2, 3].map((i) => icon('drop', i <= n ? 'on' : '')).join('')}</span>`;
+// the part of each plant you eat, for the hotspots and their one-line cards
+const ROOTS = new Set(['potato', 'carrot', 'beetroot', 'radish', 'parsnip', 'turnip', 'sweet-potato']);
+const BULBS = new Set(['onion', 'garlic']);
+const LEAFY = new Set(['lettuce', 'kale', 'spinach', 'swiss-chard', 'rocket', 'pak-choi', 'cabbage', 'celery', 'leek', 'spring-onion', 'rhubarb', 'brussels-sprouts']);
+function hotspotsFor(p, photos) {
+  const by = (k) => photos.find((x) => x.kind === k);
+  const tree = p.group === 'tree', herb = p.group === 'herb', n = p.name.toLowerCase();
+  const out = [];
+  if (ROOTS.has(p.id) || BULBS.has(p.id)) out.push({ k: 'roots', label: BULBS.has(p.id) ? 'Bulb' : 'Roots', at: [0, .02, .12], line: `The ${n} grows under the soil. That’s the bit you eat.`, photo: by('harvest') });
+  if (LEAFY.has(p.id) || herb) out.push({ k: 'leaf', label: 'Leaf', at: [-.32, .5, .2], line: herb ? 'Pick a few leaves at a time and it grows more.' : 'You eat the leaves. Pick the outer ones first.', photo: by('harvest') || by('leaf') || by('plant') });
+  else out.push({ k: 'leaf', label: 'Leaf', at: [-.32, .5, .2], line: tree ? 'Leaves take CO2 from the air and turn sunlight into food.' : 'Leaves catch sunlight to feed the plant.', photo: by('leaf') || by('plant') });
+  if (!ROOTS.has(p.id) && !BULBS.has(p.id) && !LEAFY.has(p.id) && !herb && p.id !== 'sunflower' && (!tree || p.tree?.years_to_fruit || by('harvest'))) out.push({ k: 'fruit', label: tree ? (TREE_FRUIT[p.id] || 'Fruit') : p.group === 'fruit' ? 'Fruit' : 'Food', at: [.3, .62, .2], line: tree ? (TREE_FRUIT[p.id] ? `${TREE_FRUIT[p.id]} grow here. Birds and animals love them too.` : 'Fruit grows here when the tree is old enough.') : `This is the ${n} you pick. Pick it when it’s ripe.`, photo: by('harvest') });
+  if (by('flower') || p.id === 'sunflower') out.push({ k: 'flower', label: 'Flower', at: [.06, .92, .1], line: 'Bees visit the flowers, and then the fruit or seeds grow.', photo: by('flower') || by('plant') });
+  return out;
+}
+const TREE_FRUIT = { oak: 'Acorns', beech: 'Nuts', hazel: 'Nuts', rowan: 'Berries', hawthorn: 'Berries', holly: 'Berries', 'scots-pine': 'Cones', alder: 'Cones', birch: 'Seeds', 'red-maple': 'Seeds', 'golden-wattle': 'Seeds', schima: 'Seeds' };
+const MODE_ICON = { road: 'lorry', 'road+ferry': 'lorry', sea: 'ship', 'sea+road': 'ship', air: 'plane', 'rail+road': 'lorry' };
+const MODE_WORD = { road: 'by lorry', 'road+ferry': 'by lorry and ferry', sea: 'by ship', 'sea+road': 'by ship and lorry', air: 'by plane', 'rail+road': 'by train and lorry' };
+
 export async function plantView(main, id) {
   const D = await data();
   const p = plantById(id);
@@ -130,50 +192,91 @@ export async function plantView(main, id) {
   const inGarden = () => state.garden.some((e) => e.id === id);
   const fact = (k, v) => (v == null || v === '' ? '' : `<div><dt>${k}</dt><dd>${v}</dd></div>`);
   const hasRegion = Object.keys(p.origins || {}).length > 0 || (isTree && !!p.tree?.regions);
+  const photos = await import('./photos.js?v=9').then((m) => m.photosFor(id)).catch(() => []);
+  const t = p.tree || {};
+
+  // the chips: one picture and a few words each
+  const sunW = g.sun === 'full' ? 'Full sun' : g.sun === 'partial' ? 'Sun or shade' : g.sun === 'shade' ? 'Shade' : '';
+  const waterN = ({ low: 1, med: 2, medium: 2, high: 3 })[g.water] || 0;
+  let chips = '';
+  if (isTree) {
+    chips += chip(icon('ruler'), t.size?.height_m ? `${range(t.size.height_m)} m` : t.height_m ? `${esc(String(t.height_m))} m` : '', 'tall when grown');
+    chips += chip(icon('space'), t.spacing_m ? `${range(t.spacing_m)} m` : '', 'space to leave');
+    chips += chip(icon('apple'), t.years_to_fruit ? `${range(t.years_to_fruit)} yrs` : '', 'to first fruit', 'sun');
+    const c = treeCO2(p);
+    chips += chip(icon('co2'), c ? `${c[0] === c[1] ? fmt(c[0]) : `${fmt(c[0])}–${fmt(c[1])}`} kg` : '', 'CO2 a year, grown', 'green');
+    chips += chip(icon('pot'), t.pot_ok ? 'Pot OK' : '', 'on a small rootstock');
+  } else {
+    chips += chip(icon(g.sun === 'full' ? 'sun' : 'shade'), sunW, 'light', 'sun');
+    chips += chip(drops(waterN), ({ 1: 'A little', 2: 'Regular', 3: 'Lots' })[waterN] || '', 'water', 'water');
+    chips += chip(icon('clock'), g.days_to_harvest ? `${g.days_to_harvest[0]}–${g.days_to_harvest[1]}` : '', 'days to harvest');
+    chips += chip(icon(g.container_ok ? 'pot' : 'ground'), g.container_ok == null ? '' : g.container_ok ? (g.min_pot_l ? `${fmt(g.min_pot_l)} L pot` : 'Pot OK') : 'In the ground', g.container_ok ? (g.min_pot_l ? 'or bigger' : 'grows in one') : 'better there');
+    chips += chip(icon('flame'), p.kcal_per_100g != null ? `${fmt(p.kcal_per_100g)} kcal` : '', 'in 100 g');
+    chips += chip(icon('star'), g.difficulty ? esc(g.difficulty[0].toUpperCase() + g.difficulty.slice(1)) : '', 'to grow', 'green');
+  }
+  const line = p.kid_fact || (isTree ? treeLine(p) : '');
 
   main.innerHTML = `
-  <div class="page">
+  <div class="page pp">
     <div class="detail">
-      <div class="stage-card" id="stage-box">
-        <div class="stage3d" id="plant-stage"></div>
-        <div class="stage-top">
-          <a class="back" href="#/find" aria-label="Back to all plants"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>Plants</a>
-          <div class="seg" role="group" aria-label="What to show"><button aria-pressed="true" data-mode="plant">Plant</button><button aria-pressed="false" data-mode="harvest" id="harvest-btn">Harvest</button></div>
+      <div class="pp-left">
+        <div class="stage-card pp-stage" id="stage-box">
+          ${photos[0] ? `<img class="pp-backdrop" src="${esc(photos[0].src)}" alt="" aria-hidden="true">` : ''}
+          <div class="stage3d pp-3d" id="plant-stage"></div>
+          <div class="pp-hots" id="hots"></div>
+          ${photos[0] ? `<figure class="pp-face" id="face" aria-hidden="true"><img src="${esc(photos[0].src)}" alt="A real ${esc(p.name.toLowerCase())} ${isTree ? 'tree' : 'plant'}"><figcaption>${esc(photos[0].author || '')}, ${esc(photos[0].license)}</figcaption></figure>` : ''}
+          <div class="stage-top">
+            <a class="back" href="#/find" aria-label="Back to all plants"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>Plants</a>
+            <div class="seg pp-seg" role="group" aria-label="What to show"><span class="pp-pill" aria-hidden="true"></span><button aria-pressed="true" data-mode="plant">Plant</button><button aria-pressed="false" data-mode="harvest" id="harvest-btn">Harvest</button></div>
+          </div>
+          ${photos[0] ? `<button class="pp-flip" id="flip" aria-pressed="false"><span class="pp-flip-in">${icon('camera', 'a')}${icon('cube', 'b')}</span><span class="pp-flip-t">Real photo</span></button>` : ''}
+          <div class="pp-pop" id="pop" role="dialog" aria-modal="false" aria-labelledby="pop-t" hidden></div>
+          <span class="model-credit" id="credit" hidden></span>
+          <div class="stage-bottom" id="grow-ui">
+            <label for="stage"><span class="pp-gl">${icon('seed')}Growth</span> <span id="stage-name">Fully grown</span></label>
+            <input id="stage" type="range" min="0" max="4" step="1" value="4" aria-valuetext="Fully grown"${isTree ? ' aria-label="Growth over the years"' : ''}>
+          </div>
+          <div class="stage-bottom" id="harvest-ui" hidden><p><b id="h-label"></b> <span class="muted" id="h-size"></span></p></div>
         </div>
-        <span class="model-credit" id="credit" hidden></span>
-        <div class="stage-bottom" id="grow-ui">
-          <label for="stage">Growth <span id="stage-name">Fully grown</span></label>
-          <input id="stage" type="range" min="0" max="4" step="1" value="4" aria-valuetext="Fully grown"${isTree ? ' aria-label="Growth over the years"' : ''}>
-        </div>
-        <div class="stage-bottom" id="harvest-ui" hidden><p><b id="h-label"></b> <span class="muted" id="h-size"></span></p></div>
+        ${photos.length ? `<div class="pp-strip" id="strip" aria-label="Real photos">${photos.map((ph, i) => `<button class="pp-shot" data-i="${i}" aria-label="Open photo ${i + 1} of ${photos.length}: ${esc(ph.title)}"><img src="${esc(ph.src)}" alt="" width="160" height="120" loading="${i ? 'lazy' : 'eager'}" decoding="async"><span>${esc(KIND_WORD[ph.kind] || 'Photo')}</span></button>`).join('')}</div>` : ''}
       </div>
-      <div style="display:grid;gap:16px">
-        <div>
+      <div class="pp-info">
+        <header class="pp-head">
           <h1>${esc(p.name)}</h1>
           <p class="sci">${esc(g.scientific || '')}</p>
-          ${p.kid_fact ? `<p class="kid">${esc(p.kid_fact)}</p>` : ''}
-          <div class="acts">
-            <button class="btn" id="grow">${inGarden() ? 'Open in my garden' : isTree ? 'Plant this tree' : 'Grow this'}</button>
-            ${hasRegion ? `<label class="select"><span class="vh">Where you live</span><select id="region">${Object.entries(D.regions).map(([k, r]) => `<option value="${k}"${k === state.region ? ' selected' : ''}>${esc(r.name)}</option>`).join('')}</select></label>` : ''}
-          </div>
+          ${line ? `<p class="kid">${esc(line)}</p>` : ''}
+        </header>
+        <ul class="pp-chips" aria-label="Growing at a glance">${chips}</ul>
+        <div class="acts">
+          <button class="btn" id="grow">${inGarden() ? 'Open in my garden' : isTree ? 'Plant this tree' : 'Grow this'}</button>
+          ${hasRegion ? `<label class="select"><span class="vh">Where you live</span><select id="region">${Object.entries(D.regions).map(([k, r]) => `<option value="${k}"${k === state.region ? ' selected' : ''}>${esc(r.name)}</option>`).join('')}</select></label>` : ''}
         </div>
-        ${isTree && p.tree?.regions ? '<div id="guide" style="display:grid;gap:16px"></div>' : ''}
-        <div class="stats" id="stats"></div>
-        ${isTree && p.tree?.regions ? '' : sow.length ? `<section class="card"><div class="card-head"><h2>${g.sow_months_north || south ? 'When to sow' : 'When to plant'}</h2><span class="muted small">${south ? 'Southern' : 'Northern'} hemisphere</span></div>
-          <div class="months" role="img" aria-label="Sowing months: ${sow.map((m) => MONTHS[m - 1]).join(', ')}">${MONTHS.map((m, i) => `<i class="${sow.includes(i + 1) ? 'on' : ''}${i + 1 === now ? ' now' : ''}" aria-hidden="true">${m[0]}</i>`).join('')}</div></section>` : ''}
-        <section class="card"><h2 style="margin-bottom:10px">Growing it</h2><dl class="facts">
-          ${fact('Time to harvest', g.days_to_harvest ? `${g.days_to_harvest[0]}–${g.days_to_harvest[1]} days` : g.days_basis ? esc(g.days_basis) : isTree ? 'Years' : null)}
-          ${fact('Sun', g.sun ? esc(g.sun === 'full' ? 'Full sun' : g.sun === 'partial' ? 'Some shade is fine' : g.sun) : null)}
-          ${fact('Water', g.water ? esc(({ low: 'A little', med: 'Regular', medium: 'Regular', high: 'Lots' })[g.water] || g.water) : null)}
-          ${fact('In a pot', g.container_ok == null ? null : g.container_ok ? (g.min_pot_l ? `Yes, ${fmt(g.min_pot_l)} litres or more` : 'Yes') : 'Better in the ground')}
-          ${fact('Grows to', p.tree?.size ? null : g.height_cm ? `${fmt(g.height_cm[0])}–${fmt(g.height_cm[1])} cm` : p.tree?.height_m ? `${esc(String(p.tree.height_m))} m` : null)}
-          ${fact('How easy', g.difficulty ? esc(g.difficulty[0].toUpperCase() + g.difficulty.slice(1)) : null)}
-        </dl></section>
-        ${g.tips?.length ? `<section class="card"><h2 style="margin-bottom:10px">Tips</h2><ul class="tips">${g.tips.map((t) => `<li>${esc(t)}</li>`).join('')}</ul></section>` : ''}
-        <section class="card"><details class="srcs"><summary>Sources (${srcs.size})</summary><ol>${[...srcs.values()].map((s) => `<li><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.title)}</a>, ${esc(s.publisher || '')}${s.quote ? `. <q>${esc(s.quote)}</q>` : ''}</li>`).join('')}</ol></details></section>
+        <div id="route"></div>
+        ${sow.length ? `<section class="card pp-sow" aria-labelledby="sow-t"><div class="card-head"><h2 id="sow-t">${icon('seed')} ${isTree ? 'When to plant' : g.sow_months_north || south ? 'When to sow' : 'When to plant'}</h2><span class="muted small">${south ? 'South' : 'North'}</span></div>
+          <div class="months" role="img" aria-label="${isTree ? 'Plant' : 'Sow'} in: ${sow.map((m) => MONTH_NAMES[m - 1]).join(', ')}">${MONTHS.map((m, i) => `<i class="${sow.includes(i + 1) ? 'on' : ''}${i + 1 === now ? ' now' : ''}" style="--i:${i}" aria-hidden="true">${m[0]}</i>`).join('')}</div>
+          ${sow.includes(now) ? `<p class="pp-now">${icon('seed')} Good time to ${isTree ? 'plant' : 'sow'} now</p>` : ''}</section>` : ''}
+        <details class="card pp-more">
+          <summary>${icon('info')} More about ${isTree ? 'this tree' : 'growing it'}<span class="muted small">Details and sources</span></summary>
+          <div class="pp-more-in">
+            ${isTree && p.tree?.regions ? '<div id="guide" class="pp-guide"></div>' : `<dl class="facts">
+              ${fact('Time to harvest', g.days_to_harvest ? `${g.days_to_harvest[0]}–${g.days_to_harvest[1]} days${g.days_basis ? ` <span class="muted small">${esc(g.days_basis)}</span>` : ''}` : g.days_basis ? esc(g.days_basis) : isTree ? 'Years' : null)}
+              ${fact('Grows to', g.height_cm ? `${fmt(g.height_cm[0])}–${fmt(g.height_cm[1])} cm` : p.tree?.height_m ? `${esc(String(p.tree.height_m))} m` : null)}
+              ${fact('Pot size', g.min_pot_note ? esc(g.min_pot_note) : null)}
+            </dl>`}
+            <div class="stats" id="stats"></div>
+            ${g.tips?.length ? `<h3>Tips</h3><ul class="tips">${g.tips.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>` : ''}
+            <details class="srcs"><summary>Sources (${srcs.size})</summary><ol>${[...srcs.values()].map((s) => `<li><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.title)}</a>, ${esc(s.publisher || '')}${s.quote ? `. <q>${esc(s.quote)}</q>` : ''}</li>`).join('')}</ol></details>
+            ${photos.length ? `<details class="srcs"><summary>Photo credits (${photos.length})</summary><ol>${photos.map((ph) => `<li><a href="${esc(ph.url)}" target="_blank" rel="noopener">${esc(ph.title)}</a> by ${esc(ph.author || 'unknown')}, ${ph.licenseUrl ? `<a href="${esc(ph.licenseUrl)}" target="_blank" rel="noopener">${esc(ph.license)}</a>` : esc(ph.license)}</li>`).join('')}</ol></details>` : ''}
+          </div>
+        </details>
         ${inGarden() ? '<p><button class="btn btn-sm btn-danger" id="remove">Remove from my garden</button></p>' : ''}
       </div>
     </div>
+    ${photos.length ? `<dialog class="pp-lb" id="lb" aria-label="Photos of ${esc(p.name)}">
+      <div class="pp-lb-track" id="lb-track">${photos.map((ph, i) => `<figure class="pp-lb-slide" data-i="${i}"><img src="${esc(ph.src)}" alt="${esc(ph.title)}" loading="lazy" decoding="async"><figcaption><b>${esc(ph.title)}</b><span>${esc(ph.author || 'unknown')} · <a href="${esc(ph.url)}" target="_blank" rel="noopener">${esc(ph.license)}, source</a></span></figcaption></figure>`).join('')}</div>
+      <button class="pp-lb-btn pp-lb-x" id="lb-x" aria-label="Close">${icon('close')}</button>
+      ${photos.length > 1 ? `<button class="pp-lb-btn pp-lb-prev" id="lb-prev" aria-label="Previous photo">${icon('prev')}</button><button class="pp-lb-btn pp-lb-next" id="lb-next" aria-label="Next photo">${icon('next')}</button>` : ''}
+    </dialog>` : ''}
   </div>`;
 
   const [{ createViewer }, M] = await Promise.all([import('./viewer.js?v=9'), import('./models.js?v=9').catch(() => null), import('./trees3d.js?v=9')]);
@@ -182,21 +285,24 @@ export async function plantView(main, id) {
   try { F = await import('./fruit3d.js'); if (!F.showHarvest) F = null; } catch { F = null; }
   const credit = $('#credit');
   const clearStage = () => { [...v.stage.children].forEach((o) => v.stage.remove(o)); };
+  let first = true;
+  const arrived = (from) => { if (first) { first = false; v.intro(); } else if (from) v.pop(from); placeHots(); };
   // a downloaded model when there is one, else the procedural plant
-  async function showPlant(t = 1) {
+  async function showPlant(tt = 1, from = 0) {
     credit.hidden = true;
-    if (t >= 1 && M) {
+    if (tt >= 1 && M) {
       const h = (g.height_cm?.[1] || (p.tree?.height_m ? parseFloat(p.tree.height_m) * 100 : 60)) / 100;
       const m = await M.loadModel(id, 'plant', { size: Math.min(h, 20) }).catch(() => null);
       if (m && mode === 'plant' && +slider.value === 4) {
         clearStage(); v.stage.add(m); v.frame(); v.kick();
         const c = m.userData.model?.credit; if (c?.author) { credit.textContent = `Model: ${c.author}, ${c.license}`; credit.hidden = false; }
-        return;
+        arrived(from); return;
       }
     }
     const hadModel = v.stage.children.some((o) => o.userData.model);
     v.stage.children.filter((o) => o.userData.model).forEach((o) => v.stage.remove(o));
-    v.setPlant(id, t, { keepCamera: !hadModel && t < 1 && v.stage.children.length > 0 });
+    v.setPlant(id, tt, { keepCamera: !hadModel && tt < 1 && v.stage.children.length > 0 });
+    arrived(from);
   }
   async function showHarvestView() {
     const info = F?.harvestInfo?.(id) || {};
@@ -205,38 +311,124 @@ export async function plantView(main, id) {
     credit.hidden = true;
     const m = M && await M.loadModel(id, 'harvest', { size: (info.sizeCm || 8) / 100 }).catch(() => null);
     if (m && mode === 'harvest') {
-      clearStage(); v.stage.add(m); v.stage.rotation.y = .4; v.frame({ pad: 1.25 }); v.kick();
+      clearStage(); v.stage.add(m); v.stage.rotation.y = .4; v.frame({ pad: 1.25 }); v.kick(); v.pop(.72);
       const c = m.userData.model?.credit; if (c?.author) { credit.textContent = `Model: ${c.author}, ${c.license}`; credit.hidden = false; }
-      return;
+      placeHots(); return;
     }
-    if (F) { try { F.showHarvest(v, id); } catch { $('#h-label').textContent = 'Close-up not ready for this plant yet'; } }
+    if (F) { try { F.showHarvest(v, id); v.pop(.72); } catch { $('#h-label').textContent = 'Close-up not ready for this plant yet'; } }
+    placeHots();
   }
   let mode = 'plant';
   const slider = $('#stage');
   showPlant(1);
+  let lastStep = 4;
   slider.addEventListener('input', () => {
-    const t = STAGES[+slider.value][0], name = isTree ? TREE_STAGES[+slider.value] : STAGES[+slider.value][1];
-    showPlant(t);
+    const step = +slider.value, tt = STAGES[step][0], name = isTree ? TREE_STAGES[step] : STAGES[step][1];
+    showPlant(tt, step > lastStep ? .84 : 1.12); lastStep = step; // grow up from a little smaller, step back from a little bigger
     $('#stage-name').textContent = name; slider.setAttribute('aria-valuetext', name);
+    closePop(); placeHots();
   });
   const hasHarvest = !!F || !!(M && await M.hasModel(id, 'harvest').catch(() => false));
-  if (!hasHarvest || (p.thumb && !(M && await M.hasModel(id, 'harvest').catch(() => false)))) $('#harvest-btn').hidden = true; // round-3 trees have no harvest close-up
+  if (!hasHarvest || (p.thumb && !(M && await M.hasModel(id, 'harvest').catch(() => false)))) { $('#harvest-btn').hidden = true; $('.pp-seg').classList.add('one'); }
   $$('[data-mode]').forEach((b) => b.addEventListener('click', () => {
+    if (b.dataset.mode === mode) return;
     mode = b.dataset.mode;
     $$('[data-mode]').forEach((x) => x.setAttribute('aria-pressed', x === b));
+    $('.pp-seg').classList.toggle('right', mode === 'harvest');
     $('#grow-ui').hidden = mode === 'harvest'; $('#harvest-ui').hidden = mode !== 'harvest';
+    if (flipped) flip(false);
+    closePop();
     if (mode === 'harvest') showHarvestView();
-    else { v.stage.rotation.y = 0; showPlant(STAGES[+slider.value][0]); }
+    else { v.stage.rotation.y = 0; showPlant(STAGES[+slider.value][0], .72); }
   }));
+
+  // ---------- hotspots: tap a part of the plant to see it for real ----------
+  const hots = hotspotsFor(p, photos), hostEl = $('#hots'), pop = $('#pop');
+  hostEl.innerHTML = hots.map((h, i) => `<button class="pp-hot" data-h="${i}" aria-expanded="false" aria-controls="pop" style="--d:${i * 70}ms"><i aria-hidden="true"></i><span>${esc(h.label)}</span></button>`).join('');
+  let anchors = [];
+  function placeHots() {
+    const show = mode === 'plant' && +slider.value === 4 && !flipped;
+    hostEl.classList.toggle('on', show);
+    if (!show) return;
+    const b = v.box(), s = { x: b.max.x - b.min.x, y: b.max.y - b.min.y, z: b.max.z - b.min.z }, c = b.min;
+    anchors = hots.map((h) => [(b.min.x + b.max.x) / 2 + h.at[0] * s.x, c.y + h.at[1] * s.y, (b.min.z + b.max.z) / 2 + h.at[2] * s.z]);
+    updateHots();
+  }
+  function updateHots() {
+    if (!hostEl.classList.contains('on')) return;
+    // keep the dots clear of the buttons at the top and the slider at the bottom
+    const W = hostEl.clientWidth, H = hostEl.clientHeight;
+    $$('.pp-hot', hostEl).forEach((el, i) => {
+      const a = anchors[i]; if (!a) return;
+      const q = v.toScreen(...a), x = Math.min(W - 90, Math.max(30, q.x)), y = Math.min(H - 120, Math.max(130, q.y));
+      el.style.transform = `translate(${Math.round(x)}px, ${Math.round(y)}px)`;
+    });
+  }
+  v.onRender = updateHots;
+  let openHot = -1;
+  function closePop() { if (openHot < 0) return; pop.classList.remove('open'); $$('.pp-hot', hostEl).forEach((x) => x.setAttribute('aria-expanded', 'false')); openHot = -1; setTimeout(() => { if (openHot < 0) pop.hidden = true; }, 200); }
+  $$('.pp-hot', hostEl).forEach((el) => el.addEventListener('click', () => {
+    const i = +el.dataset.h, h = hots[i];
+    if (openHot === i) { closePop(); return; }
+    openHot = i;
+    $$('.pp-hot', hostEl).forEach((x) => x.setAttribute('aria-expanded', String(x === el)));
+    pop.innerHTML = `${h.photo ? `<img src="${esc(h.photo.src)}" alt="" width="96" height="96">` : `<span class="pp-pop-ic">${icon(h.k === 'roots' ? 'ground' : h.k === 'fruit' ? 'apple' : h.k === 'flower' ? 'sun' : 'leaf')}</span>`}<div><b id="pop-t">${esc(h.label)}</b><p>${esc(h.line)}</p></div><button class="pp-pop-x" aria-label="Close">${icon('close')}</button>`;
+    const r = el.getBoundingClientRect(), box = $('#stage-box').getBoundingClientRect();
+    pop.style.setProperty('--ox', `${Math.round(r.left + r.width / 2 - box.left)}px`);
+    pop.hidden = false; requestAnimationFrame(() => pop.classList.add('open'));
+    $('.pp-pop-x', pop).addEventListener('click', () => { closePop(); el.focus(); });
+  }));
+  $('#stage-box').addEventListener('keydown', (e) => { if (e.key === 'Escape' && openHot >= 0) { const el = $(`.pp-hot[data-h="${openHot}"]`, hostEl); closePop(); el?.focus(); } });
+
+  // ---------- Real photo / 3D flip ----------
+  let flipped = false;
+  function flip(on) {
+    flipped = on;
+    const b = $('#flip'); if (!b) return;
+    $('#stage-box').classList.toggle('is-photo', on);
+    b.setAttribute('aria-pressed', String(on));
+    $('.pp-flip-t', b).textContent = on ? '3D model' : 'Real photo';
+    $('#face').setAttribute('aria-hidden', String(!on));
+    v.setSpin(!on); closePop(); placeHots();
+  }
+  $('#flip')?.addEventListener('click', () => flip(!flipped));
+
+  // ---------- photo strip + lightbox ----------
+  const lb = $('#lb');
+  if (lb) {
+    const track = $('#lb-track'), slides = $$('.pp-lb-slide', lb);
+    let opener = null;
+    const cur = () => Math.round(track.scrollLeft / Math.max(1, track.clientWidth));
+    const go = (i, smooth = true) => track.scrollTo({ left: Math.max(0, Math.min(slides.length - 1, i)) * track.clientWidth, behavior: smooth && !matchMedia('(prefers-reduced-motion: reduce)').matches ? 'smooth' : 'instant' });
+    $$('.pp-shot').forEach((b) => b.addEventListener('click', () => { opener = b; lb.showModal(); requestAnimationFrame(() => go(+b.dataset.i, false)); }));
+    $('#lb-x').addEventListener('click', () => lb.close());
+    $('#lb-prev')?.addEventListener('click', () => go(cur() - 1));
+    $('#lb-next')?.addEventListener('click', () => go(cur() + 1));
+    lb.addEventListener('keydown', (e) => { if (e.key === 'ArrowRight') go(cur() + 1); if (e.key === 'ArrowLeft') go(cur() - 1); });
+    lb.addEventListener('click', (e) => { if (e.target === lb || e.target.classList.contains('pp-lb-slide')) lb.close(); });
+    lb.addEventListener('close', () => opener?.focus());
+  }
 
   function stats() {
     const reg = $('#region')?.value || state.region;
     const tr = trip(p, reg);
     const hv = p.home_vs_shop;
-    let h = '';
+    let h = '', r = '';
     if (tr) {
-      h += `<div class="stat green wide"><b>${fmt(tr.crowMi)} miles</b><span>The shop one travels this far, from ${esc(tr.o.origin_place || tr.o.origin_country)}${tr.o.origin_place ? ', ' + esc(tr.o.origin_country) : ''} to ${esc(tr.reg.dest.name)}${tr.o.source_type === 'domestic' ? ' (grown in the country)' : ''}. Yours: 0 miles.</span></div>`;
-      h += `<div class="stat"><b>${fmt((p.carbon?.kg_co2e_per_kg ?? 0) + tr.co2Transport, 2)} kg</b><span>CO2e for a shop kilo: ${fmt(p.carbon?.kg_co2e_per_kg ?? 0, 2)} farming + ${fmt(tr.co2Transport, 2)} travel</span></div>`;
+      const mode = tr.o.transport_mode || 'road', from = tr.o.origin_place || tr.o.origin_country;
+      const co2 = (p.carbon?.kg_co2e_per_kg ?? 0) + tr.co2Transport;
+      r = `<section class="card pp-route" aria-labelledby="rt-t">
+        <div class="card-head"><h2 id="rt-t">The shop one travels</h2></div>
+        <p class="pp-miles"><b>${fmt(tr.crowMi)}</b> miles <span class="muted">${esc(MODE_WORD[mode] || '')}</span></p>
+        <div class="pp-road" role="img" aria-label="From ${esc(from)} to ${esc(tr.reg.dest.name)}, ${fmt(tr.crowMi)} miles ${esc(MODE_WORD[mode] || '')}. Yours travels 0 miles.">
+          <span class="pp-end">${icon('farm')}<small>${esc(from)}</small></span>
+          <span class="pp-line"><i class="pp-veh"><span>${icon(MODE_ICON[mode] || 'lorry')}</span></i></span>
+          <span class="pp-end">${icon('house')}<small>${esc(tr.reg.dest.name)}</small></span>
+        </div>
+        <p class="pp-yours">${icon('pot')}<span><b>Yours: 0 miles</b> from pot to plate</span></p>
+        <p class="pp-co2 small muted">${icon('co2')} A shop kilo: ${fmt(co2, 2)} kg CO2e</p>
+      </section>`;
+      h += `<div class="stat wide"><b>${fmt(co2, 2)} kg CO2e</b><span>for a shop kilo: ${fmt(p.carbon?.kg_co2e_per_kg ?? 0, 2)} farming + ${fmt(tr.co2Transport, 2)} travel, from ${esc(from)}${tr.o.origin_place ? ', ' + esc(tr.o.origin_country) : ''}${tr.o.source_type === 'domestic' ? ' (grown in the country)' : ''}.</span></div>`;
     } else if (hasRegion || p.carbon) {
       h += `<div class="stat wide"><b>Not sure yet</b><span>We couldn’t find a reliable source for where it comes from in ${esc(D.regions[reg]?.name || 'your country')}.</span></div>`;
     }
@@ -249,8 +441,9 @@ export async function plantView(main, id) {
     const c = treeCO2(p);
     if (c) h += `<div class="stat green wide"><b>About ${c[0] === c[1] ? fmt(c[0]) : `${fmt(c[0])}–${fmt(c[1])}`} kg</b><span>CO2 a grown-up tree takes from the air each year. An estimate from a typical figure; young trees take up less. ${esc(p.tree.note || '')}</span></div>`;
     $('#stats').innerHTML = h;
+    $('#route').innerHTML = r;
   }
-  const guide = () => { const g = $('#guide'); if (g) g.innerHTML = treeGuide(p, D); };
+  const guide = () => { const el = $('#guide'); if (el) el.innerHTML = treeGuide(p, D); };
   $('#region')?.addEventListener('change', (e) => { state.region = e.target.value; save(); stats(); guide(); });
   stats(); guide();
   $('#grow').addEventListener('click', () => {
@@ -264,5 +457,5 @@ export async function plantView(main, id) {
     const { removePlant } = await import('./garden.js?v=9');
     await removePlant(id); toast(`${p.name} removed.`); location.hash = '#/';
   });
-  return { unmount() { v.dispose(); } };
+  return { unmount() { v.onRender = null; v.dispose(); if (lb?.open) lb.close(); } };
 }

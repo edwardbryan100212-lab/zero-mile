@@ -42,12 +42,37 @@ MODES = {
   'rail+road': [{'mode':'rail','share':.8},{'mode':'hgv','share':.2}],
 }
 NAMES.update(NAMES2); GROUP.update(GROUP2); ALIASES.update(ALIASES2)
+# round 3: a planting guide for every tree (months, size, space, region fit, care, wildlife) and more native trees
+r3p = os.path.join(R, 'trees-round3.json')
+r3 = json.load(open(r3p)) if os.path.exists(r3p) else {}
+EEA = next((s for s in grow['trees'].get('oak', {}).get('sources', []) if 'European Environment Agency' in s.get('publisher', '')), None)
+for tid, t in r3.get('new_trees', {}).items():
+    if tid.startswith('_'): continue
+    NAMES[tid] = t['name']; GROUP[tid] = 'tree'; ALIASES[tid] = t.get('aliases', [])
+    grow['plants'][tid] = {'scientific': t.get('scientific'), 'habit': 'tree'}
+    h = t.get('height_m')
+    grow['trees'][tid] = {'co2_kg_per_year': [22, 22], 'lifespan_years': t.get('lifespan_years'),
+        'height_m': (f"up to {h[1]:g}" if h and h[0] == h[1] else f"{h[0]:g}-{h[1]:g}") if h else None,
+        'note': 'No species-specific per-tree figure found; uses the EEA typical figure for a mature tree.',
+        'sources': [EEA] if EEA else [], 'visual': t.get('visual')}
+GUIDE = {**{k: v for k, v in r3.get('trees', {}).items() if not k.startswith('_')}, **{k: v for k, v in r3.get('new_trees', {}).items() if not k.startswith('_')}}
 plants = []
 for pid, name in NAMES.items():
     g = grow['plants'].get(pid) or {}
     p = {'id':pid,'name':name,'group':GROUP.get(pid,'veg'),'aliases':ALIASES.get(pid,[]),'grow':g}
     if pid in nut: p.update({k:nut[pid][k] for k in ('kcal_per_100g','nutrients','fdc','carbon','home_vs_shop','kid_fact') if k in nut[pid]})
     if pid in grow.get('trees',{}): p['tree'] = grow['trees'][pid]
+    gd = GUIDE.get(pid)
+    if gd:
+        t = p.setdefault('tree', {})
+        for k in ('plant_months_north', 'plant_months_south', 'plant_basis', 'spacing_m', 'spacing_note', 'small_garden', 'pot_ok', 'small_note', 'years_to_fruit', 'wildlife', 'regions', 'edible'):
+            if gd.get(k) is not None: t[k] = gd[k]
+        if gd.get('lifespan_years') and not t.get('lifespan_years'): t['lifespan_years'] = gd['lifespan_years']
+        if gd.get('care_years_1_3'): t['care'] = gd['care_years_1_3']
+        if gd.get('height_m'): t['size'] = {'height_m': gd['height_m'], 'spread_m': gd.get('spread_m'), 'basis': gd.get('size_basis')}
+        seen = {(s.get('url'), s.get('quote')) for s in t.get('sources', [])}
+        t['sources'] = t.get('sources', []) + [{k: v for k, v in s.items() if k != 'supports'} for s in gd.get('sources', []) if (s.get('url'), s.get('quote')) not in seen]
+        if pid in r3.get('new_trees', {}): p['thumb'] = f'app/img/trees/{pid}.webp'
     p['origins'] = {o['region']:o for o in origins if o['crop']==pid}
     plants.append(p)
 ef = grow['emission_factors']
@@ -59,7 +84,8 @@ for p in plants:
             if 'million tons' in s.get('quote', ''): s['quote'] = ''
 out = {'version':'2026-11-17','regions':REGIONS,'modes':MODES,'circuity':1.2,
   'circuity_source':{'title':'Selected country circuity factors for road travel distance estimation','publisher':'Ballou, Rahardja & Sakai, Transportation Research Part A 36(9), 2002','url':'https://doi.org/10.1016/S0965-8564(01)00044-1','accessed':'2026-11-17','quote':''},
-  'emission':grow['emission_factors'],'context_facts':grow['context_facts'],'home_facts':grow['home_facts'],'plants':plants}
+  'emission':grow['emission_factors'],'context_facts':grow['context_facts'],'home_facts':grow['home_facts'],
+  'trees':{k: r3[k] for k in ('season', 'carbon_note') if k in r3},'plants':plants}
 os.makedirs(os.path.join(R,'..','data'),exist_ok=True)
 json.dump(out, open(os.path.join(R,'..','data','data.json'),'w'), ensure_ascii=False, separators=(',',':'))
 print(len(plants),'plants;', sum(len(p['origins']) for p in plants),'origin records')

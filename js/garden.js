@@ -1,7 +1,8 @@
 // Today (home of the app) and Photo (daily photo → on-device feedback → timeline).
 import {
   $, $$, esc, fmt, data, plantById, trip, state, save, today, dayDiff, getPhoto, delPhoto, toast, ROOT, addToGarden,
-  overallStreak, bestStreak, nextMilestone, MILESTONES, lastDays, photoDays, wateredToday, toggleWatered, logHarvest, harvestKg, logPhoto, stageName, thumb } from './core.js?v=5';
+  overallStreak, bestStreak, nextMilestone, MILESTONES, lastDays, photoDays, wateredToday, toggleWatered, logHarvest, harvestKg, logPhoto, stageName, thumb,
+  isTree, isFruitTree, treeAge, treePhotoDue, logHeight, lastHeight, treeSeason, bestTrees, dailyPlants, MONTH_NAMES, treeLine } from './core.js?v=9';
 import { FACES } from './ascii.js?v=2';
 
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -16,13 +17,36 @@ const ICON = {
   water: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3s6 7 6 11a6 6 0 0 1-12 0c0-4 6-11 6-11z"/></svg>',
   basket: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10h16l-1.5 9h-13z"/><path d="M8 10l4-6 4 6"/></svg>',
   seed: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20V11"/><path d="M12 13c-4 0-6-2.5-6-6 4 0 6 2.5 6 6zm0-2c0-4 2.5-6 6-6 0 4-2.5 6-6 6z"/></svg>',
+  tree: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21v-6"/><path d="M12 15c-4.5 0-7-2.6-7-6a7 7 0 0 1 14 0c0 3.4-2.5 6-7 6z"/><path d="M12 12l-2.5-2M12 13l3-3"/></svg>',
+  ruler: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3h8v18H8z"/><path d="M8 7h4M8 11h3M8 15h4M8 19h3"/></svg>',
   sun: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M5 19l1.5-1.5M17.5 6.5L19 5"/></svg>',
 };
 
 function greeting() { const h = new Date().getHours(); return h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening'; }
+// the season word for a month where you live (seasons are flipped south of the equator)
+function seasonWord(m) {
+  const k = state.region === 'AU' ? ((m + 5) % 12) + 1 : m;
+  return k === 12 || k <= 2 ? 'winter' : k <= 5 ? 'spring' : k <= 8 ? 'summer' : 'autumn';
+}
+const treeOf = (e) => isTree(plantById(e.id));
+const photoDone = (e) => (treeOf(e) ? !treePhotoDue(e).due : snappedToday(e));
+// the tree card on Today: the planting season where you live, and the trees that suit it best
+function treeNudge(D) {
+  const s = treeSeason(), m = new Date().getMonth() + 1;
+  const best = bestTrees().slice(0, 10);
+  const mine = state.garden.filter(treeOf).length;
+  const title = s ? (s.on ? `${s.title || 'Tree planting season'}: plant a tree this ${seasonWord(m)}` : `${s.title || 'Tree planting season'} starts in ${MONTH_NAMES[s.next - 1]}`) : 'Plant a tree';
+  const text = s?.basis || 'Trees take up carbon for decades and give food and shelter to wildlife.';
+  return `<section class="card tree-nudge rise" aria-labelledby="tree-t">
+    <div class="card-head"><h2 id="tree-t">${ICON.tree}${esc(title)}</h2><a href="#/find/trees">All trees</a></div>
+    <p class="muted">${esc(text)}${mine ? ` You have ${mine} tree${mine === 1 ? '' : 's'} growing.` : ''}</p>
+    <div class="tiles">${best.map((p) => tile(p, treeLine(p))).join('')}</div>
+  </section>`;
+}
 function growthT(e) {
   const p = plantById(e.id), age = dayDiff(e.planted, today());
-  const days = p?.grow?.days_to_harvest?.[1] || (p?.group === 'tree' ? 365 * 4 : 120);
+  if (isTree(p)) return Math.min(1, .3 + .7 * age / (365 * 8)); // planted as a young sapling, grown in about eight years
+  const days = p?.grow?.days_to_harvest?.[1] || 120;
   return Math.max(.1, Math.min(1, .1 + age / days));
 }
 function moodOf(e) {
@@ -38,7 +62,7 @@ function sowNow(D) {
   return D.plants.filter((p) => {
     const g = p.grow || {};
     const months = south ? (g.sow_months_south || []) : [...(g.sow_months_north || []), ...(g.plant_months_north || [])];
-    return months.includes(m);
+    return !isTree(p) && months.includes(m); // trees have their own card
   });
 }
 const tile = (p, sub) => `<a class="tile" href="#/plant/${p.id}"><div class="tile-art"><img src="${thumb(p.id)}" alt="" width="132" height="132" loading="lazy"></div><b>${esc(p.name)}</b><span>${esc(sub)}</span></a>`;
@@ -122,7 +146,9 @@ export default async function garden(main) {
   let entry = state.garden.find((e) => e.id === state.active) || state.garden[0];
   const n = overallStreak(), goal = nextMilestone(n), total = photoDays().size;
   const prevGoal = [0, ...MILESTONES].filter((m) => m <= n).pop() ?? 0;
-  const done = state.garden.filter(snappedToday).length;
+  const daily = dailyPlants(), trees = state.garden.filter(treeOf);
+  const done = daily.filter(snappedToday).length;
+  const treesDue = trees.filter((e) => treePhotoDue(e).due).length;
   const month = MONTHS[new Date().getMonth()];
   const sow = sowNow(D).slice(0, 14);
   const easy = D.plants.filter((p) => p.grow?.difficulty === 'easy' && p.grow?.container_ok).slice(0, 12);
@@ -137,11 +163,15 @@ export default async function garden(main) {
     ? `<h2>Let’s grow something</h2>
        <p class="muted">Pick a plant, take one photo a day, and eat what you grow. It’s free and your photos stay on this device.</p>
        <div class="row"><a class="btn" href="#/find">${ICON.seed}Pick your first plant</a></div>`
+    : !daily.length
+    ? `<h2>${trees.length === 1 ? 'Your tree is growing' : `${trees.length} trees growing`}</h2>
+       <p class="muted">Trees grow slowly, so they need a photo each season, not each day. Log the height now and then to see how far it has come.</p>
+       <div class="row">${treesDue ? `<a class="btn" href="#/snap">${ICON.photo}Take a seasonal photo</a>` : `<a class="btn btn-soft" href="#/find">${ICON.seed}Add a food plant</a>`}</div>`
     : `<h2>${n > 0 ? `${n} day streak` : total ? 'Start a new run today' : 'Take your first photo'}</h2>
-       <p class="muted">${done === state.garden.length ? `All ${done === 1 ? 'your plant has' : `${done} plants have`} today’s photo. Lovely!` : `${done} of ${state.garden.length} ${state.garden.length === 1 ? 'plant has' : 'plants have'} today’s photo.`}${n > 0 ? ` ${goal - n} more ${goal - n === 1 ? 'day' : 'days'} to your ${goal}-day badge.` : ''}</p>
-       <div class="dots" role="list" aria-label="The last seven days" id="dots"></div>
+       <p class="muted">${done === daily.length ? `All ${done === 1 ? 'your plant has' : `${done} plants have`} today’s photo. Lovely!` : `${done} of ${daily.length} ${daily.length === 1 ? 'plant has' : 'plants have'} today’s photo.`}${n > 0 ? ` ${goal - n} more ${goal - n === 1 ? 'day' : 'days'} to your ${goal}-day badge.` : ''}${treesDue ? ` ${treesDue === 1 ? 'A tree needs' : `${treesDue} trees need`} a seasonal photo.` : ''}</p>
+       <div class="dots" role="group" aria-label="The last seven days" id="dots"></div>
        ${n > 0 ? `<div class="progress" aria-hidden="true"><i style="transform:scaleX(${Math.min(1, (n - prevGoal) / Math.max(1, goal - prevGoal))})"></i></div>` : ''}
-       <div class="row">${done < state.garden.length ? `<a class="btn" href="#/snap">${ICON.photo}Take today’s photo</a>` : `<a class="btn btn-soft" href="#/snap">${ICON.photo}Take another photo</a>`}${bestStreak() > n ? `<span class="pill">Best: ${bestStreak()} days</span>` : ''}</div>`;
+       <div class="row">${done < daily.length ? `<a class="btn" href="#/snap">${ICON.photo}Take today’s photo</a>` : `<a class="btn btn-soft" href="#/snap">${ICON.photo}Take another photo</a>`}${bestStreak() > n ? `<span class="pill">Best: ${bestStreak()} days</span>` : ''}</div>`;
 
   main.innerHTML = `
   <div class="page">
@@ -149,6 +179,7 @@ export default async function garden(main) {
     <div class="today">
       <div class="today-main">
         <section class="hero" id="hero" aria-label="Today"><div class="hero-plate">${heroPlate}</div></section>
+        ${fresh ? treeNudge(D) : ''}
         ${fresh ? `
         <section class="card rise" aria-labelledby="how-t">
           <div class="card-head"><h2 id="how-t">How it works</h2></div>
@@ -156,6 +187,7 @@ export default async function garden(main) {
             <div class="step">${ICON.seed}<h3>Pick a plant</h3><p>See it fully grown in 3D first, from basil to an apple tree.</p></div>
             <div class="step">${ICON.photo}<h3>A photo a day</h3><p>The app looks at the leaves on your device and tells you how it’s doing.</p></div>
             <div class="step">${ICON.basket}<h3>Eat it</h3><p>Log what you pick and see the food miles you skipped.</p></div>
+            <div class="step">${ICON.tree}<h3>Plant a tree</h3><p>Trees grow for years. A photo each season shows how far yours has come.</p></div>
           </div>
         </section>
         <section class="card rise" aria-labelledby="easy-t">
@@ -166,7 +198,8 @@ export default async function garden(main) {
           <div class="card-head"><h2 id="plants-t">Your plants</h2><a href="#/find">Add a plant</a></div>
           <div id="plants"></div>
           <input type="file" accept="image/*" class="vh" id="repair-in" aria-hidden="true" tabindex="-1">
-        </section>`}
+        </section>
+        ${treeNudge(D)}`}
         <section class="card rise" aria-labelledby="sow-t">
           <div class="card-head"><h2 id="sow-t">Sow in ${month}</h2><a href="#/find">All plants</a></div>
           ${sow.length ? `<div class="tiles">${sow.map((p) => tile(p, daysText(p))).join('')}</div>` : `<p class="muted">A quiet month outside. Herbs on a sunny windowsill still grow well.</p>`}
@@ -200,16 +233,19 @@ export default async function garden(main) {
   </div>`;
 
   // green fluted glass behind the welcome card
-  const { fluted } = await import('./fluted.js?v=5');
+  const { fluted } = await import('./fluted.js?v=9');
   const bg = fluted($('#hero'));
-  const [{ createViewer }, { makePot }] = await Promise.all([import('./viewer.js?v=5'), import('./pot3d.js?v=2')]);
+  const [{ createViewer }, { makePot }] = await Promise.all([import('./viewer.js?v=9'), import('./pot3d.js?v=2'), import('./trees3d.js?v=9')]);
   const v = createViewer($('#pot-stage'), { controls: true, spin: false });
   let pot; v.onFrame = (dt) => pot?.tick(dt);
 
   function drawPot() {
     const id = fresh ? 'tomato' : entry.id, t = fresh ? .16 : growthT(entry);
-    v.setPlant(id, t, { extraObject: (box) => { const size = box.getSize(new (box.min.constructor)()); pot = makePot(Math.max(.07, Math.max(size.x, size.z) * .32, size.y * .16)); return pot.group; } });
-    const m = fresh ? 'new' : moodOf(entry); pot.setMood(m); v.stage.rotation.y = .6; v.kick();
+    const tree = !fresh && treeOf(entry);
+    pot = null;
+    if (tree) v.setPlant(id, t);
+    else v.setPlant(id, t, { extraObject: (box) => { const size = box.getSize(new (box.min.constructor)()); pot = makePot(Math.max(.07, Math.max(size.x, size.z) * .32, size.y * .16)); return pot.group; } });
+    const m = fresh ? 'new' : moodOf(entry); pot?.setMood(m); v.stage.rotation.y = .6; v.kick();
     if (fresh) {
       $('#pot-age').textContent = 'Waiting';
       $('#pot-mood').textContent = 'Its face shows how your plant feels after each photo.';
@@ -218,6 +254,14 @@ export default async function garden(main) {
     }
     const p = plantById(entry.id), age = dayDiff(entry.planted, today());
     $('#pot-name').textContent = p.name;
+    if (tree) {
+      const h = lastHeight(entry), due = treePhotoDue(entry);
+      $('#pot-age').textContent = `${treeAge(entry)} · ${stageName(entry, p)}`;
+      $('#pot-mood').textContent = `${h ? `Last measured ${fmt(h.cm)} cm tall. ` : ''}${due.due ? 'Time for a seasonal photo.' : `Next photo in ${due.days} days.`}`;
+      const care = p.tree?.care || [];
+      $('#pot-tip').innerHTML = care.length ? `<b>Care for young trees</b>${esc(care[new Date().getDate() % care.length])}` : '<b>Tip</b>Water young trees in dry spells for the first summers.';
+      return;
+    }
     $('#pot-age').textContent = age === 0 ? 'Planted today' : `Day ${age + 1} · ${stageName(entry, p)}`;
     $('#pot-mood').textContent = `Feeling: ${FACES[m].word.toLowerCase()}.`;
     const tips = p.grow?.tips || [];
@@ -234,9 +278,9 @@ export default async function garden(main) {
       const did = days.has(d), isToday = d === today(), missed = !did && !isToday && d >= first;
       const t = document.createElement(missed ? 'button' : 'div');
       t.className = `dot${did ? ' done' : ''}${isToday ? ' is-today' : ''}${missed ? ' miss' : ''}`;
-      t.setAttribute('role', 'listitem');
-      t.setAttribute('aria-label', `${dn}${did ? ', photo taken' : missed ? ', no photo, tap to add one from that day' : ''}${isToday ? ', today' : ''}`);
-      t.innerHTML = `<i>${missed ? '+' : ''}</i>${dn.slice(0, 3)}`;
+      const say = `${dn}${did ? ', photo taken' : missed ? ', no photo, tap to add one from that day' : ''}${isToday ? ', today' : ''}`;
+      if (missed) { t.setAttribute('aria-label', say); t.innerHTML = `<i>+</i>${dn.slice(0, 3)}`; }
+      else t.innerHTML = `<span class="vh">${say}</span><i aria-hidden="true"></i><span aria-hidden="true">${dn.slice(0, 3)}</span>`;
       if (missed) t.addEventListener('click', () => { $('#repair-in').dataset.date = d; $('#repair-in').click(); });
       el.appendChild(t);
       if (did) {
@@ -259,6 +303,25 @@ export default async function garden(main) {
     box.innerHTML = `<ul class="list">${state.garden.map((e) => {
       const p = plantById(e.id); if (!p) return '';
       const snapped = snappedToday(e), w = wateredToday(e), k = harvestKg(e);
+      if (isTree(p)) {
+        const due = treePhotoDue(e), h = lastHeight(e), first = (e.heights || [])[0];
+        const grew = h && first && h !== first ? ` · grew ${fmt(h.cm - first.cm)} cm` : '';
+        return `<li class="prow tree-row${e === entry ? ' active' : ''}" data-id="${e.id}">
+        <button class="prow-art" data-pick aria-label="Show ${esc(p.name)} in the 3D view"><img src="${thumb(e.id)}" alt="" width="64" height="64"></button>
+        <div>
+          <div class="prow-top"><h3><a href="#/plant/${e.id}">${esc(p.name)}</a></h3><span class="pill ${due.due ? 'todo' : 'ok'}">${due.due ? 'Seasonal photo due' : `Next photo in ${due.days} days`}</span></div>
+          <p class="meta">${treeAge(e)} · ${stageName(e, p)}${h ? ` · ${fmt(h.cm)} cm tall${grew}` : ''}${k ? ` · ${fmt(k, 2)} kg picked` : ''}</p>
+        </div>
+        <div class="prow-acts">
+          ${due.due ? `<a class="btn btn-sm" href="#/snap/${e.id}">${ICON.photo}Photo</a>` : ''}
+          <button class="btn btn-sm btn-plain" data-height aria-expanded="false">${ICON.ruler}Log height</button>
+          <button class="btn btn-sm ${w ? 'btn-soft' : 'btn-plain'}" data-water aria-pressed="${w}">${ICON.water}<span>${w ? 'Watered' : 'Water'}</span></button>
+          ${isFruitTree(p) ? `<button class="btn btn-sm btn-plain" data-pickup aria-expanded="false">${ICON.basket}Picked some</button>` : ''}
+        </div>
+        <form class="amounts hform" hidden><label for="h-${e.id}">Height today</label><input id="h-${e.id}" type="number" inputmode="numeric" min="1" max="6000" step="1" placeholder="cm" required><span class="muted small">cm</span><button class="btn btn-sm">Save</button></form>
+        ${isFruitTree(p) ? `<div class="amounts" hidden><span class="muted small">How much?</span>${[100, 250, 500, 1000].map((g) => `<button class="chip" data-g="${g}">${g < 1000 ? g + ' g' : '1 kg'}</button>`).join('')}</div>` : ''}
+      </li>`;
+      }
       return `<li class="prow${e === entry ? ' active' : ''}" data-id="${e.id}">
         <button class="prow-art" data-pick aria-label="Show ${esc(p.name)} in the robot pot"><img src="${thumb(e.id)}" alt="" width="64" height="64"></button>
         <div>
@@ -280,7 +343,15 @@ export default async function garden(main) {
       if (on) { const r = b.getBoundingClientRect(); burst(r.left + r.width / 2, r.top); }
       if (e === entry) drawPot();
     }));
-    $$('[data-pickup]', box).forEach((b) => b.addEventListener('click', () => { const h = b.closest('.prow').querySelector('.amounts'); h.hidden = !h.hidden; b.setAttribute('aria-expanded', !h.hidden); }));
+    $$('[data-pickup]', box).forEach((b) => b.addEventListener('click', () => { const h = b.closest('.prow').querySelector('div.amounts'); h.hidden = !h.hidden; b.setAttribute('aria-expanded', !h.hidden); }));
+    $$('[data-height]', box).forEach((b) => b.addEventListener('click', () => { const f = b.closest('.prow').querySelector('.hform'); f.hidden = !f.hidden; b.setAttribute('aria-expanded', !f.hidden); if (!f.hidden) f.querySelector('input').focus(); }));
+    $$('.hform', box).forEach((f) => f.addEventListener('submit', (ev) => {
+      ev.preventDefault();
+      const cm = Math.round(+f.querySelector('input').value); if (!(cm > 0)) return;
+      const e = state.garden.find((x) => x.id === f.closest('.prow').dataset.id); logHeight(e, cm);
+      toast(`${plantById(e.id).name}: ${fmt(cm)} cm logged.`);
+      const r = f.getBoundingClientRect(); burst(r.left + r.width / 2, r.top); rows(); if (e === entry) drawPot();
+    }));
     $$('[data-g]', box).forEach((b) => b.addEventListener('click', () => {
       const e = state.garden.find((x) => x.id === b.closest('.prow').dataset.id); logHarvest(e, +b.dataset.g);
       const t = trip(plantById(e.id), state.region);
@@ -322,6 +393,12 @@ export default async function garden(main) {
     if (fresh) return;
     const p = plantById(entry.id), st = stageName(entry, p);
     const said = entry.stagesSeen ||= [];
+    if (isTree(p)) {
+      const y = Math.floor(dayDiff(entry.planted, today()) / 365), key = `year-${y}`;
+      const msg = y >= 1 && !said.includes(key) ? `${y} year${y === 1 ? '' : 's'} since you planted your ${p.name.toLowerCase()}! Time for a birthday photo.` : st === 'Fruiting age' && !said.includes(st) ? `Your ${p.name.toLowerCase()} is old enough to fruit soon.` : null;
+      if (msg) { said.push(y >= 1 && !said.includes(key) ? key : st); save(); setTimeout(() => { toast(msg); const r = $('#pot-stage')?.getBoundingClientRect(); if (r) burst(r.left + r.width / 2, r.top + r.height / 2); }, 600); }
+      return;
+    }
     const msg = { Sprout: `${p.name} has sprouted!`, Flowering: `First flowers on your ${p.name.toLowerCase()}!`, 'Ready to pick': `Your ${p.name.toLowerCase()} is ready to pick!` }[st];
     if (msg && !said.includes(st)) { said.push(st); save(); setTimeout(() => { toast(msg); const r = $('#pot-stage')?.getBoundingClientRect(); if (r) burst(r.left + r.width / 2, r.top + r.height / 2); }, 600); }
   }
@@ -345,7 +422,7 @@ export async function snapView(main, id) {
   let entry = state.garden.find((e) => e.id === id) || state.garden.find((e) => e.id === state.active) || state.garden[0];
   main.innerHTML = `
   <div class="page">
-    <header class="page-head"><h1>Daily photo</h1><p class="muted">Line your plant up with the faint picture from last time, so your photos make a time-lapse.</p></header>
+    <header class="page-head"><h1>Daily photo</h1><p class="muted" id="snap-sub">Line your plant up with the faint picture from last time, so your photos make a time-lapse.</p></header>
     <div class="chips" role="group" aria-label="Which plant" id="which"></div>
     <div class="snap-grid">
       <div style="display:grid;gap:12px">
@@ -372,7 +449,9 @@ export async function snapView(main, id) {
   const style = document.createElement('style'); style.textContent = '.snap-actions:has(#photo:focus-visible) #snap-btn { outline: 3px solid var(--green); outline-offset: 3px; }'; main.appendChild(style);
 
   function chips() {
-    $('#which').innerHTML = state.garden.map((e) => `<button class="chip" data-id="${e.id}" aria-pressed="${e === entry}">${esc(plantById(e.id)?.name || e.id)}${snappedToday(e) ? ' ✓' : ''}</button>`).join('');
+    $('#which').innerHTML = state.garden.map((e) => `<button class="chip" data-id="${e.id}" aria-pressed="${e === entry}">${esc(plantById(e.id)?.name || e.id)}${photoDone(e) ? ' ✓' : ''}</button>`).join('');
+    const tree = treeOf(entry);
+    $('#snap-sub').textContent = tree ? 'Trees change slowly: one photo each season, from the same spot, makes a time-lapse over the years.' : 'Line your plant up with the faint picture from last time, so your photos make a time-lapse.';
     $$('#which [data-id]').forEach((b) => b.addEventListener('click', () => { entry = state.garden.find((e) => e.id === b.dataset.id); state.active = entry.id; save(); chips(); ghost(); timeline(); $(`#which [data-id="${entry.id}"]`)?.focus(); }));
   }
   async function ghost() {
@@ -380,8 +459,8 @@ export async function snapView(main, id) {
     const last = [...entry.log].sort((a, b) => (a.date < b.date ? 1 : -1))[0];
     const b = last && await getPhoto(last.key);
     $('#hint').hidden = false;
-    if (b) { const g = new Image(); g.className = 'ghost'; g.alt = ''; g.src = objURL(b); $('#frame').prepend(g); $('#hint').textContent = 'Line it up with last time'; }
-    else $('#hint').textContent = 'Fill the frame with your plant';
+    if (b) { const g = new Image(); g.className = 'ghost'; g.alt = ''; g.src = objURL(b); $('#frame').prepend(g); $('#hint').textContent = treeOf(entry) ? 'Stand where you stood last season' : 'Line it up with last time'; }
+    else $('#hint').textContent = treeOf(entry) ? 'Fit the whole tree in the frame' : 'Fill the frame with your plant';
   }
   async function timeline() {
     const logs = [...entry.log].sort((a, b) => (a.date < b.date ? 1 : -1));

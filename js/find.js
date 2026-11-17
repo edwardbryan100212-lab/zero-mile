@@ -1,17 +1,20 @@
 // Find a plant (search + filters) and the plant page (3D model, the harvest up close, sowing months, miles, kcal, goodness, sources).
-import { $, $$, esc, fmt, data, plantById, trip, state, save, addToGarden, toast, ROOT, thumb } from './core.js?v=5';
+import { $, $$, esc, fmt, data, plantById, trip, state, save, addToGarden, toast, ROOT, thumb, isTree, treeMonths, treeFit, FIT_WORD, fitsSmall, bestTrees, treeSeason, treeCO2, MONTH_NAMES, treeLine, treeMonthsGeneral } from './core.js?v=9';
 
 const GROUPS = [['all', 'All'], ['veg', 'Vegetables'], ['fruit', 'Fruit'], ['herb', 'Herbs'], ['tree', 'Trees'], ['easy', 'Easy'], ['pot', 'Grows in a pot'], ['now', 'Sow now']];
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-const daysText = (p) => { const d = p.grow?.days_to_harvest; return d ? `${d[0]}–${d[1]} days` : p.group === 'tree' ? 'A tree for years' : 'Next season'; };
+const daysText = (p) => { const d = p.grow?.days_to_harvest; return d ? `${d[0]}–${d[1]} days` : isTree(p) ? treeLine(p) : 'Next season'; };
+const TSUB = [['all', 'All trees'], ['best', 'Best where you live'], ['small', 'Fits a small garden'], ['fruit', 'Fruit trees'], ['native', 'Native trees']];
 const norm = (s) => String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').trim();
-const sowMonths = (p) => { const g = p.grow || {}; return state.region === 'AU' ? (g.sow_months_south || []) : [...new Set([...(g.sow_months_north || []), ...(g.plant_months_north || [])])].sort((a, b) => a - b); };
+const sowMonths = (p) => { if (isTree(p) && p.tree?.regions) return treeMonths(p); const g = p.grow || {}; return state.region === 'AU' ? (g.sow_months_south || []) : [...new Set([...(g.sow_months_north || []), ...(g.plant_months_north || [])])].sort((a, b) => a - b); };
 const changed = () => dispatchEvent(new Event('zm:garden'));
 
 export async function findView(main, q0 = '') {
   const D = await data();
   const N = D.plants.length, now = new Date().getMonth() + 1;
-  let group = 'all';
+  const nTrees = D.plants.filter(isTree).length;
+  let group = q0 === 'trees' ? 'tree' : 'all', tsub = 'all';
+  if (q0 === 'trees') q0 = '';
   main.innerHTML = `
   <div class="page">
     <header class="page-head"><h1>Find plants</h1><p class="muted">${N} plants, from windowsill herbs to trees. Tap one to see it fully grown and how far the shop one travels.</p></header>
@@ -20,8 +23,14 @@ export async function findView(main, q0 = '') {
         <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="M16 16l4 4"/></svg>
         <input id="q" type="search" placeholder="Try tomato, berries or oak" value="${esc(q0)}" enterkeyhint="search" autocomplete="off">
       </label>
-      <div class="chips" role="group" aria-label="Filter plants">${GROUPS.map(([k, t]) => `<button class="chip" data-g="${k}" aria-pressed="${k === 'all'}">${t}</button>`).join('')}</div>
+      <div class="chips" role="group" aria-label="Filter plants">${GROUPS.map(([k, t]) => `<button class="chip" data-g="${k}" aria-pressed="${k === group}">${t}</button>`).join('')}</div>
+      <div class="chips tsub" role="group" aria-label="Filter trees" id="tsub"${group === 'tree' ? '' : ' hidden'}>${TSUB.map(([k, t]) => `<button class="chip" data-t="${k}" aria-pressed="${k === 'all'}">${k === 'best' ? `Best for ${esc(D.regions[state.region]?.name || 'you')}` : t}</button>`).join('')}</div>
     </div>
+    <section class="tree-band" id="tree-band" aria-labelledby="tb-t"${group === 'all' && !q0 ? '' : ' hidden'}>
+      <img src="${thumb('oak')}" alt="" width="88" height="88">
+      <div><h2 id="tb-t">Plant a tree</h2><p class="muted">${nTrees} trees with a planting guide: when to plant, how much space, and care for the first three years.</p></div>
+      <button class="btn btn-sm" data-g="tree" data-band>See the trees</button>
+    </section>
     <p class="vh" role="status" id="count"></p>
     <div class="grid" id="list"></div>
   </div>`;
@@ -34,17 +43,26 @@ export async function findView(main, q0 = '') {
       if (group === 'pot' && !p.grow?.container_ok) return false;
       if (group === 'now' && !sowMonths(p).includes(now)) return false;
       if (['veg', 'fruit', 'herb', 'tree'].includes(group) && p.group !== group) return false;
+      if (group === 'tree') {
+        const f = treeFit(p)?.rating;
+        if (tsub === 'best' && !(f === 'native' || f === 'good')) return false;
+        if (tsub === 'small' && !fitsSmall(p)) return false;
+        if (tsub === 'fruit' && !p.tree?.years_to_fruit) return false;
+        if (tsub === 'native' && f !== 'native') return false;
+      }
       if (!q) return true;
       const hay = norm([p.name, p.id, p.grow?.scientific, ...(p.aliases || []), p.group === 'fruit' ? 'berries fruit' : '', p.group === 'tree' ? 'tree' : '', p.group === 'herb' ? 'herb' : ''].join(' '));
       return q.split(/\s+/).every((w) => hay.includes(w.replace(/(ies|es|s)$/, '')));
     });
     clearTimeout(countT); countT = setTimeout(() => { $('#count').textContent = `${hits.length} plant${hits.length === 1 ? '' : 's'}`; }, 300);
     if (!hits.length) {
+      if (group === 'tree' && tsub !== 'all') { list.innerHTML = `<p class="no-hits">No trees match that where you live. Try All trees.</p>`; return; }
       const lab = GROUPS.find(([k]) => k === group)[1].toLowerCase();
       list.innerHTML = `<p class="no-hits">${group === 'all' ? `No plant called “${esc($('#q').value)}” yet. Try a vegetable, fruit, herb or tree.` : `No ${esc(lab)} plants match “${esc($('#q').value)}”. Try All.`}</p>`;
       return;
     }
     const mine = new Set(state.garden.map((e) => e.id));
+    if (group === 'tree') { const order = bestTrees().map((p) => p.id); hits.sort((a, b) => order.indexOf(a.id) - order.indexOf(b.id)); }
     list.innerHTML = hits.map((p) => `
       <a class="pk" href="#/plant/${p.id}">
         <div class="pk-art"><img src="${thumb(p.id)}" alt="" width="200" height="200" loading="lazy"></div>
@@ -53,11 +71,48 @@ export async function findView(main, q0 = '') {
       </a>`).join('');
   }
   $('#q').addEventListener('input', render);
-  $$('[data-g]').forEach((b) => b.addEventListener('click', () => { group = b.dataset.g; $$('[data-g]').forEach((x) => x.setAttribute('aria-pressed', x === b)); render(); }));
+  $$('[data-g]').forEach((b) => b.addEventListener('click', () => {
+    group = b.dataset.g;
+    $$('.chips [data-g]').forEach((x) => x.setAttribute('aria-pressed', x.dataset.g === group));
+    $('#tsub').hidden = group !== 'tree'; $('#tree-band').hidden = group !== 'all' || !!$('#q').value;
+    render();
+    if (b.hasAttribute('data-band')) $('.chips [data-g="tree"]').focus();
+  }));
+  $$('[data-t]').forEach((b) => b.addEventListener('click', () => { tsub = b.dataset.t; $$('[data-t]').forEach((x) => x.setAttribute('aria-pressed', x === b)); render(); }));
+  $('#q').addEventListener('input', () => { $('#tree-band').hidden = group !== 'all' || !!$('#q').value; });
   render();
 }
 
 const STAGES = [[.04, 'Seed'], [.15, 'Sprout'], [.45, 'Young plant'], [.66, 'Flowering'], [1, 'Fully grown']];
+const TREE_STAGES = ['Seed', 'Seedling', 'Sapling', 'Young tree', 'Fully grown'];
+const range = (a, unit = '') => (Array.isArray(a) ? (a[0] === a[1] ? `${fmt(a[0], a[0] % 1 ? 1 : 0)}` : `${fmt(a[0], a[0] % 1 ? 1 : 0)}–${fmt(a[1], a[1] % 1 ? 1 : 0)}`) + unit : '');
+// the planting guide on a tree's page (cited: research/trees-round3.json)
+function treeGuide(p, D) {
+  const t = p.tree || {}, south = state.region === 'AU', now = new Date().getMonth() + 1;
+  const months = treeMonths(p), fit = treeFit(p), season = treeSeason();
+  const reg = D.regions[state.region]?.name || 'your country';
+  const fact = (k, v) => (v ? `<div><dt>${k}</dt><dd>${v}</dd></div>` : '');
+  let h = `<section class="card tree-guide" aria-labelledby="tg-t">
+    <div class="card-head"><h2 id="tg-t">Planting guide</h2><span class="muted small">${south ? 'Southern' : 'Northern'} hemisphere</span></div>`;
+  if (months.length) h += `<div class="months" role="img" aria-label="Plant in: ${months.map((m) => MONTH_NAMES[m - 1]).join(', ')}">${MONTH_NAMES.map((m, i) => `<i class="${months.includes(i + 1) ? 'on' : ''}${i + 1 === now ? ' now' : ''}" aria-hidden="true">${m[0]}</i>`).join('')}</div>`;
+  const general = months.length && treeMonthsGeneral(p);
+  const basis = general ? `${season?.basis || ''} This is the general tree planting season in ${reg}.` : t.plant_basis;
+  if (basis) h += `<p class="small muted guide-basis">${esc(basis)}${months.includes(now) ? ' <b class="now-tag">Good time to plant now</b>' : ''}</p>`;
+  h += `<dl class="facts">
+    ${fit ? fact(`In ${esc(reg)}`, `<b class="fit fit-${esc(fit.rating)}">${esc(FIT_WORD[fit.rating] || fit.rating)}</b> <span class="muted">${esc(fit.basis || '')}</span>`) : ''}
+    ${fact('Size when grown', t.size?.height_m ? `${range(t.size.height_m, ' m')} tall${t.size.spread_m ? `, ${range(t.size.spread_m, ' m')} wide` : ''}${t.size.basis ? `<br><span class="muted small">${esc(t.size.basis)}</span>` : ''}` : '')}
+    ${fact('Space to leave', t.spacing_m ? `${range(t.spacing_m, ' m')}${t.spacing_note ? ` <span class="muted small">${esc(t.spacing_note)}</span>` : ''}` : '')}
+    ${fact('Small garden', t.small_garden != null || t.small_note ? `${t.small_garden || t.pot_ok ? 'Yes' : 'Better with room to grow'}${t.small_note ? `. <span class="muted">${esc(t.small_note)}</span>` : ''}` : '')}
+    ${fact('In a pot', t.pot_ok != null ? (t.pot_ok ? 'Yes, on the right rootstock or variety' : 'No, plant it in the ground') : '')}
+    ${fact('First fruit', t.years_to_fruit ? `${range(t.years_to_fruit)} years after planting` : '')}
+    ${fact('Edible', t.edible ? esc(t.edible) : '')}
+    ${fact('Lives for', t.lifespan_years ? `${esc(t.lifespan_years)} years` : '')}
+  </dl></section>`;
+  const water = D.trees?.season?.watering?.text;
+  if (t.care?.length) h += `<section class="card" aria-labelledby="care-t"><div class="card-head"><h2 id="care-t">Care in years 1 to 3</h2></div><ol class="care">${t.care.map((c) => `<li>${esc(c)}</li>`).join('')}</ol>${water ? `<p class="tip water-tip"><b>Watering</b>${esc(water)}</p>` : ''}</section>`;
+  if (t.wildlife) h += `<section class="card wild" aria-labelledby="wild-t"><h2 id="wild-t">Good for wildlife</h2><p>${esc(t.wildlife)}</p></section>`;
+  return h;
+}
 
 export async function plantView(main, id) {
   const D = await data();
@@ -74,7 +129,7 @@ export async function plantView(main, id) {
   if (p.fdc?.url) add([{ title: `FoodData Central: ${p.fdc.description || p.name}`, publisher: 'USDA', url: p.fdc.url }]);
   const inGarden = () => state.garden.some((e) => e.id === id);
   const fact = (k, v) => (v == null || v === '' ? '' : `<div><dt>${k}</dt><dd>${v}</dd></div>`);
-  const hasRegion = Object.keys(p.origins || {}).length > 0;
+  const hasRegion = Object.keys(p.origins || {}).length > 0 || (isTree && !!p.tree?.regions);
 
   main.innerHTML = `
   <div class="page">
@@ -88,7 +143,7 @@ export async function plantView(main, id) {
         <span class="model-credit" id="credit" hidden></span>
         <div class="stage-bottom" id="grow-ui">
           <label for="stage">Growth <span id="stage-name">Fully grown</span></label>
-          <input id="stage" type="range" min="0" max="4" step="1" value="4" aria-valuetext="Fully grown">
+          <input id="stage" type="range" min="0" max="4" step="1" value="4" aria-valuetext="Fully grown"${isTree ? ' aria-label="Growth over the years"' : ''}>
         </div>
         <div class="stage-bottom" id="harvest-ui" hidden><p><b id="h-label"></b> <span class="muted" id="h-size"></span></p></div>
       </div>
@@ -98,19 +153,20 @@ export async function plantView(main, id) {
           <p class="sci">${esc(g.scientific || '')}</p>
           ${p.kid_fact ? `<p class="kid">${esc(p.kid_fact)}</p>` : ''}
           <div class="acts">
-            <button class="btn" id="grow">${inGarden() ? 'Open in my garden' : 'Grow this'}</button>
+            <button class="btn" id="grow">${inGarden() ? 'Open in my garden' : isTree ? 'Plant this tree' : 'Grow this'}</button>
             ${hasRegion ? `<label class="select"><span class="vh">Where you live</span><select id="region">${Object.entries(D.regions).map(([k, r]) => `<option value="${k}"${k === state.region ? ' selected' : ''}>${esc(r.name)}</option>`).join('')}</select></label>` : ''}
           </div>
         </div>
+        ${isTree && p.tree?.regions ? '<div id="guide" style="display:grid;gap:16px"></div>' : ''}
         <div class="stats" id="stats"></div>
-        ${sow.length ? `<section class="card"><div class="card-head"><h2>${g.sow_months_north || south ? 'When to sow' : 'When to plant'}</h2><span class="muted small">${south ? 'Southern' : 'Northern'} hemisphere</span></div>
+        ${isTree && p.tree?.regions ? '' : sow.length ? `<section class="card"><div class="card-head"><h2>${g.sow_months_north || south ? 'When to sow' : 'When to plant'}</h2><span class="muted small">${south ? 'Southern' : 'Northern'} hemisphere</span></div>
           <div class="months" role="img" aria-label="Sowing months: ${sow.map((m) => MONTHS[m - 1]).join(', ')}">${MONTHS.map((m, i) => `<i class="${sow.includes(i + 1) ? 'on' : ''}${i + 1 === now ? ' now' : ''}" aria-hidden="true">${m[0]}</i>`).join('')}</div></section>` : ''}
         <section class="card"><h2 style="margin-bottom:10px">Growing it</h2><dl class="facts">
           ${fact('Time to harvest', g.days_to_harvest ? `${g.days_to_harvest[0]}–${g.days_to_harvest[1]} days` : g.days_basis ? esc(g.days_basis) : isTree ? 'Years' : null)}
           ${fact('Sun', g.sun ? esc(g.sun === 'full' ? 'Full sun' : g.sun === 'partial' ? 'Some shade is fine' : g.sun) : null)}
           ${fact('Water', g.water ? esc(({ low: 'A little', med: 'Regular', medium: 'Regular', high: 'Lots' })[g.water] || g.water) : null)}
           ${fact('In a pot', g.container_ok == null ? null : g.container_ok ? (g.min_pot_l ? `Yes, ${fmt(g.min_pot_l)} litres or more` : 'Yes') : 'Better in the ground')}
-          ${fact('Grows to', g.height_cm ? `${fmt(g.height_cm[0])}–${fmt(g.height_cm[1])} cm` : p.tree?.height_m ? `${esc(String(p.tree.height_m))} m` : null)}
+          ${fact('Grows to', p.tree?.size ? null : g.height_cm ? `${fmt(g.height_cm[0])}–${fmt(g.height_cm[1])} cm` : p.tree?.height_m ? `${esc(String(p.tree.height_m))} m` : null)}
           ${fact('How easy', g.difficulty ? esc(g.difficulty[0].toUpperCase() + g.difficulty.slice(1)) : null)}
         </dl></section>
         ${g.tips?.length ? `<section class="card"><h2 style="margin-bottom:10px">Tips</h2><ul class="tips">${g.tips.map((t) => `<li>${esc(t)}</li>`).join('')}</ul></section>` : ''}
@@ -120,7 +176,7 @@ export async function plantView(main, id) {
     </div>
   </div>`;
 
-  const [{ createViewer }, M] = await Promise.all([import('./viewer.js?v=5'), import('./models.js?v=5').catch(() => null)]);
+  const [{ createViewer }, M] = await Promise.all([import('./viewer.js?v=9'), import('./models.js?v=9').catch(() => null), import('./trees3d.js?v=9')]);
   const v = createViewer($('#plant-stage'), { controls: true });
   let F = null;
   try { F = await import('./fruit3d.js'); if (!F.showHarvest) F = null; } catch { F = null; }
@@ -159,12 +215,12 @@ export async function plantView(main, id) {
   const slider = $('#stage');
   showPlant(1);
   slider.addEventListener('input', () => {
-    const [t, name] = STAGES[+slider.value];
+    const t = STAGES[+slider.value][0], name = isTree ? TREE_STAGES[+slider.value] : STAGES[+slider.value][1];
     showPlant(t);
     $('#stage-name').textContent = name; slider.setAttribute('aria-valuetext', name);
   });
   const hasHarvest = !!F || !!(M && await M.hasModel(id, 'harvest').catch(() => false));
-  if (!hasHarvest) $('#harvest-btn').hidden = true;
+  if (!hasHarvest || (p.thumb && !(M && await M.hasModel(id, 'harvest').catch(() => false)))) $('#harvest-btn').hidden = true; // round-3 trees have no harvest close-up
   $$('[data-mode]').forEach((b) => b.addEventListener('click', () => {
     mode = b.dataset.mode;
     $$('[data-mode]').forEach((x) => x.setAttribute('aria-pressed', x === b));
@@ -190,23 +246,22 @@ export async function plantView(main, id) {
         ? `<div class="stat sun wide"><b>Fresher is better</b><span>${esc(hv.explanation)} Picked from your own plant, you eat it the same day.</span></div>`
         : `<div class="stat wide"><b>About the same</b><span>${esc(hv.explanation || 'Studies don’t show a clear difference for this one, so home-grown is about the same as the shop one.')}</span></div>`;
     }
-    if (p.tree?.co2_kg_per_year != null) {
-      const c = p.tree.co2_kg_per_year;
-      h += `<div class="stat green wide"><b>${Array.isArray(c) ? (c[0] === c[1] ? fmt(c[0]) : `${fmt(c[0])}–${fmt(c[1])}`) : fmt(c)} kg</b><span>CO2 a grown-up tree takes from the air each year. ${esc(p.tree.note || '')}</span></div>`;
-    }
+    const c = treeCO2(p);
+    if (c) h += `<div class="stat green wide"><b>About ${c[0] === c[1] ? fmt(c[0]) : `${fmt(c[0])}–${fmt(c[1])}`} kg</b><span>CO2 a grown-up tree takes from the air each year. An estimate from a typical figure; young trees take up less. ${esc(p.tree.note || '')}</span></div>`;
     $('#stats').innerHTML = h;
   }
-  $('#region')?.addEventListener('change', (e) => { state.region = e.target.value; save(); stats(); });
-  stats();
+  const guide = () => { const g = $('#guide'); if (g) g.innerHTML = treeGuide(p, D); };
+  $('#region')?.addEventListener('change', (e) => { state.region = e.target.value; save(); stats(); guide(); });
+  stats(); guide();
   $('#grow').addEventListener('click', () => {
     const had = inGarden();
     addToGarden(id); changed();
-    if (!had) toast(`${p.name} planted. Take its first photo to start your journal.`);
+    if (!had) toast(isTree ? `${p.name} added. Take a photo each season to watch it grow.` : `${p.name} planted. Take its first photo to start your journal.`);
     location.hash = '#/';
   });
   $('#remove')?.addEventListener('click', async () => {
     if (!confirm(`Remove ${p.name} and its photos from this device?`)) return;
-    const { removePlant } = await import('./garden.js?v=5');
+    const { removePlant } = await import('./garden.js?v=9');
     await removePlant(id); toast(`${p.name} removed.`); location.hash = '#/';
   });
   return { unmount() { v.dispose(); } };

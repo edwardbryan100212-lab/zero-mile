@@ -1,16 +1,19 @@
 // About: settings, how the numbers are worked out, and every citation.
-import { $, esc, fmt, data, ROOT, state, save, toast } from './core.js?v=5';
+import { $, esc, fmt, data, ROOT, state, save, toast } from './core.js?v=9';
 
 export default async function sources(main) {
   const D = await data();
-  const groups = { 'Where food comes from': new Map(), 'Food, energy and carbon': new Map(), 'Growing, trees and transport': new Map() };
+  const groups = { 'Where food comes from': new Map(), 'Food, energy and carbon': new Map(), 'Trees and planting': new Map(), 'Growing, trees and transport': new Map() };
   const add = (g, arr) => (arr || []).forEach((s) => s?.url && !groups[g].has(s.url) && groups[g].set(s.url, s));
   for (const p of D.plants) {
     Object.values(p.origins || {}).forEach((o) => add('Where food comes from', o.sources));
     add('Food, energy and carbon', p.carbon?.sources); add('Food, energy and carbon', p.home_vs_shop?.sources);
     if (p.fdc?.url) add('Food, energy and carbon', [{ title: `FoodData Central: ${p.fdc.description}`, publisher: 'USDA', url: p.fdc.url }]);
-    add('Growing, trees and transport', p.grow?.sources); add('Growing, trees and transport', p.tree?.sources);
+    add('Growing, trees and transport', p.grow?.sources); add('Trees and planting', p.tree?.sources);
   }
+  const ts = D.trees || {};
+  Object.values(ts.season || {}).forEach((s) => add('Trees and planting', s.sources));
+  add('Trees and planting', ts.carbon_note?.sources);
   Object.values(D.emission).forEach((e) => add('Growing, trees and transport', e.sources));
   add('Growing, trees and transport', [D.circuity_source]);
   const facts = [...D.context_facts, ...D.home_facts];
@@ -44,6 +47,7 @@ export default async function sources(main) {
           <p><b>Air miles</b> are the straight line from the growing area to ${esc(D.regions.IE.dest.name)}, ${esc(D.regions.UK.dest.name)}, ${esc(D.regions.US.dest.name)}, ${esc(D.regions.DE.dest.name)}, ${esc(D.regions.HK.dest.name)} or ${esc(D.regions.AU.dest.name)}. Real routes are longer, so for carbon we multiply by ${D.circuity}, a common road detour factor.</p>
           <p><b>Travel carbon</b> uses UK government freight factors per tonne-kilometre: lorry ${fmt(ef.hgv.value, 3)}, ship ${fmt(ef.ship.value, 3)}, ferry ${fmt(ef.ferry.value, 3)}, rail ${fmt(ef.rail.value, 3)}, long-haul air ${fmt(ef.air_long.value, 3)} kg CO2e.</p>
           <p><b>Farm carbon</b> is the world average per kilo from Poore and Nemecek (2018), via Our World in Data. Growing at home still has a small footprint, so we never say it is zero: only the miles are.</p>
+          <p><b>Trees.</b> Planting months, sizes, spacing, first fruit and care in the first three years come from the RHS, the Woodland Trust, university extension guides and government agencies. “Grows well here” ratings cite a reason, such as native range, winter cold or frost. The CO2 figure is an estimate: the European Commission and the European Environment Agency give about 22 kg of CO2 a year for a mature tree, on average. Real trees vary with species, size and site, and young trees take up less.</p>
           <p><b>Goodness.</b> Where studies measured nutrients lost in storage (like vitamin C in spinach after a week in the fridge), we quote that number. Otherwise we say “about the same”.</p>
           <p><b>Photo check.</b> Your photos never leave your device. It counts green, yellowing and brown leaf colours. It’s a friendly guess, not a plant doctor.</p>
           <p><b>Pictures and 3D.</b> Photos on the website are AI illustrations made with Comfy and printed in Ditherlab. Some 3D models are drawn in code${credits.length ? '; others are free models credited below' : ''}.</p>

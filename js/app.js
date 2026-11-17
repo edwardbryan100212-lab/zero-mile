@@ -1,15 +1,15 @@
 // Zero Mile app: the router for the daily-use screens (Today, Find, Photo, Impact, About),
 // plus the Mac/iPad sidebar with your plants.
-import { $, $$, esc, data, rise, ROOT, state, plantById, overallStreak, today, thumb } from './core.js?v=5';
+import { $, $$, esc, data, rise, ROOT, state, plantById, overallStreak, today, thumb, dailyPlants } from './core.js?v=9';
 
 const routes = {
-  '': () => import('./garden.js?v=5'),
-  garden: () => import('./garden.js?v=5'),
-  snap: () => import('./garden.js?v=5'),
-  find: () => import('./find.js?v=5'),
-  plant: () => import('./find.js?v=5'),
-  impact: () => import('./impact.js?v=5'),
-  sources: () => import('./sources.js?v=5'),
+  '': () => import('./garden.js?v=9'),
+  garden: () => import('./garden.js?v=9'),
+  snap: () => import('./garden.js?v=9'),
+  find: () => import('./find.js?v=9'),
+  plant: () => import('./find.js?v=9'),
+  impact: () => import('./impact.js?v=9'),
+  sources: () => import('./sources.js?v=9'),
 };
 const VIEW = { snap: 'snapView', find: 'findView', plant: 'plantView' };
 let current = null, routed = false, seq = 0;
@@ -25,7 +25,7 @@ export function renderSide() {
     return `<li><a href="#/plant/${e.id}"${cur ? ' aria-current="page"' : ''}><img src="${thumb(e.id)}" alt="" width="28" height="28"><span>${esc(p.name)}</span>${done ? '<i class="tick" aria-label="photo taken today"></i>' : ''}</a></li>`;
   }).join('') || '<li class="side-none">Nothing growing yet</li>';
   const n = overallStreak();
-  $('#side-streak').textContent = n ? `${n} day streak` : state.garden.length ? 'Take today’s photo' : 'Let’s grow something';
+  $('#side-streak').textContent = n ? `${n} day streak` : dailyPlants().length ? 'Take today’s photo' : state.garden.length ? 'Your trees are growing' : 'Let’s grow something';
 }
 
 async function route() {
@@ -57,6 +57,6 @@ $('.skip').addEventListener('click', (e) => { e.preventDefault(); $('#main').foc
 route();
 
 // the green fluted glass behind the sidebar header (Mac and iPad only: phones never show the sidebar)
-if (matchMedia('(min-width: 700px)').matches) import('./fluted.js?v=5').then(({ fluted }) => fluted($('#side-head'), { ribs: 22 })).catch(() => {});
+if (matchMedia('(min-width: 700px)').matches) import('./fluted.js?v=9').then(({ fluted }) => fluted($('#side-head'), { ribs: 22 })).catch(() => {});
 
 if ('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register(new URL('sw.js', ROOT), { scope: ROOT.pathname }).catch(() => {});

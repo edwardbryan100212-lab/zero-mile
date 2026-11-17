@@ -13,7 +13,7 @@ let DATA = null;
 export async function data() {
   if (!DATA) {
     const [d, man] = await Promise.all([
-      fetch(new URL('data/data.json?v=5', ROOT)).then((r) => r.json()),
+      fetch(new URL('data/data.json?v=9', ROOT)).then((r) => r.json()),
       fetch(new URL('models/manifest.json?v=6', ROOT)).then((r) => (r.ok ? r.json() : {})).catch(() => ({})),
     ]);
     DATA = d;
@@ -23,7 +23,8 @@ export async function data() {
 }
 // plants with a real downloaded model of their harvest show it as their picture; the rest show the drawn plant
 const REAL = new Set(['basil', 'mint', 'parsley', 'coriander', 'chives', 'rosemary', 'thyme', 'sage', 'dill', 'kale', 'spinach', 'rocket', 'swiss-chard', 'pak-choi', 'rhubarb']); // + low-poly herbs (js/herbs3d.js)
-export const thumb = (id) => new URL(REAL.has(id) ? `img/fruits/${id}.webp` : `img/plants/${id}.webp`, ROOT).href;
+// a plant can name its own picture in data.json (the trees added in round 3 use app/img/trees, rendered from js/trees3d.js)
+export const thumb = (id) => { const own = DATA?.plants.find((p) => p.id === id)?.thumb; return new URL(own || (REAL.has(id) ? `img/fruits/${id}.webp` : `img/plants/${id}.webp`), ROOT).href; };
 export const plantById = (id) => DATA.plants.find((p) => p.id === id);
 
 // ---------- distance and footprint ----------
@@ -165,8 +166,82 @@ export async function logPhoto(e, date, blob, res) {
   return key;
 }
 export function stageName(e, plant) {
+  if (plant?.group === 'tree') return treeStage(e, plant);
   const age = dayDiff(e.planted, today());
   const days = plant?.grow?.days_to_harvest?.[1] || (plant?.group === 'tree' ? 365 * 4 : 120);
   const t = age / days;
   return t < .08 ? 'Seed' : t < .2 ? 'Sprout' : t < .55 ? 'Young plant' : t < .85 ? 'Flowering' : 'Ready to pick';
+}
+
+// ---------- trees: planted once, grown for years ----------
+// Trees use the cited planting guide in data.json (research/trees-round3.json): months, size, region fit, care.
+export const MONTH_NAMES = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+export const isTree = (p) => p?.group === 'tree';
+export const isFruitTree = (p) => isTree(p) && !!p.tree?.years_to_fruit;
+export const SOUTH = (region = S.region) => region === 'AU';
+// planting months for a tree where you live (southern hemisphere for Australia)
+// Hong Kong uses its own planting season; elsewhere the tree's own cited months, else the general season where you live
+export function treeMonths(p, region = S.region) {
+  const t = p?.tree || {};
+  const own = region === 'HK' ? null : SOUTH(region) ? t.plant_months_south : t.plant_months_north;
+  return own?.length ? own : (DATA?.trees?.season?.[region]?.months || []);
+}
+export const treeMonthsGeneral = (p, region = S.region) => { const t = p?.tree || {}; return region === 'HK' || !(SOUTH(region) ? t.plant_months_south : t.plant_months_north)?.length; };
+// how well a tree suits your country: native, good, ok or hard (with the cited reason)
+export const FIT_WORD = { native: 'Native here', good: 'Grows well here', ok: 'Possible here', hard: 'Hard here' };
+export const FIT_RANK = { native: 0, good: 1, ok: 2, hard: 3 };
+export function treeFit(p, region = S.region) { const f = p?.tree?.regions?.[region]; return f?.rating ? f : null; }
+export const fitsSmall = (p) => !!(p?.tree?.small_garden || p?.tree?.pot_ok);
+// trees sorted best first for a region: native or grows well, then small-garden friendly
+export function bestTrees(region = S.region) {
+  const rank = (p) => (FIT_RANK[treeFit(p, region)?.rating] ?? 2) * 2 + (fitsSmall(p) ? 0 : 1);
+  return DATA.plants.filter(isTree).sort((a, b) => rank(a) - rank(b));
+}
+// the tree planting season where you live, from the cited guide (bare-root season in Ireland, the UK and Germany)
+export function treeSeason(region = S.region) {
+  const s = DATA.trees?.season?.[region];
+  if (!s?.months?.length) return null;
+  const m = new Date().getMonth() + 1;
+  const on = s.months.includes(m);
+  let next = null;
+  if (!on) for (let i = 1; i <= 12; i++) { const k = ((m - 1 + i) % 12) + 1; if (s.months.includes(k)) { next = k; break; } }
+  return { ...s, on, next };
+}
+// a tree's age in plain words: "Planted today", "3 months", "Year 2"
+export function treeAge(e) {
+  const d = dayDiff(e.planted, today());
+  if (d <= 0) return 'Planted today';
+  if (d < 31) return `${d} day${d === 1 ? '' : 's'} old`;
+  if (d < 365) { const m = Math.floor(d / 30.44); return `${m} month${m === 1 ? '' : 's'} old`; }
+  return `Year ${Math.floor(d / 365) + 1}`;
+}
+export function treeStage(e, p) {
+  const y = dayDiff(e.planted, today()) / 365;
+  const fruit = p?.tree?.years_to_fruit;
+  if (fruit && y >= fruit[0]) return 'Fruiting age';
+  return y < 1 ? 'Settling in' : y < 3 ? 'Young tree' : 'Growing up';
+}
+// trees get a photo each season, not each day: about every three months
+export const TREE_PHOTO_DAYS = 90;
+export function treePhotoDue(e) {
+  const last = [...e.log].map((l) => l.date).sort().pop();
+  if (!last) return { due: true, days: 0, last: null };
+  const left = TREE_PHOTO_DAYS - dayDiff(last, today());
+  return { due: left <= 0, days: Math.max(0, left), last };
+}
+export function logHeight(e, cm) { (e.heights ||= []).push({ date: today(), cm }); e.heights.sort((a, b) => (a.date < b.date ? -1 : 1)); save(); }
+export const lastHeight = (e) => (e.heights || []).at(-1) || null;
+// estimated CO2 a tree takes up once mature, from the cited typical figure for that tree (EEA: about 22 kg a year for a mature tree)
+export function treeCO2(p) { const c = p?.tree?.co2_kg_per_year; return c == null ? null : Array.isArray(c) ? c : [c, c]; }
+export const myTrees = () => S.garden.filter((e) => isTree(DATA?.plants.find((p) => p.id === e.id)));
+// daily plants (not trees): the ones the daily photo streak is about
+export const dailyPlants = () => S.garden.filter((e) => !isTree(DATA?.plants.find((p) => p.id === e.id)));
+
+// one short line for a tree card: how it suits where you live, else first fruit or size
+export function treeLine(p) {
+  const f = treeFit(p)?.rating, y = p.tree?.years_to_fruit;
+  if (f === 'native' || f === 'good' || f === 'hard') return FIT_WORD[f];
+  if (y) return `Fruit in ${y[0]}–${y[1]} years`;
+  if (fitsSmall(p)) return 'Fits a small garden';
+  return f ? FIT_WORD[f] : 'A tree for years';
 }

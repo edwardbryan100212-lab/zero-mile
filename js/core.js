@@ -126,19 +126,49 @@ export function photoDays() {
   for (const e of S.garden) for (const l of e.log) s.add(l.date);
   return s;
 }
+// A day covered by the streak saver (the watering can) keeps the run alive but does not add to the count.
+export const savedDays = () => new Set(S.saver?.used || []);
 export function overallStreak() {
-  const days = photoDays();
+  const days = photoDays(), kept = savedDays();
   let n = 0; const d = new Date();
   if (!days.has(today(d))) d.setDate(d.getDate() - 1); // today not snapped yet: the streak is still alive from yesterday
-  while (days.has(today(d))) { n++; d.setDate(d.getDate() - 1); }
+  while (days.has(today(d)) || kept.has(today(d))) { if (days.has(today(d))) n++; d.setDate(d.getDate() - 1); }
   return n;
 }
 export function bestStreak() {
-  const days = [...photoDays()].sort();
+  const photos = photoDays(), days = [...new Set([...photos, ...savedDays()])].sort();
   let best = 0, run = 0, prev = null;
-  for (const d of days) { run = prev && dayDiff(prev, d) === 1 ? run + 1 : 1; best = Math.max(best, run); prev = d; }
+  for (const d of days) { const add = photos.has(d) ? 1 : 0; run = prev && dayDiff(prev, d) === 1 ? run + add : add; best = Math.max(best, run); prev = d; }
   return best;
 }
+
+// ---------- streak saver: one free skip a week, earned by a 7-day streak, shown as a watering can ----------
+// state.saver = { have: 0 | 1, earned: 'YYYY-MM-DD' (day the last one was earned), used: ['YYYY-MM-DD', …] (days it covered) }
+const saverState = () => (S.saver ||= { have: 0, earned: null, used: [] });
+export const saverReady = () => saverState().have > 0;
+// call after a photo is logged: every 7th day of a run earns a watering can (you can hold one)
+export function earnSaver() {
+  const s = saverState(), n = overallStreak();
+  if (n >= 7 && n % 7 === 0 && !s.have && s.earned !== today()) { s.have = 1; s.earned = today(); save(); return true; }
+  return false;
+}
+// call when the app opens: if yesterday was missed but the run was alive the day before, the can covers yesterday.
+// At most one cover in any 7 days.
+export function useSaverIfNeeded() {
+  const s = saverState();
+  if (!s.have) return null;
+  const days = photoDays(), kept = savedDays();
+  const y = new Date(); y.setDate(y.getDate() - 1);
+  const y2 = new Date(); y2.setDate(y2.getDate() - 2);
+  const yd = today(y), y2d = today(y2);
+  if (days.has(yd) || kept.has(yd) || !(days.has(y2d) || kept.has(y2d))) return null;
+  if (s.used.some((d) => dayDiff(d, yd) < 7)) return null;
+  s.have = 0; s.used = [...s.used, yd].slice(-30); save();
+  return yd;
+}
+// streak levels: the sprout on Today grows a stage at each badge
+export const BADGES = [3, 7, 14, 30, 50, 100];
+export const streakLevel = (n) => BADGES.filter((b) => n >= b).length + (n > 0 ? 1 : 0); // 0 seed … 7 tree
 export const MILESTONES = [3, 7, 14, 30, 50, 100, 365];
 export const nextMilestone = (n) => MILESTONES.find((m) => m > n) ?? n + 100;
 export function lastDays(n = 7) {

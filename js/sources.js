@@ -1,5 +1,6 @@
 // About: settings, how the numbers are worked out, and every citation.
 import { $, esc, fmt, data, ROOT, state, save, toast } from './core.js?v=9';
+import { ART } from './fun.js?v=9';
 
 export default async function sources(main) {
   const D = await data();
@@ -25,24 +26,29 @@ export default async function sources(main) {
 
   main.innerHTML = `
   <div class="page">
-    <header class="page-head"><h1>About and sources</h1><p class="muted">Zero Mile is free, for every age, and keeps your photos on your device. Every number comes from one of ${total} sources below, saved into the app so it never pulls from those websites while you use it.</p></header>
+    <header class="page-head"><h1>About and sources</h1><p class="muted">Free, for every age, and private: your photos stay on this device.</p></header>
+    <ul class="promise" aria-label="Zero Mile in numbers">
+      <li>${ART.leaf()}<b>${D.plants.length}</b><span>plants</span></li>
+      <li>${ART.lorry()}<b>${total}</b><span>sources</span></li>
+      <li>${ART.camera()}<b>0</b><span>uploads</span></li>
+    </ul>
     <div class="about-grid">
       <div style="display:grid;gap:16px">
         <section class="card">
           <h2 style="margin-bottom:6px">Settings</h2>
           <div class="setting"><span>Where you live</span><label class="select"><span class="vh">Where you live</span><select id="region">${Object.entries(D.regions).map(([k, r]) => `<option value="${k}"${k === state.region ? ' selected' : ''}>${esc(r.name)}</option>`).join('')}</select></label></div>
-          <label class="toggle setting"><input type="checkbox" id="smart"${state.smartAI ? ' checked' : ''}><span>Smart photo check (downloads a 90 MB model once, runs on your device)</span></label>
+          <label class="toggle setting"><input type="checkbox" id="smart"${state.smartAI ? ' checked' : ''}><span>Smart photo check (90 MB, on this device)</span></label>
           <div class="setting"><span>Plants in your garden</span><b>${state.garden.length}</b></div>
         </section>
         <section class="card">
           <h2 style="margin-bottom:6px">Install the app</h2>
-          <p class="muted small">On iPhone: tap Share, then “Add to Home Screen”. On a Mac or PC: in Chrome or Edge, choose “Install Zero Mile” in the address bar. It then works without the internet.</p>
+          <p class="muted small">iPhone: Share, then “Add to Home Screen”. Mac or PC: “Install” in the address bar.</p>
           <p style="margin-top:12px"><a class="btn btn-sm btn-soft" href="${new URL('./', ROOT).href}">Visit the Zero Mile website</a></p>
         </section>
       </div>
       <div style="display:grid;gap:16px">
         <section class="card method">
-          <h2 style="margin-bottom:10px">How the numbers are worked out</h2>
+          <details class="src-group"><summary><span class="sum-t">${ART.sun('inline-art')}How we count</span></summary>
           <p><b>Where it comes from.</b> For each plant and country we use the single biggest source of what shops sell: home-grown if the country grows the most, otherwise the top import partner by weight in recent trade data. Some are marked low confidence; herbs have no trade codes of their own.</p>
           <p><b>Air miles</b> are the straight line from the growing area to ${esc(D.regions.IE.dest.name)}, ${esc(D.regions.UK.dest.name)}, ${esc(D.regions.US.dest.name)}, ${esc(D.regions.DE.dest.name)}, ${esc(D.regions.HK.dest.name)} or ${esc(D.regions.AU.dest.name)}. Real routes are longer, so for carbon we multiply by ${D.circuity}, a common road detour factor.</p>
           <p><b>Travel carbon</b> uses UK government freight factors per tonne-kilometre: lorry ${fmt(ef.hgv.value, 3)}, ship ${fmt(ef.ship.value, 3)}, ferry ${fmt(ef.ferry.value, 3)}, rail ${fmt(ef.rail.value, 3)}, long-haul air ${fmt(ef.air_long.value, 3)} kg CO2e.</p>
@@ -51,6 +57,7 @@ export default async function sources(main) {
           <p><b>Goodness.</b> Where studies measured nutrients lost in storage (like vitamin C in spinach after a week in the fridge), we quote that number. Otherwise we say “about the same”.</p>
           <p><b>Photo check.</b> Your photos never leave your device. It counts green, yellowing and brown leaf colours. It’s a friendly guess, not a plant doctor.</p>
           <p><b>Pictures and 3D.</b> Photos on the website are AI illustrations made with Comfy and printed in Ditherlab. Some 3D models are drawn in code${credits.length ? '; others are free models credited below' : ''}.</p>
+          </details>
         </section>
         <section class="card">
           <details class="src-group" open><summary>Quick facts</summary><ol>${facts.map((f) => `<li>${esc(f.text)} <small>${(f.sources || []).map((s) => `<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.publisher || s.title)}</a>`).join(', ')}</small></li>`).join('')}</ol></details>

@@ -1,6 +1,7 @@
 // Zero Mile app: the router for the daily-use screens (Today, Find, Photo, Impact, About),
 // plus the Mac/iPad sidebar with your plants.
-import { $, $$, esc, data, rise, ROOT, state, plantById, overallStreak, today, thumb, dailyPlants } from './core.js?v=9';
+import { $, $$, esc, data, rise, ROOT, state, plantById, overallStreak, today, thumb, dailyPlants, useSaverIfNeeded, toast, saverReady } from './core.js?v=9';
+import { initPress, enter, hop, ART } from './fun.js?v=9';
 
 const routes = {
   '': () => import('./garden.js?v=9'),
@@ -25,7 +26,8 @@ export function renderSide() {
     return `<li><a href="#/plant/${e.id}"${cur ? ' aria-current="page"' : ''}><img src="${thumb(e.id)}" alt="" width="28" height="28"><span>${esc(p.name)}</span>${done ? '<i class="tick" aria-label="photo taken today"></i>' : ''}</a></li>`;
   }).join('') || '<li class="side-none">Nothing growing yet</li>';
   const n = overallStreak();
-  $('#side-streak').textContent = n ? `${n} day streak` : dailyPlants().length ? 'Take today’s photo' : state.garden.length ? 'Your trees are growing' : 'Let’s grow something';
+  const line = n ? `<b>${n}</b> day streak` : dailyPlants().length ? 'Take today’s photo' : state.garden.length ? 'Your trees are growing' : 'Let’s grow something';
+  $('#side-streak').innerHTML = `${n ? ART.sun('side-sun') : ''}<span>${line}</span>${saverReady() ? ART.can('side-can') : ''}`;
 }
 
 async function route() {
@@ -34,6 +36,8 @@ async function route() {
   const [name = '', arg] = location.hash.replace(/^#\/?/, '').split('/');
   const key = routes[name] ? name : '';
   await data();
+  // the streak saver: if yesterday was missed, a watering can earned by a 7-day run covers it
+  if (!routed && useSaverIfNeeded()) setTimeout(() => toast('Your watering can saved your streak!'), 900);
   const mod = await routes[key]();
   if (my !== seq) return; // a newer navigation won
   current?.unmount?.();
@@ -41,9 +45,12 @@ async function route() {
   main.innerHTML = '';
   document.body.dataset.view = key || 'garden';
   const navKey = key === 'plant' ? 'find' : key || 'garden';
-  $$('[data-nav]').forEach((a) => { if (a.dataset.nav === navKey) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
+  $$('[data-nav]').forEach((a) => {
+    if (a.dataset.nav === navKey) { if (routed && a.getAttribute('aria-current') !== 'page') hop(a.querySelector('svg')); a.setAttribute('aria-current', 'page'); }
+    else a.removeAttribute('aria-current');
+  });
   current = await mod[VIEW[key] || 'default'](main, decodeURIComponent(arg || ''));
-  main.firstElementChild?.classList.add('view-enter');
+  enter(main.firstElementChild);
   window.scrollTo({ top: 0, behavior: 'instant' });
   document.title = (main.querySelector('h1')?.textContent || 'Today') + ' · Zero Mile';
   if (routed) main.focus({ preventScroll: true });
@@ -52,6 +59,7 @@ async function route() {
   renderSide();
 }
 addEventListener('hashchange', route);
+initPress();
 addEventListener('zm:garden', renderSide);
 $('.skip').addEventListener('click', (e) => { e.preventDefault(); $('#main').focus(); });
 route();

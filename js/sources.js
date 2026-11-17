@@ -21,6 +21,8 @@ export default async function sources(main) {
   facts.forEach((f) => add('Growing, trees and transport', f.sources));
   let credits = [];
   try { const m = await fetch(new URL('models/manifest.json?v=5', ROOT)).then((r) => (r.ok ? r.json() : null)); credits = m?.credits || []; } catch { /* no downloaded models yet */ }
+  let photos = [];
+  try { photos = await (await import('./photos.js?v=9')).photoCredits(); } catch { /* no photo credits file */ }
   const ef = D.emission;
   const total = [...Object.values(groups)].reduce((s, m) => s + m.size, 0);
 
@@ -56,12 +58,13 @@ export default async function sources(main) {
           <p><b>Trees.</b> Planting months, sizes, spacing, first fruit and care in the first three years come from the RHS, the Woodland Trust, university extension guides and government agencies. “Grows well here” ratings cite a reason, such as native range, winter cold or frost. The CO2 figure is an estimate: the European Commission and the European Environment Agency give about 22 kg of CO2 a year for a mature tree, on average. Real trees vary with species, size and site, and young trees take up less.</p>
           <p><b>Goodness.</b> Where studies measured nutrients lost in storage (like vitamin C in spinach after a week in the fridge), we quote that number. Otherwise we say “about the same”.</p>
           <p><b>Photo check.</b> Your photos never leave your device. It counts green, yellowing and brown leaf colours. It’s a friendly guess, not a plant doctor.</p>
-          <p><b>Pictures and 3D.</b> Photos on the website are AI illustrations made with Comfy and printed in Ditherlab. Some 3D models are drawn in code${credits.length ? '; others are free models credited below' : ''}.</p>
+          <p><b>Pictures and 3D.</b> Plant photos in the app are real, open-licence pictures from Wikimedia Commons and Openverse, credited below. Close-up pictures on the website are AI illustrations made with Comfy. Some 3D models are drawn in code${credits.length ? '; others are free models credited below' : ''}.</p>
           </details>
         </section>
         <section class="card">
           <details class="src-group" open><summary>Quick facts</summary><ol>${facts.map((f) => `<li>${esc(f.text)} <small>${(f.sources || []).map((s) => `<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.publisher || s.title)}</a>`).join(', ')}</small></li>`).join('')}</ol></details>
           ${Object.entries(groups).map(([g, m]) => `<details class="src-group"><summary>${g} <span class="muted small">${m.size}</span></summary><ol>${[...m.values()].map((s) => `<li><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.title)}</a><small>${esc(s.publisher || '')}${s.accessed ? `, accessed ${esc(s.accessed)}` : ''}</small></li>`).join('')}</ol></details>`).join('')}
+          ${photos.length ? `<details class="src-group"><summary>Plant photo credits <span class="muted small">${photos.length}</span></summary><ol>${photos.map((c) => `<li>${c.url ? `<a href="${esc(c.url)}" target="_blank" rel="noopener">${esc(c.title || c.id)}</a>` : esc(c.title || c.id)}<small>${esc([c.author, c.license].filter(Boolean).join(', '))}</small></li>`).join('')}</ol></details>` : ''}
           ${credits.length ? `<details class="src-group"><summary>3D model credits <span class="muted small">${credits.length}</span></summary><ol>${credits.map((c) => `<li>${typeof c === 'string' ? esc(c) : `${c.url ? `<a href="${esc(c.url)}" target="_blank" rel="noopener">${esc(c.title || c.name || c.url)}</a>` : esc(c.title || c.name || '')}<small>${esc([c.author, c.license].filter(Boolean).join(', '))}</small>`}</li>`).join('')}</ol></details>` : ''}
         </section>
       </div>

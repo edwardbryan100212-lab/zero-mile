@@ -11,9 +11,19 @@ export const fmt = (n, d = 0) => Number(n).toLocaleString('en-IE', { maximumFrac
 // ---------- data (downloaded once from the cited sources into data/data.json; never fetched from the sources at runtime) ----------
 let DATA = null;
 export async function data() {
-  if (!DATA) DATA = await fetch(new URL('data/data.json?v=2', ROOT)).then((r) => r.json());
+  if (!DATA) {
+    const [d, man] = await Promise.all([
+      fetch(new URL('data/data.json?v=5', ROOT)).then((r) => r.json()),
+      fetch(new URL('models/manifest.json?v=5', ROOT)).then((r) => (r.ok ? r.json() : {})).catch(() => ({})),
+    ]);
+    DATA = d;
+    for (const [id, m] of Object.entries(man || {})) if (m?.harvest) REAL.add(id);
+  }
   return DATA;
 }
+// plants with a real downloaded model of their harvest show it as their picture; the rest show the drawn plant
+const REAL = new Set();
+export const thumb = (id) => new URL(REAL.has(id) ? `img/fruits/${id}.webp` : `img/plants/${id}.webp`, ROOT).href;
 export const plantById = (id) => DATA.plants.find((p) => p.id === id);
 
 // ---------- distance and footprint ----------

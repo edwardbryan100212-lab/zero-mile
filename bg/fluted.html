@@ -1,0 +1,274 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fluted Wallpaper</title>
+<style>
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #04163a; }
+  canvas { display: block; width: 100%; height: 100%; }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<script>
+// Fluted-glass live wallpaper.
+// A soft blue light field (base.png) is carried by a small fluid simulation:
+// the mouse stirs it, a slow drift keeps it alive, and it always relaxes back
+// to the base picture. The result is viewed through 50 vertical glass ribs
+// (round cross-section, glass index 1.3, refraction by Snell's law).
+// The app calls setPointer(x, y) (0..1, y up), setPaused(bool), setFps(n).
+'use strict';
+// Settings (the app changes them with setConfig({...}); these are the defaults).
+const C = {
+  ribs: 50,       // glass ribs across the screen
+  span: 0.20,     // how far the glass bends light, as a share of the width
+  relax: 0.9,     // how fast the light settles back to the picture (per second)
+  stir: 9.0,      // how strongly the mouse pushes the light
+  splat: 0.0022,  // size of the mouse's push
+  drift: 0.55,    // strength of the slow idle drift
+  hue: 0,         // colour turn, degrees
+  sat: 1,         // colour strength
+  bright: 1,      // brightness
+};
+Object.assign(C, window.INITIAL_CONFIG || {});
+window.setConfig = (o) => { Object.assign(C, o || {}); };
+const VEL_DECAY = 0.985;  // velocity kept per frame (at 60 fps)
+
+const cv = document.getElementById('c');
+const gl = cv.getContext('webgl2', { antialias: false, alpha: false, depth: false, stencil: false,
+                                     preserveDrawingBuffer: false, powerPreference: 'low-power' });
+if (!gl) document.body.style.background = 'url(base.png) center/cover';
+gl.getExtension('EXT_color_buffer_float');
+gl.getExtension('EXT_color_buffer_half_float');
+
+const VS = `#version 300 es
+in vec2 p; out vec2 uv;
+void main(){ uv = p * 0.5 + 0.5; gl_Position = vec4(p, 0.0, 1.0); }`;
+const head = `#version 300 es
+precision highp float; in vec2 uv; out vec4 o;`;
+
+const FS = {
+  // move a field along the velocity (semi-Lagrangian), velocity in grid cells per second
+  advect: head + `
+    uniform sampler2D vel, src; uniform vec2 velTexel; uniform float dt, keep;
+    void main(){ vec2 v = texture(vel, uv).xy; o = keep * texture(src, uv - dt * v * velTexel); }`,
+  // carry the light, then let it relax back towards the picture
+  dye: head + `
+    uniform sampler2D vel, src, base; uniform vec2 velTexel; uniform float dt, relax, first;
+    void main(){
+      vec3 b = texture(base, uv).rgb;
+      if (first > 0.5) { o = vec4(b, 1.0); return; }
+      vec2 v = texture(vel, uv).xy;
+      vec3 c = texture(src, uv - dt * v * velTexel).rgb;
+      o = vec4(mix(c, b, 1.0 - exp(-relax * dt)), 1.0);
+    }`,
+  // add a push where the mouse moved, plus a slow divergence-free drift
+  force: head + `
+    uniform sampler2D vel; uniform vec2 pt, push; uniform float rad, aspect, dt, t, drift;
+    void main(){
+      vec2 v = texture(vel, uv).xy;
+      vec2 d = uv - pt; d.x *= aspect;
+      v += push * exp(-dot(d, d) / rad);
+      // stream function psi = sum of slow waves; velocity = curl(psi)
+      vec2 q = vec2(uv.x * aspect, uv.y);
+      float a = 2.1, b = 1.7, c = 2.9;
+      vec2 cu = vec2(
+        a * cos(a * q.y + 0.31 * t) + 0.6 * b * cos(b * (q.x + q.y) - 0.23 * t),
+       -c * cos(c * q.x - 0.27 * t) - 0.6 * b * cos(b * (q.x + q.y) - 0.23 * t));
+      v += drift * dt * cu;
+      o = vec4(v, 0.0, 1.0);
+    }`,
+  divergence: head + `
+    uniform sampler2D vel; uniform vec2 texel;
+    void main(){
+      float L = texture(vel, uv - vec2(texel.x, 0)).x, R = texture(vel, uv + vec2(texel.x, 0)).x;
+      float B = texture(vel, uv - vec2(0, texel.y)).y, T = texture(vel, uv + vec2(0, texel.y)).y;
+      o = vec4(0.5 * (R - L + T - B), 0, 0, 1);
+    }`,
+  pressure: head + `
+    uniform sampler2D pres, div; uniform vec2 texel;
+    void main(){
+      float L = texture(pres, uv - vec2(texel.x, 0)).x, R = texture(pres, uv + vec2(texel.x, 0)).x;
+      float B = texture(pres, uv - vec2(0, texel.y)).x, T = texture(pres, uv + vec2(0, texel.y)).x;
+      o = vec4(0.25 * (L + R + B + T - texture(div, uv).x), 0, 0, 1);
+    }`,
+  project: head + `
+    uniform sampler2D vel, pres; uniform vec2 texel; uniform float keep;
+    void main(){
+      float L = texture(pres, uv - vec2(texel.x, 0)).x, R = texture(pres, uv + vec2(texel.x, 0)).x;
+      float B = texture(pres, uv - vec2(0, texel.y)).x, T = texture(pres, uv + vec2(0, texel.y)).x;
+      vec2 v = texture(vel, uv).xy - 0.5 * vec2(R - L, T - B);
+      o = vec4(v * keep, 0, 1);
+    }`,
+  clear: head + `
+    uniform sampler2D src; uniform float keep;
+    void main(){ o = keep * texture(src, uv); }`,
+  // look at the light through the ribs
+  glass: head + `
+    uniform sampler2D dye; uniform float ribs, span, hue, sat, bright;
+    void main(){
+      float r = uv.x * ribs + 0.5;
+      float c = fract(r) * 2.0 - 1.0;
+      float nz = sqrt(max(1.0 - c * c, 0.001));
+      const float eta = 1.0 / 1.3;
+      float k = 1.0 - eta * eta * (1.0 - nz * nz);
+      float tx = (eta * nz - sqrt(k)) * c;
+      vec2 s = vec2(clamp(uv.x + tx * span, 0.002, 0.998), uv.y);
+      vec3 col = texture(dye, s).rgb;
+      // colour: turn the hue (in YIQ), set strength and brightness
+      mat3 toY = mat3(0.299, 0.596, 0.211, 0.587, -0.274, -0.523, 0.114, -0.322, 0.312);
+      mat3 fromY = mat3(1.0, 1.0, 1.0, 0.956, -0.272, -1.106, 0.621, -0.647, 1.703);
+      vec3 yiq = toY * col; float h = radians(hue), cs = cos(h), sn = sin(h);
+      yiq.yz = mat2(cs, sn, -sn, cs) * yiq.yz * sat;
+      col = clamp(fromY * yiq * bright, 0.0, 1.0);
+      // less than one 8-bit step of noise so the gradients never band
+      float n = fract(sin(dot(gl_FragCoord.xy, vec2(12.9898, 78.233))) * 43758.5453);
+      o = vec4(col + (n - 0.5) / 255.0, 1.0);
+    }`,
+};
+
+function shader(type, src) {
+  const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s);
+  if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s));
+  return s;
+}
+const vs = shader(gl.VERTEX_SHADER, VS);
+const P = {};
+for (const [name, src] of Object.entries(FS)) {
+  const p = gl.createProgram();
+  gl.attachShader(p, vs); gl.attachShader(p, shader(gl.FRAGMENT_SHADER, src));
+  gl.bindAttribLocation(p, 0, 'p'); gl.linkProgram(p);
+  if (!gl.getProgramParameter(p, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(p));
+  const u = {}; const n = gl.getProgramParameter(p, gl.ACTIVE_UNIFORMS);
+  for (let i = 0; i < n; i++) { const info = gl.getActiveUniform(p, i); u[info.name] = gl.getUniformLocation(p, info.name); }
+  P[name] = { p, u };
+}
+const buf = gl.createBuffer();
+gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+gl.enableVertexAttribArray(0); gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
+
+function target(w, h) {
+  const t = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, t);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA16F, w, h, 0, gl.RGBA, gl.HALF_FLOAT, null);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+  const f = gl.createFramebuffer(); gl.bindFramebuffer(gl.FRAMEBUFFER, f);
+  gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, t, 0);
+  return { t, f, w, h };
+}
+const pair = (w, h) => ({ a: target(w, h), b: target(w, h), swap() { [this.a, this.b] = [this.b, this.a]; } });
+
+let W = 0, H = 0, vel, dye, pres, div, simW, simH, dyeW, dyeH, first = 1;
+// Pixels drawn per screen point. 0 = the screen's own (Retina = 2). The app sets
+// 1 in Low Power Mode, which draws a quarter of the pixels; the browser scales it up.
+let renderScale = Number(window.INITIAL_SCALE) || 0;
+window.setScale = (s) => { s = Number(s) || 0; if (s === renderScale) return; renderScale = s; W = 0; resize(); };
+function resize() {
+  const q = new URLSearchParams(location.search);
+  const dpr = Number(q.get('dpr')) || renderScale || Math.min(window.devicePixelRatio || 1, 2);
+  const w = Math.round(innerWidth * dpr), h = Math.round(innerHeight * dpr);
+  if (w === W && h === H) return;
+  W = cv.width = w; H = cv.height = h;
+  const aspect = W / H;
+  simH = 96; simW = Math.round(simH * aspect);
+  dyeH = Math.min(Number(q.get('dye')) || 720, Math.round(H / 2)); dyeW = Math.round(dyeH * aspect);
+  vel = pair(simW, simH); pres = pair(simW, simH); div = target(simW, simH); dye = pair(dyeW, dyeH);
+  first = 1;
+}
+
+const base = gl.createTexture();
+gl.bindTexture(gl.TEXTURE_2D, base);
+gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array([10, 40, 110, 255]));
+let baseReady = false;
+const img = new Image();
+img.onload = () => {
+  gl.bindTexture(gl.TEXTURE_2D, base);
+  gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
+  gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
+  gl.generateMipmap(gl.TEXTURE_2D);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+  baseReady = true; first = 1;
+};
+img.src = window.BASE_URL || 'base.png';   // the app passes the picture in as a data URL
+
+function run(name, out, tex, set) {
+  const { p, u } = P[name];
+  gl.useProgram(p);
+  let unit = 0;
+  for (const [k, t] of Object.entries(tex)) { gl.activeTexture(gl.TEXTURE0 + unit); gl.bindTexture(gl.TEXTURE_2D, t); gl.uniform1i(u[k], unit++); }
+  if (set) set(u);
+  if (out) { gl.bindFramebuffer(gl.FRAMEBUFFER, out.f); gl.viewport(0, 0, out.w, out.h); }
+  else { gl.bindFramebuffer(gl.FRAMEBUFFER, null); gl.viewport(0, 0, W, H); }
+  gl.drawArrays(gl.TRIANGLES, 0, 3);
+}
+
+// ---- pointer (from the app, or the mouse when opened in a browser) ----
+let px = -1, py = -1, lastX = -1, lastY = -1;
+window.setPointer = (x, y) => { px = x; py = y; };
+addEventListener('pointermove', (e) => { px = e.clientX / innerWidth; py = 1 - e.clientY / innerHeight; });
+let paused = false, fps = 60;
+window.setPaused = (v) => { paused = !!v; if (!paused) { last = 0; requestAnimationFrame(frame); } };
+window.setFps = (n) => { fps = Math.max(10, Math.min(120, n | 0)); };
+
+let last = 0, t = 0, acc = 0;
+function frame(now) {
+  if (paused) return;
+  requestAnimationFrame(frame);
+  if (!last) last = now;
+  const real = (now - last) / 1000;
+  acc += real; last = now;
+  if (acc < 1 / fps - 0.002) return;
+  const dt = Math.min(acc, 1 / 20); acc = 0;
+  step(dt);
+}
+// One frame of the simulation and the glass (also used to record videos frame by frame).
+function step(dt) {
+  t += dt;
+  resize();
+  if (!baseReady) { run('glass', null, { dye: base }, (u) => { gl.uniform1f(u.ribs, C.ribs); gl.uniform1f(u.span, C.span); gl.uniform1f(u.hue, C.hue); gl.uniform1f(u.sat, C.sat); gl.uniform1f(u.bright, C.bright); }); return; }
+  const velTexel = [1 / simW, 1 / simH], texel = velTexel;
+  const keep = Math.pow(VEL_DECAY, dt * 60);
+
+  // forces: mouse push and idle drift
+  let push = [0, 0], pt = [-9, -9];
+  if (px >= 0 && lastX >= 0) {
+    const dx = px - lastX, dy = py - lastY;
+    push = [dx * simW * C.stir, dy * simH * C.stir];
+    pt = [px, py];
+  }
+  lastX = px; lastY = py;
+  run('force', vel.b, { vel: vel.a.t }, (u) => {
+    gl.uniform2f(u.pt, pt[0], pt[1]); gl.uniform2f(u.push, push[0], push[1]);
+    gl.uniform1f(u.rad, C.splat); gl.uniform1f(u.aspect, W / H); gl.uniform1f(u.dt, dt);
+    gl.uniform1f(u.t, t); gl.uniform1f(u.drift, C.drift);
+  }); vel.swap();
+  // keep the flow swirling, not squashing
+  run('divergence', div, { vel: vel.a.t }, (u) => gl.uniform2f(u.texel, texel[0], texel[1]));
+  run('clear', pres.b, { src: pres.a.t }, (u) => gl.uniform1f(u.keep, 0.8)); pres.swap();
+  for (let i = 0; i < 18; i++) {
+    run('pressure', pres.b, { pres: pres.a.t, div: div.t }, (u) => gl.uniform2f(u.texel, texel[0], texel[1])); pres.swap();
+  }
+  run('project', vel.b, { vel: vel.a.t, pres: pres.a.t }, (u) => { gl.uniform2f(u.texel, texel[0], texel[1]); gl.uniform1f(u.keep, keep); }); vel.swap();
+  run('advect', vel.b, { vel: vel.a.t, src: vel.a.t }, (u) => { gl.uniform2f(u.velTexel, velTexel[0], velTexel[1]); gl.uniform1f(u.dt, dt); gl.uniform1f(u.keep, 1); }); vel.swap();
+  // carry the light and draw it through the glass
+  run('dye', dye.b, { vel: vel.a.t, src: dye.a.t, base }, (u) => {
+    gl.uniform2f(u.velTexel, velTexel[0], velTexel[1]); gl.uniform1f(u.dt, dt);
+    gl.uniform1f(u.relax, C.relax); gl.uniform1f(u.first, first);
+  }); dye.swap(); first = 0;
+  run('glass', null, { dye: dye.a.t }, (u) => { gl.uniform1f(u.ribs, C.ribs); gl.uniform1f(u.span, C.span); gl.uniform1f(u.hue, C.hue); gl.uniform1f(u.sat, C.sat); gl.uniform1f(u.bright, C.bright); });
+}
+window.step = step;
+addEventListener('resize', resize);
+resize();
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>

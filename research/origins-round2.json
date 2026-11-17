@@ -1409,17 +1409,17 @@
  {
   "region": "UK",
   "crop": "pumpkin",
-  "source_type": "import",
-  "origin_country": "Spain",
-  "origin_place": "Almeria, Andalusia",
-  "origin_lat": 36.84,
-  "origin_lon": -2.46,
-  "share_pct": 24.2,
+  "source_type": "domestic",
+  "origin_country": "United Kingdom",
+  "origin_place": "England (region not stated)",
+  "origin_lat": 52.5,
+  "origin_lon": -1.5,
+  "share_pct": null,
   "year": 2025,
-  "transport_mode": "road+ferry",
-  "seasonal_note": "Carving pumpkins in October are largely UK-grown; UK pumpkin output is not published.",
+  "transport_mode": "road",
+  "seasonal_note": "Carving pumpkins in October are largely UK-grown; imports (Spain first, 9,932 t in 2025) fill the rest of the year and include other squash.",
   "confidence": "low",
-  "notes": "UK imported 41,092 t under CN 07099390 in 2025; 9,932 t from Spain (24.2%). CN 07099390 covers all pumpkins, squash and gourds except courgettes. Growing area inferred from general knowledge of the main producing region; not given in the trade data. share_pct = partner's share of the region's 2025 import volume for this trade code (not of total supply).",
+  "notes": "UK pumpkin output is not in Defra's horticulture dataset or FAOSTAT. Bioenergy News (2019): about 15 million pumpkins grown in the UK a year and an estimated 18,000 t discarded; the discarded tonnage alone exceeds Spain's 9,932 t (24.2% of 41,092 t imported under CN 07099390 in 2025, a code that also covers squash and gourds). So UK-grown is the largest single source. Place is a country-level placeholder; share_pct null because UK output tonnage is not published.",
   "sources": [
    {
     "title": "HMRC Overseas Trade Statistics (uktradeinfo API): UK imports of commodity 07099390, Jan-Dec 2025 (EU + non-EU flows, NetMass kg; monthly rows summed)",
@@ -1427,8 +1427,16 @@
     "url": "https://api.uktradeinfo.com/OTS?$filter=CommodityId%20eq%207099390%20and%20MonthId%20ge%20202501%20and%20MonthId%20le%20202512%20and%20%28FlowTypeId%20eq%201%20or%20FlowTypeId%20eq%203%29",
     "accessed": "2026-11-17",
     "quote": "\"CommodityId\":7099390 ... \"CountryId\":11 (Spain) ... NetMass rows sum to 9931890 kg in 2025"
+   },
+   {
+    "title": "18,000 tonnes of pumpkins discarded in UK annually could be used for biogas",
+    "publisher": "Bioenergy News",
+    "url": "https://www.bioenergy-news.com/news/18000-tonnes-of-pumpkins-discarded-in-uk-annually-could-be-used-for-biogas/",
+    "accessed": "2026-11-17",
+    "quote": "An estimated 18,000 tonnes of \"perfectly edible\" pumpkins are discarded in the UK every year."
    }
-  ]
+  ],
+  "reviewed_fix": "2026-11-17 review: was import / Spain / Almeria (36.84, -2.46) / 24.2%. Spain is only the top import partner; domestic output is larger (18,000 t discarded per year vs 9,932 t Spanish imports). Changed to domestic UK. See REVIEW-round2.md."
  },
  {
   "region": "UK",

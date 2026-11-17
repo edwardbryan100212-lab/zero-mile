@@ -1,0 +1,2192 @@
+{
+ "emission_factors": {
+  "hgv": {
+   "value": 0.10163,
+   "value_refrigerated": 0.11894,
+   "unit": "kg CO2e/tonne-km",
+   "label": "HGV (all diesel), All HGVs, average laden, total kg CO2e (2025 full set, Freighting goods row 63 col P). Refrigerated: 'HGV refrigerated (all diesel)', All HGVs, average laden = 0.11894 (row 91 col P).",
+   "sources": [
+    {
+     "title": "Greenhouse gas reporting: conversion factors 2025",
+     "publisher": "Department for Energy Security and Net Zero (DESNZ) / Defra",
+     "url": "https://www.gov.uk/government/publications/greenhouse-gas-reporting-conversion-factors-2025",
+     "accessed": "2026-11-17",
+     "quote": "HGV (all diesel) | All HGVs | tonne.km | Average laden kg CO2e 0.10163; HGV refrigerated (all diesel) | All HGVs | 0.11894"
+    },
+    {
+     "title": "GHG conversion factors 2025 full set (xlsx), 'Freighting goods' sheet",
+     "publisher": "Department for Energy Security and Net Zero (DESNZ) / Defra",
+     "url": "https://assets.publishing.service.gov.uk/media/6846a4f55e92539572806125/ghg-conversion-factors-2025-full-set.xlsx",
+     "accessed": "2026-11-17",
+     "quote": "HGV (all diesel) | All HGVs | tonne.km | Average laden kg CO2e 0.10163; HGV refrigerated (all diesel) | All HGVs | 0.11894"
+    }
+   ]
+  },
+  "ship": {
+   "value": 0.01306,
+   "value_container_average": 0.01612,
+   "unit": "kg CO2e/tonne-km",
+   "label": "Cargo ship, 'Refrigerated cargo', All dwt = 0.01306 (dedicated reefer ship). For comparison Cargo ship, Container ship, Average = 0.01612. Total kg CO2e.",
+   "sources": [
+    {
+     "title": "Greenhouse gas reporting: conversion factors 2025",
+     "publisher": "Department for Energy Security and Net Zero (DESNZ) / Defra",
+     "url": "https://www.gov.uk/government/publications/greenhouse-gas-reporting-conversion-factors-2025",
+     "accessed": "2026-11-17",
+     "quote": "Cargo ship | Refrigerated cargo | All dwt | tonne.km | 0.01306; Container ship | Average | tonne.km | 0.01612"
+    },
+    {
+     "title": "GHG conversion factors 2025 full set (xlsx), 'Freighting goods' sheet",
+     "publisher": "Department for Energy Security and Net Zero (DESNZ) / Defra",
+     "url": "https://assets.publishing.service.gov.uk/media/6846a4f55e92539572806125/ghg-conversion-factors-2025-full-set.xlsx",
+     "accessed": "2026-11-17",
+     "quote": "Cargo ship | Refrigerated cargo | All dwt | tonne.km | 0.01306; Container ship | Average | tonne.km | 0.01612"
+    }
+   ]
+  },
+  "air_long": {
+   "value": 0.89939,
+   "value_without_rf": 0.5313,
+   "unit": "kg CO2e/tonne-km",
+   "label": "Freight flights, Long-haul, to/from UK, with radiative forcing (RF) = 0.89939; without RF = 0.53130. Factors include 8% distance uplift.",
+   "sources": [
+    {
+     "title": "Greenhouse gas reporting: conversion factors 2025",
+     "publisher": "Department for Energy Security and Net Zero (DESNZ) / Defra",
+     "url": "https://www.gov.uk/government/publications/greenhouse-gas-reporting-conversion-factors-2025",
+     "accessed": "2026-11-17",
+     "quote": "Freight flights | Long-haul, to/from UK | tonne.km | With RF 0.89939 | Without RF 0.5313"
+    },
+    {
+     "title": "GHG conversion factors 2025 full set (xlsx), 'Freighting goods' sheet",
+     "publisher": "Department for Energy Security and Net Zero (DESNZ) / Defra",
+     "url": "https://assets.publishing.service.gov.uk/media/6846a4f55e92539572806125/ghg-conversion-factors-2025-full-set.xlsx",
+     "accessed": "2026-11-17",
+     "quote": "Freight flights | Long-haul, to/from UK | tonne.km | With RF 0.89939 | Without RF 0.5313"
+    }
+   ]
+  },
+  "air_short": {
+   "value": 1.27835,
+   "value_without_rf": 0.75539,
+   "unit": "kg CO2e/tonne-km",
+   "label": "Freight flights, Short-haul, to/from UK, with RF = 1.27835; without RF = 0.75539. Factors include 8% distance uplift.",
+   "sources": [
+    {
+     "title": "Greenhouse gas reporting: conversion factors 2025",
+     "publisher": "Department for Energy Security and Net Zero (DESNZ) / Defra",
+     "url": "https://www.gov.uk/government/publications/greenhouse-gas-reporting-conversion-factors-2025",
+     "accessed": "2026-11-17",
+     "quote": "Freight flights | Short-haul, to/from UK | tonne.km | With RF 1.27835 | Without RF 0.75539"
+    },
+    {
+     "title": "GHG conversion factors 2025 full set (xlsx), 'Freighting goods' sheet",
+     "publisher": "Department for Energy Security and Net Zero (DESNZ) / Defra",
+     "url": "https://assets.publishing.service.gov.uk/media/6846a4f55e92539572806125/ghg-conversion-factors-2025-full-set.xlsx",
+     "accessed": "2026-11-17",
+     "quote": "Freight flights | Short-haul, to/from UK | tonne.km | With RF 1.27835 | Without RF 0.75539"
+    }
+   ]
+  },
+  "rail": {
+   "value": 0.02779,
+   "unit": "kg CO2e/tonne-km",
+   "label": "Rail, Freight train, total kg CO2e.",
+   "sources": [
+    {
+     "title": "Greenhouse gas reporting: conversion factors 2025",
+     "publisher": "Department for Energy Security and Net Zero (DESNZ) / Defra",
+     "url": "https://www.gov.uk/government/publications/greenhouse-gas-reporting-conversion-factors-2025",
+     "accessed": "2026-11-17",
+     "quote": "Rail | Freight train | tonne.km | kg CO2e 0.02779"
+    },
+    {
+     "title": "GHG conversion factors 2025 full set (xlsx), 'Freighting goods' sheet",
+     "publisher": "Department for Energy Security and Net Zero (DESNZ) / Defra",
+     "url": "https://assets.publishing.service.gov.uk/media/6846a4f55e92539572806125/ghg-conversion-factors-2025-full-set.xlsx",
+     "accessed": "2026-11-17",
+     "quote": "Rail | Freight train | tonne.km | kg CO2e 0.02779"
+    }
+   ]
+  },
+  "ferry": {
+   "value": 0.37612,
+   "value_roro_ferry_average": 0.05158,
+   "unit": "kg CO2e/tonne-km",
+   "label": "Cargo ship, 'Large RoPax ferry', Average = 0.37612 (per tonne of freight; passenger ferry carrying freight). For comparison 'RoRo-Ferry' Average = 0.05158.",
+   "sources": [
+    {
+     "title": "Greenhouse gas reporting: conversion factors 2025",
+     "publisher": "Department for Energy Security and Net Zero (DESNZ) / Defra",
+     "url": "https://www.gov.uk/government/publications/greenhouse-gas-reporting-conversion-factors-2025",
+     "accessed": "2026-11-17",
+     "quote": "Large RoPax ferry | Average | tonne.km | 0.37612; RoRo-Ferry | Average | tonne.km | 0.05158"
+    },
+    {
+     "title": "GHG conversion factors 2025 full set (xlsx), 'Freighting goods' sheet",
+     "publisher": "Department for Energy Security and Net Zero (DESNZ) / Defra",
+     "url": "https://assets.publishing.service.gov.uk/media/6846a4f55e92539572806125/ghg-conversion-factors-2025-full-set.xlsx",
+     "accessed": "2026-11-17",
+     "quote": "Large RoPax ferry | Average | tonne.km | 0.37612; RoRo-Ferry | Average | tonne.km | 0.05158"
+    }
+   ]
+  }
+ },
+ "context_facts": [
+  {
+   "text": "Food transport ('food-miles') accounts for about 19% (nearly a fifth) of global food-system emissions, about 3.0 GtCO2e a year; fruit and vegetable freight is about 36% of food-miles emissions (Li et al. 2022, Nature Food, doi:10.1038/s43016-022-00531-w).",
+   "sources": [
+    {
+     "title": "Global food-miles account for nearly 20% of total food-systems emissions",
+     "publisher": "Nature Food (Li et al., 2022)",
+     "url": "https://www.nature.com/articles/s43016-022-00531-w",
+     "accessed": "2026-11-17",
+     "quote": "indicating that transport accounts for about 19% of total food-system emissions (stemming from transport, production and land-use change)"
+    },
+    {
+     "title": "Fifth of global food-related emissions due to transport",
+     "publisher": "The University of Sydney",
+     "url": "https://www.sydney.edu.au/news-opinion/news/2022/06/21/fifth-of-global-food-related-emissions-due-to-transport.html",
+     "accessed": "2026-11-17",
+     "quote": "They have found that 19 percent of global food system greenhouse gas emissions are caused by transportation."
+    },
+    {
+     "title": "Global food-miles account for nearly 20% of total food-systems emissions",
+     "publisher": "Nature Food (Li et al., 2022)",
+     "url": "https://www.nature.com/articles/s43016-022-00531-w",
+     "accessed": "2026-11-17",
+     "quote": "Global freight transport associated with vegetable and fruit consumption contributes 36% of food-miles emissions"
+    }
+   ]
+  },
+  {
+   "text": "For the average US household, food production dominates food-related emissions (83%); transport as a whole is about 11% of life-cycle emissions and final delivery from producer to retail only 4% (Weber & Matthews 2008, Environ. Sci. Technol., doi:10.1021/es702969f).",
+   "sources": [
+    {
+     "title": "Food-miles and the relative climate impacts of food choices in the United States (abstract via Europe PMC, PMID 18546681)",
+     "publisher": "Environmental Science & Technology (Weber & Matthews, 2008)",
+     "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:18546681%20AND%20SRC:MED&resultType=core&format=json",
+     "accessed": "2026-11-17",
+     "quote": "Transportation as a whole represents only 11% of life-cycle GHG emissions, and final delivery from producer to retail contributes only 4%."
+    }
+   ]
+  }
+ ],
+ "plants": {
+  "tomato": {
+   "scientific": "Solanum lycopersicum",
+   "habit": "vine",
+   "days_to_harvest": [
+    75,
+    85
+   ],
+   "days_basis": "from transplant",
+   "sun": "full",
+   "water": "high",
+   "container_ok": true,
+   "min_pot_l": 18.9,
+   "min_pot_note": "NCSU: minimum 5 US gal (≈18.9 L), 1–2 ft deep; RHS: one plant per 30–45cm pot or two per growing bag",
+   "height_cm": [
+    30,
+    300
+   ],
+   "yield_per_plant": null,
+   "difficulty": "medium",
+   "sow_months_north": [
+    2,
+    3,
+    4
+   ],
+   "sow_months_basis": "RHS month-by-month sowing calendar",
+   "plant_months_north": [
+    5,
+    6
+   ],
+   "harvest_months_north": [
+    7,
+    8,
+    9,
+    10
+   ],
+   "sow_months_south": [
+    8,
+    9,
+    10
+   ],
+   "tips": [
+    "Water steadily – uneven watering causes blossom end rot and split fruit.",
+    "On cordon types remove side-shoots and tie the stem to a tall cane; feed with high-potash liquid feed every 10–14 days once fruits swell."
+   ],
+   "visual": {
+    "leaf": "Pinnately compound, 10–25cm, 5–9 serrated ovate leaflets, densely hairy and strongly scented",
+    "fruit": "Glossy round berry, usually red (also yellow, orange, pink, purple); cherry ~2cm to beefsteak >7.5cm",
+    "flower": "Yellow star-shaped 5-petalled, <2.5cm, in clusters of 3–12",
+    "notes": "Cordon/indeterminate grows as a tall single stem tied to a cane; bush types compact and sprawling"
+   },
+   "sources": [
+    {
+     "title": "How to grow Tomatoes – RHS Grow Your Own guide",
+     "publisher": "Royal Horticultural Society (RHS)",
+     "url": "https://www.rhs.org.uk/vegetables/tomatoes/grow-your-own",
+     "accessed": "2026-11-17",
+     "quote": "Plant one tomato plant in a 30–45cm (12–18in) pot and two in a standard growing bag."
+    },
+    {
+     "title": "Solanum lycopersicum – Extension Gardener Plant Toolbox",
+     "publisher": "North Carolina State University Extension",
+     "url": "https://plants.ces.ncsu.edu/plants/solanum-lycopersicum/",
+     "accessed": "2026-11-17",
+     "quote": "Tomatoes can also be grown in containers at a minimum of 5 gallons and 1 to 2 feet deep, one plant per pot."
+    },
+    {
+     "title": "Solanum lycopersicum – Extension Gardener Plant Toolbox",
+     "publisher": "North Carolina State University Extension",
+     "url": "https://plants.ces.ncsu.edu/plants/solanum-lycopersicum/",
+     "accessed": "2026-11-17",
+     "quote": "The plants can grow 1 to 10 feet tall and 1 to 4 feet wide."
+    },
+    {
+     "title": "Central North Carolina Planting Calendar for Annual Vegetables, Fruits, and Herbs (Table 1, days to harvest)",
+     "publisher": "North Carolina State University Extension",
+     "url": "https://content.ces.ncsu.edu/central-north-carolina-planting-calendar-for-annual-vegetables-fruits-and-herbs",
+     "accessed": "2026-11-17",
+     "quote": "Tomatoes T = 75–85 S = 125–135**"
+    }
+   ]
+  },
+  "lettuce": {
+   "scientific": "Lactuca sativa",
+   "habit": "rosette",
+   "days_to_harvest": [
+    40,
+    85
+   ],
+   "days_basis": "from sowing (loose-leaf 40–50, head 70–85)",
+   "sun": "partial",
+   "water": "high",
+   "container_ok": true,
+   "min_pot_l": null,
+   "min_pot_note": "RHS: container at least 30cm (1ft) wide and deep",
+   "height_cm": [
+    15,
+    30
+   ],
+   "yield_per_plant": null,
+   "difficulty": "easy",
+   "sow_months_north": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+   ],
+   "sow_months_basis": "RHS month-by-month sowing calendar",
+   "plant_months_north": [],
+   "harvest_months_north": [
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+   ],
+   "sow_months_south": [
+    1,
+    2,
+    3,
+    4,
+    8,
+    9,
+    10,
+    11,
+    12
+   ],
+   "tips": [
+    "Keep soil consistently moist and give light shade in hot weather to stop bolting.",
+    "Sow little and often every few weeks; protect seedlings from slugs and snails."
+   ],
+   "visual": {
+    "leaf": "Soft broad leaves forming a rosette or heart; smooth, ruffled or frilly; green or red-purple",
+    "fruit": "None harvested (tiny seeds with fluffy pappus if bolted)",
+    "flower": "Small yellow on tall stalk (only when bolting)",
+    "notes": "Low rosette 15–30cm; cos is upright and oblong, butterhead open and round"
+   },
+   "sources": [
+    {
+     "title": "How to grow Lettuce – RHS Grow Your Own guide",
+     "publisher": "Royal Horticultural Society (RHS)",
+     "url": "https://www.rhs.org.uk/vegetables/lettuce/grow-your-own",
+     "accessed": "2026-11-17",
+     "quote": "Lettuces grow fastest in warm weather, with loose-leaf varieties ready to pick in as little as four to six weeks."
+    },
+    {
+     "title": "Lactuca sativa – Extension Gardener Plant Toolbox",
+     "publisher": "North Carolina State University Extension",
+     "url": "https://plants.ces.ncsu.edu/plants/lactuca-sativa/",
+     "accessed": "2026-11-17",
+     "quote": "Lettuce has a shallow root system and requires consistently moist soil for proper growth and flavor."
+    },
+    {
+     "title": "Central North Carolina Planting Calendar for Annual Vegetables, Fruits, and Herbs (Table 1, days to harvest)",
+     "publisher": "North Carolina State University Extension",
+     "url": "https://content.ces.ncsu.edu/central-north-carolina-planting-calendar-for-annual-vegetables-fruits-and-herbs",
+     "accessed": "2026-11-17",
+     "quote": "Lettuce, leaf T = 15–25 S = 40–50"
+    },
+    {
+     "title": "Central North Carolina Planting Calendar for Annual Vegetables, Fruits, and Herbs (Table 1, days to harvest)",
+     "publisher": "North Carolina State University Extension",
+     "url": "https://content.ces.ncsu.edu/central-north-carolina-planting-calendar-for-annual-vegetables-fruits-and-herbs",
+     "accessed": "2026-11-17",
+     "quote": "Lettuce, head T = 45–60 S = 70–85"
+    }
+   ]
+  },
+  "potato": {
+   "scientific": "Solanum tuberosum",
+   "habit": "bush",
+   "days_to_harvest": [
+    84,
+    120
+   ],
+   "days_basis": "from planting seed tubers (earlies ~12 weeks, maincrop to ~120 days)",
+   "sun": "full",
+   "water": "med",
+   "container_ok": true,
+   "min_pot_l": 113.6,
+   "min_pot_note": "NCSU: containers/grow bags at least 2 ft deep and 30 US gal (≈113.6 L); RHS: one seed potato per 30cm (12in) of pot diameter",
+   "height_cm": [
+    30,
+    60
+   ],
+   "yield_per_plant": null,
+   "difficulty": "easy",
+   "sow_months_north": [
+    3,
+    4,
+    5
+   ],
+   "sow_months_basis": "RHS month-by-month planting calendar (crop is planted, not sown)",
+   "plant_months_north": [
+    3,
+    4,
+    5
+   ],
+   "harvest_months_north": [
+    6,
+    7,
+    8,
+    9,
+    10
+   ],
+   "sow_months_south": [
+    9,
+    10,
+    11
+   ],
+   "tips": [
+    "Earth up stems when shoots reach ~23cm so tubers are not exposed to light (they turn green and toxic).",
+    "Water in dry spells, especially containers; rotate where you plant each year to limit disease."
+   ],
+   "visual": {
+    "leaf": "Pinnately compound, up to 25cm, dark green oval leaflets",
+    "fruit": "Edible part is underground tubers (brown, red or yellow skin); may set small green toxic berries ~1cm",
+    "flower": "White, pink, purple or blue with yellow stamen cone",
+    "notes": "Bushy leafy mound 30–60cm; earthed-up ridge of soil around stems"
+   },
+   "sources": [
+    {
+     "title": "How to grow Potatoes – RHS Grow Your Own guide",
+     "publisher": "Royal Horticultural Society (RHS)",
+     "url": "https://www.rhs.org.uk/vegetables/potatoes/grow-your-own",
+     "accessed": "2026-11-17",
+     "quote": "They’re faster growing, ready to harvest in as little as 12 weeks."
+    },
+    {
+     "title": "Solanum tuberosum – Extension Gardener Plant Toolbox",
+     "publisher": "North Carolina State University Extension",
+     "url": "https://plants.ces.ncsu.edu/plants/solanum-tuberosum/",
+     "accessed": "2026-11-17",
+     "quote": "Mature potatoes can take 3 to 4 months before they are ready for harvest."
+    },
+    {
+     "title": "Central North Carolina Planting Calendar for Annual Vegetables, Fruits, and Herbs (Table 1, days to harvest)",
+     "publisher": "North Carolina State University Extension",
+     "url": "https://content.ces.ncsu.edu/central-north-carolina-planting-calendar-for-annual-vegetables-fruits-and-herbs",
+     "accessed": "2026-11-17",
+     "quote": "Potatoes, Irish Tu = 95–120"
+    },
+    {
+     "title": "How to grow Potatoes – RHS Grow Your Own guide",
+     "publisher": "Royal Horticultural Society (RHS)",
+     "url": "https://www.rhs.org.uk/vegetables/potatoes/grow-your-own",
+     "accessed": "2026-11-17",
+     "quote": "Choose a container at least 30cm (12in) wide and deep, and half-fill with 15cm (6in) of peat-free multi-purpose compost ."
+    }
+   ]
+  },
+  "carrot": {
+   "scientific": "Daucus carota subsp. sativus",
+   "habit": "root",
+   "days_to_harvest": [
+    75,
+    112
+   ],
+   "days_basis": "from sowing",
+   "sun": "full",
+   "water": "low",
+   "container_ok": true,
+   "min_pot_l": 1.9,
+   "min_pot_note": "NCSU: containers as small as 2 US quarts (≈1.9 L), at least 10 in (25cm) deep",
+   "height_cm": [
+    8,
+    90
+   ],
+   "yield_per_plant": null,
+   "difficulty": "easy",
+   "sow_months_north": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ],
+   "sow_months_basis": "RHS month-by-month sowing calendar",
+   "plant_months_north": [],
+   "harvest_months_north": [
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+   ],
+   "sow_months_south": [
+    1,
+    8,
+    9,
+    10,
+    11,
+    12
+   ],
+   "tips": [
+    "Sow thinly direct into light, stone-free soil; seeds can take up to 3 weeks to germinate.",
+    "Carrots are drought resistant – water mainly in containers; lift a few at a time when needed."
+   ],
+   "visual": {
+    "leaf": "Feathery, finely divided (2-pinnate) fern-like leaves on a basal tuft",
+    "fruit": "Orange tapering root (also purple, yellow, white), typically 10–20cm",
+    "flower": "Flat white lacy umbel with purple centre floret (second year only)",
+    "notes": "Root crop: only the feathery green top shows above soil, orange shoulder at soil line"
+   },
+   "sources": [
+    {
+     "title": "How to grow Carrots – RHS Grow Your Own guide",
+     "publisher": "Royal Horticultural Society (RHS)",
+     "url": "https://www.rhs.org.uk/vegetables/carrots/grow-your-own",
+     "accessed": "2026-11-17",
+     "quote": "Carrots are ready to harvest about 12–16 weeks after sowing."
+    },
+    {
+     "title": "How to grow Carrots – RHS Grow Your Own guide",
+     "publisher": "Royal Horticultural Society (RHS)",
+     "url": "https://www.rhs.org.uk/vegetables/carrots/grow-your-own",
+     "accessed": "2026-11-17",
+     "quote": "Carrots are drought resistant, so seldom need watering."
+    },
+    {
+     "title": "Daucus carota subsp sativus – Extension Gardener Plant Toolbox",
+     "publisher": "North Carolina State University Extension",
+     "url": "https://plants.ces.ncsu.edu/plants/daucus-carota-subsp-sativus/",
+     "accessed": "2026-11-17",
+     "quote": "Grow carrots to eat in an edible garden bed or in containers as small as 2 quarts with a minimum depth of 10 inches."
+    },
+    {
+     "title": "Central North Carolina Planting Calendar for Annual Vegetables, Fruits, and Herbs (Table 1, days to harvest)",
+     "publisher": "North Carolina State University Extension",
+     "url": "https://content.ces.ncsu.edu/central-north-carolina-planting-calendar-for-annual-vegetables-fruits-and-herbs",
+     "accessed": "2026-11-17",
+     "quote": "Carrots 75–80"
+    }
+   ]
+  },
+  "strawberry": {
+   "scientific": "Fragaria × ananassa",
+   "habit": "rosette",
+   "days_to_harvest": null,
+   "days_basis": "perennial – summer-fruiting types crop June–July; RHS harvest window June–October across types",
+   "sun": "full",
+   "water": "high",
+   "container_ok": true,
+   "min_pot_l": null,
+   "min_pot_note": "RHS: grows well in pots, growing bags, hanging baskets, troughs and tubs (no minimum size given)",
+   "height_cm": [
+    15,
+    30
+   ],
+   "yield_per_plant": null,
+   "difficulty": "easy",
+   "sow_months_north": [
+    3,
+    4,
+    5,
+    6,
+    8,
+    9,
+    10
+   ],
+   "sow_months_basis": "RHS month-by-month planting calendar (crop is planted, not sown)",
+   "plant_months_north": [
+    3,
+    4,
+    5,
+    6,
+    8,
+    9,
+    10
+   ],
+   "harvest_months_north": [
+    6,
+    7,
+    8,
+    9,
+    10
+   ],
+   "sow_months_south": [
+    2,
+    3,
+    4,
+    9,
+    10,
+    11,
+    12
+   ],
+   "tips": [
+    "Grow in a sheltered sunny spot; water regularly, especially in containers, as roots are shallow.",
+    "Plant with the crown at soil level and replace plants every few years."
+   ],
+   "visual": {
+    "leaf": "Trifoliate, dark green, toothed ovate-round leaflets with paler hairy undersides",
+    "fruit": "Red glossy cone-shaped accessory fruit 2.5–7.5cm with yellow seeds (achenes) on the surface, hanging on long stalks",
+    "flower": "White 5-petalled with yellow centre (some pink)",
+    "notes": "Low clumping rosette 15–30cm tall spreading 30–60cm, sends out runners"
+   },
+   "sources": [
+    {
+     "title": "How to grow Strawberries – RHS Grow Your Own guide",
+     "publisher": "Royal Horticultural Society (RHS)",
+     "url": "https://www.rhs.org.uk/fruit/strawberries/grow-your-own",
+     "accessed": "2026-11-17",
+     "quote": "Strawberries are easy to grow in pots, growing bags, hanging baskets, troughs and tubs."
+    },
+    {
+     "title": "Fragaria x ananassa – Extension Gardener Plant Toolbox",
+     "publisher": "North Carolina State University Extension",
+     "url": "https://plants.ces.ncsu.edu/plants/fragaria-x-ananassa/",
+     "accessed": "2026-11-17",
+     "quote": "They grow 6 to 12 inches high and 1 to 2 feet wide and are generally classed as either June bearing or ever-bearing types."
+    },
+    {
+     "title": "Fragaria x ananassa – Extension Gardener Plant Toolbox",
+     "publisher": "North Carolina State University Extension",
+     "url": "https://plants.ces.ncsu.edu/plants/fragaria-x-ananassa/",
+     "accessed": "2026-11-17",
+     "quote": "Since the roots of strawberry plants are short, they need to be watered frequently with 1 inch of water."
+    }
+   ]
+  },
+  "basil": {
+   "scientific": "Ocimum basilicum",
+   "habit": "bush",
+   "days_to_harvest": [
+    50,
+    75
+   ],
+   "days_basis": "from sowing (14–35 days from transplant)",
+   "sun": "full",
+   "water": "med",
+   "container_ok": true,
+   "min_pot_l": null,
+   "min_pot_note": "RHS: container at least 20cm (8in) wide and deep",
+   "height_cm": [
+    20,
+    50
+   ],
+   "yield_per_plant": null,
+   "difficulty": "easy",
+   "sow_months_north": [
+    3,
+    4,
+    5,
+    6,
+    7
+   ],
+   "sow_months_basis": "RHS month-by-month sowing calendar",
+   "plant_months_north": [],
+   "harvest_months_north": [
+    6,
+    7,
+    8,
+    9,
+    10
+   ],
+   "sow_months_south": [
+    1,
+    9,
+    10,
+    11,
+    12
+   ],
+   "tips": [
+    "Keep warm and sheltered in full sun; water regularly but avoid overwatering.",
+    "Pinch out shoot tips often to keep plants bushy and delay flowering."
+   ],
+   "visual": {
+    "leaf": "Bright green glossy ovate leaves, opposite, smooth-edged, slightly puckered; purple in some cultivars",
+    "fruit": "None harvested",
+    "flower": "Small white (or purple) lipped flowers on whorled spikes",
+    "notes": "Compact bushy herb 20–50cm"
+   },
+   "sources": [
+    {
+     "title": "How to grow Basil – RHS Grow Your Own guide",
+     "publisher": "Royal Horticultural Society (RHS)",
+     "url": "https://www.rhs.org.uk/herbs/basil/grow-your-own",
+     "accessed": "2026-11-17",
+     "quote": "Most form fairly compact plants, 20–50cm (8–20in) tall and are kept bushy by regular picking."
+    },
+    {
+     "title": "How to grow Basil – RHS Grow Your Own guide",
+     "publisher": "Royal Horticultural Society (RHS)",
+     "url": "https://www.rhs.org.uk/herbs/basil/grow-your-own",
+     "accessed": "2026-11-17",
+     "quote": "Choose a container at least 20cm (8in) wide and deep, and fill with peat-free multi-purpose compost"
+    },
+    {
+     "title": "Central North Carolina Planting Calendar for Annual Vegetables, Fruits, and Herbs (Table 1, days to harvest)",
+     "publisher": "North Carolina State University Extension",
+     "url": "https://content.ces.ncsu.edu/central-north-carolina-planting-calendar-for-annual-vegetables-fruits-and-herbs",
+     "accessed": "2026-11-17",
+     "quote": "Basil T = 14–35 S = 50–75"
+    }
+   ]
+  },
+  "mint": {
+   "scientific": "Mentha spp. (e.g. spearmint Mentha spicata)",
+   "habit": "bush",
+   "days_to_harvest": null,
+   "days_basis": "perennial – leaves harvested spring to autumn (RHS harvest May–October)",
+   "sun": "partial",
+   "water": "med",
+   "container_ok": true,
+   "min_pot_l": null,
+   "min_pot_note": "RHS: best grown in pots to contain its spread (no minimum size given)",
+   "height_cm": [
+    30,
+    60
+   ],
+   "yield_per_plant": null,
+   "difficulty": "easy",
+   "sow_months_north": [
+    3,
+    4,
+    5,
+    9,
+    10,
+    11
+   ],
+   "sow_months_basis": "RHS month-by-month planting calendar (crop is planted, not sown)",
+   "plant_months_north": [
+    3,
+    4,
+    5,
+    9,
+    10,
+    11
+   ],
+   "harvest_months_north": [
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+   ],
+   "sow_months_south": [
+    3,
+    4,
+    5,
+    9,
+    10,
+    11
+   ],
+   "tips": [
+    "Grow in a pot (or a sunk bottomless pot) because it spreads rampantly.",
+    "Keep soil moist – mint does poorly in dry soil; pick young shoot tips for best flavour."
+   ],
+   "visual": {
+    "leaf": "Lance-shaped ~7.5cm bright green leaves, wrinkled along veins, serrated, opposite on square stems",
+    "fruit": "None harvested",
+    "flower": "Small pink/lilac flowers in dense terminal spikes (Jul–Oct)",
+    "notes": "Upright multi-stemmed clump that creeps outwards by runners"
+   },
+   "sources": [
+    {
+     "title": "How to grow Mint – RHS Grow Your Own guide",
+     "publisher": "Royal Horticultural Society (RHS)",
+     "url": "https://www.rhs.org.uk/herbs/mint/grow-your-own",
+     "accessed": "2026-11-17",
+     "quote": "Extremely easy to grow, mint ( Mentha ) is a popular and versatile herb"
+    },
+    {
+     "title": "How to grow Mint – RHS Grow Your Own guide",
+     "publisher": "Royal Horticultural Society (RHS)",
+     "url": "https://www.rhs.org.uk/herbs/mint/grow-your-own",
+     "accessed": "2026-11-17",
+     "quote": "many are vigorous, spreading plants, so are best grown in pots to keep them contained."
+    },
+    {
+     "title": "Mentha spicata – Extension Gardener Plant Toolbox",
+     "publisher": "North Carolina State University Extension",
+     "url": "https://plants.ces.ncsu.edu/plants/mentha-spicata/",
+     "accessed": "2026-11-17",
+     "quote": "It does tolerate partial shade and a wide range of soil types, but does not do well in dry soils."
+    }
+   ]
+  },
+  "courgette": {
+   "scientific": "Cucurbita pepo",
+   "habit": "bush",
+   "days_to_harvest": [
+    50,
+    60
+   ],
+   "days_basis": "from sowing (30–40 days from transplant)",
+   "sun": "full",
+   "water": "high",
+   "container_ok": true,
+   "min_pot_l": null,
+   "min_pot_note": "RHS: compact/bush variety in a container at least 45cm (18in) wide",
+   "height_cm": [
+    30,
+    90
+   ],
+   "yield_per_plant": "3–4 fruits a week per plant in good weather (RHS)",
+   "difficulty": "easy",
+   "sow_months_north": [
+    4,
+    5,
+    6
+   ],
+   "sow_months_basis": "RHS month-by-month sowing calendar",
+   "plant_months_north": [],
+   "harvest_months_north": [
+    7,
+    8,
+    9,
+    10
+   ],
+   "sow_months_south": [
+    10,
+    11,
+    12
+   ],
+   "tips": [
+    "Water generously around (not over) the plant and pick fruits small and often.",
+    "Plant out after the last frost at least 90cm apart in a warm, sunny spot."
+   ],
+   "visual": {
+    "leaf": "Very large palmately lobed leaves (3–7 lobes), green, often silver-mottled, on long hollow stalks",
+    "fruit": "Long cylindrical green (or yellow) fruit, picked ~10–20cm; some round varieties",
+    "flower": "Large yellow-orange trumpet flowers, separate male and female",
+    "notes": "Wide sprawling bush up to ~90cm with huge leaves radiating from a central crown"
+   },
+   "sources": [
+    {
+     "title": "How to grow Courgettes – RHS Grow Your Own guide",
+     "publisher": "Royal Horticultural Society (RHS)",
+     "url": "https://www.rhs.org.uk/vegetables/courgettes/grow-your-own",
+     "accessed": "2026-11-17",
+     "quote": "you can expect three or four fruits a week from one plant in good weather."
+    },
+    {
+     "title": "How to grow Courgettes – RHS Grow Your Own guide",
+     "publisher": "Royal Horticultural Society (RHS)",
+     "url": "https://www.rhs.org.uk/vegetables/courgettes/grow-your-own",
+     "accessed": "2026-11-17",
+     "quote": "Choose a compact or bush variety and a container that’s at least 45cm (18in) wide."
+    },
+    {
+     "title": "Central North Carolina Planting Calendar for Annual Vegetables, Fruits, and Herbs (Table 1, days to harvest)",
+     "publisher": "North Carolina State University Extension",
+     "url": "https://content.ces.ncsu.edu/central-north-carolina-planting-calendar-for-annual-vegetables-fruits-and-herbs",
+     "accessed": "2026-11-17",
+     "quote": "Squash, summer T = 30–40 S = 50–60"
+    }
+   ]
+  },
+  "cucumber": {
+   "scientific": "Cucumis sativus",
+   "habit": "climber",
+   "days_to_harvest": [
+    56,
+    65
+   ],
+   "days_basis": "from sowing (28–37 days from transplant)",
+   "sun": "full",
+   "water": "high",
+   "container_ok": true,
+   "min_pot_l": 3.8,
+   "min_pot_note": "NCSU: minimum 1 US gal (≈3.8 L), 8in deep; RHS: at least 30cm (1ft) wide and deep",
+   "height_cm": [
+    20,
+    45
+   ],
+   "yield_per_plant": null,
+   "difficulty": "medium",
+   "sow_months_north": [
+    2,
+    3,
+    4,
+    5,
+    6
+   ],
+   "sow_months_basis": "RHS month-by-month sowing calendar",
+   "plant_months_north": [],
+   "harvest_months_north": [
+    7,
+    8,
+    9,
+    10
+   ],
+   "sow_months_south": [
+    8,
+    9,
+    10,
+    11,
+    12
+   ],
+   "tips": [
+    "Keep soil consistently moist but keep leaves dry to avoid fungal disease.",
+    "Train up canes, netting or strings and harvest often to keep fruits coming."
+   ],
+   "visual": {
+    "leaf": "Large hairy triangular-heart leaves with 3–5 lobes, wrinkled, serrated, on long stalks",
+    "fruit": "Long cylindrical green fruit, prickly/bumpy when young, smoother when mature",
+    "flower": "Yellow 5-petalled, separate male and female",
+    "notes": "Vining climber with tendrils; NCSU lists 8–18in high but vines spread 3–8 ft, and greenhouse plants reach the roof"
+   },
+   "sources": [
+    {
+     "title": "Cucumis sativus – Extension Gardener Plant Toolbox",
+     "publisher": "North Carolina State University Extension",
+     "url": "https://plants.ces.ncsu.edu/plants/cucumis-sativus/",
+     "accessed": "2026-11-17",
+     "quote": "It has high water needs and requires consistent moisture for proper growth, but good drainage is also important."
+    },
+    {
+     "title": "Cucumis sativus – Extension Gardener Plant Toolbox",
+     "publisher": "North Carolina State University Extension",
+     "url": "https://plants.ces.ncsu.edu/plants/cucumis-sativus/",
+     "accessed": "2026-11-17",
+     "quote": "It can also be grown in a container of a minimum size of 1 gallon and 8 inches depth."
+    },
+    {
+     "title": "Cucumis sativus – Extension Gardener Plant Toolbox",
+     "publisher": "North Carolina State University Extension",
+     "url": "https://plants.ces.ncsu.edu/plants/cucumis-sativus/",
+     "accessed": "2026-11-17",
+     "quote": "Cucumber plants can grow 8 to 18 inches high and 3 to 8 feet wide."
+    },
+    {
+     "title": "Central North Carolina Planting Calendar for Annual Vegetables, Fruits, and Herbs (Table 1, days to harvest)",
+     "publisher": "North Carolina State University Extension",
+     "url": "https://content.ces.ncsu.edu/central-north-carolina-planting-calendar-for-annual-vegetables-fruits-and-herbs",
+     "accessed": "2026-11-17",
+     "quote": "Cucumbers T = 28–37 S = 56–65"
+    }
+   ]
+  },
+  "pepper": {
+   "scientific": "Capsicum annuum",
+   "habit": "bush",
+   "days_to_harvest": [
+    75,
+    80
+   ],
+   "days_basis": "from transplant",
+   "sun": "full",
+   "water": "med",
+   "container_ok": true,
+   "min_pot_l": null,
+   "min_pot_note": "RHS: container at least 30cm (1ft) wide",
+   "height_cm": [
+    60,
+    60
+   ],
+   "yield_per_plant": null,
+   "difficulty": "medium",
+   "sow_months_north": [
+    2,
+    3,
+    4
+   ],
+   "sow_months_basis": "RHS month-by-month sowing calendar",
+   "plant_months_north": [
+    4,
+    5,
+    6
+   ],
+   "harvest_months_north": [
+    7,
+    8,
+    9,
+    10
+   ],
+   "sow_months_south": [
+    8,
+    9,
+    10
+   ],
+   "tips": [
+    "Keep warm (above ~15°C) and indoors until at least late May before planting out.",
+    "Containers can dry out fast – water daily in hot weather and feed weekly with high-potash feed once flowering starts."
+   ],
+   "visual": {
+    "leaf": "Smooth glossy dark green ovate leaves up to ~7.5cm",
+    "fruit": "Blocky bell fruit, green ripening to red, yellow or orange, ~8–10cm",
+    "flower": "Small white flowers",
+    "notes": "Upright compact bush ~60cm tall and 30cm wide"
+   },
+   "sources": [
+    {
+     "title": "How to grow Sweet peppers – RHS Grow Your Own guide",
+     "publisher": "Royal Horticultural Society (RHS)",
+     "url": "https://www.rhs.org.uk/vegetables/peppers/grow-your-own",
+     "accessed": "2026-11-17",
+     "quote": "They also take up little space, usually reaching only about 60cm (2ft) tall and 30cm (1ft) wide, and grow well in large pots."
+    },
+    {
+     "title": "How to grow Sweet peppers – RHS Grow Your Own guide",
+     "publisher": "Royal Horticultural Society (RHS)",
+     "url": "https://www.rhs.org.uk/vegetables/peppers/grow-your-own",
+     "accessed": "2026-11-17",
+     "quote": "Choose a container at least 30cm (1ft) wide and fill with peat-free multi-purpose compost"
+    },
+    {
+     "title": "Central North Carolina Planting Calendar for Annual Vegetables, Fruits, and Herbs (Table 1, days to harvest)",
+     "publisher": "North Carolina State University Extension",
+     "url": "https://content.ces.ncsu.edu/central-north-carolina-planting-calendar-for-annual-vegetables-fruits-and-herbs",
+     "accessed": "2026-11-17",
+     "quote": "Peppers T = 75–80 S = 145–150 **"
+    }
+   ]
+  },
+  "chilli": {
+   "scientific": "Capsicum annuum (also C. chinense, C. frutescens)",
+   "habit": "bush",
+   "days_to_harvest": [
+    75,
+    80
+   ],
+   "days_basis": "from transplant (NCSU calendar figure for peppers generally)",
+   "sun": "full",
+   "water": "med",
+   "container_ok": true,
+   "min_pot_l": null,
+   "min_pot_note": "RHS: one plant in a 22cm (9in) pot",
+   "height_cm": [
+    20,
+    60
+   ],
+   "yield_per_plant": "Variety-dependent; RHS says 'Hot Thai' gives up to 200 small chillies per plant",
+   "difficulty": "medium",
+   "sow_months_north": [
+    2,
+    3,
+    4
+   ],
+   "sow_months_basis": "RHS month-by-month sowing calendar",
+   "plant_months_north": [
+    5,
+    6
+   ],
+   "harvest_months_north": [
+    7,
+    8,
+    9,
+    10
+   ],
+   "sow_months_south": [
+    8,
+    9,
+    10
+   ],
+   "tips": [
+    "Grow somewhere warm and bright – a greenhouse or sunny windowsill is ideal.",
+    "Water daily in hot weather if in pots; pinch the tip at ~30cm for a bigger crop of smaller fruits."
+   ],
+   "visual": {
+    "leaf": "Deep green ovate-lanceolate leaves up to ~7.5cm",
+    "fruit": "Small slender pointed pods 2.5–7.5cm, green ripening to red (also yellow, orange, purple/black)",
+    "flower": "Small white to purple flowers",
+    "notes": "Compact bushy multi-stemmed plant 20–60cm, fruits often held upright or dangling"
+   },
+   "sources": [
+    {
+     "title": "How to grow Chilli peppers – RHS Grow Your Own guide",
+     "publisher": "Royal Horticultural Society (RHS)",
+     "url": "https://www.rhs.org.uk/vegetables/chilli-pepper/grow-your-own",
+     "accessed": "2026-11-17",
+     "quote": "Chilli plants vary in size from as little as 20cm (8in) tall and wide (ideal for a windowsill), up to 60cm (2ft) or more"
+    },
+    {
+     "title": "How to grow Chilli peppers – RHS Grow Your Own guide",
+     "publisher": "Royal Horticultural Society (RHS)",
+     "url": "https://www.rhs.org.uk/vegetables/chilli-pepper/grow-your-own",
+     "accessed": "2026-11-17",
+     "quote": "To grow in containers , plant one in a 22cm (9in) pot filled with peat-free multi-purpose compost"
+    },
+    {
+     "title": "How to grow Chilli peppers – RHS Grow Your Own guide",
+     "publisher": "Royal Horticultural Society (RHS)",
+     "url": "https://www.rhs.org.uk/vegetables/chilli-pepper/grow-your-own",
+     "accessed": "2026-11-17",
+     "quote": "Up to 200 small, hot chillies per plant – 50,000–70,000 SHU."
+    },
+    {
+     "title": "Central North Carolina Planting Calendar for Annual Vegetables, Fruits, and Herbs (Table 1, days to harvest)",
+     "publisher": "North Carolina State University Extension",
+     "url": "https://content.ces.ncsu.edu/central-north-carolina-planting-calendar-for-annual-vegetables-fruits-and-herbs",
+     "accessed": "2026-11-17",
+     "quote": "Peppers T = 75–80 S = 145–150 **"
+    }
+   ]
+  },
+  "onion": {
+   "scientific": "Allium cepa",
+   "habit": "allium",
+   "days_to_harvest": [
+    75,
+    105
+   ],
+   "days_basis": "from planting sets (90–120 days from seed)",
+   "sun": "full",
+   "water": "low",
+   "container_ok": true,
+   "min_pot_l": null,
+   "min_pot_note": "RHS: container at least 45cm (18in) wide and deep",
+   "height_cm": [
+    30,
+    45
+   ],
+   "yield_per_plant": null,
+   "difficulty": "easy",
+   "sow_months_north": [
+    1,
+    2,
+    3,
+    4,
+    8,
+    9
+   ],
+   "sow_months_basis": "RHS month-by-month sowing calendar",
+   "plant_months_north": [
+    3,
+    4,
+    9,
+    10,
+    11
+   ],
+   "harvest_months_north": [
+    6,
+    7,
+    8,
+    9
+   ],
+   "sow_months_south": [
+    2,
+    3,
+    7,
+    8,
+    9,
+    10
+   ],
+   "tips": [
+    "Grow from sets for the easiest crop; plant in a sunny, well-drained spot.",
+    "Weed often (onion leaves cast little shade) and dry bulbs for about two weeks before storing."
+   ],
+   "visual": {
+    "leaf": "Hollow tubular linear blue-green (glaucous) leaves",
+    "fruit": "Round bulb at soil surface, golden-brown, red or white papery skin",
+    "flower": "Globe of small white/pink star flowers on a tall stalk (if bolting)",
+    "notes": "Allium: upright fan of tubular leaves 30–45cm with bulb half-showing at soil level"
+   },
+   "sources": [
+    {
+     "title": "How to grow Onions – RHS Grow Your Own guide",
+     "publisher": "Royal Horticultural Society (RHS)",
+     "url": "https://www.rhs.org.uk/vegetables/onions/grow-your-own",
+     "accessed": "2026-11-17",
+     "quote": "Onions ( Allium cepa) are an easy crop to grow, taking up relatively little space and giving reliable harvests"
+    },
+    {
+     "title": "How to grow Onions – RHS Grow Your Own guide",
+     "publisher": "Royal Horticultural Society (RHS)",
+     "url": "https://www.rhs.org.uk/vegetables/onions/grow-your-own",
+     "accessed": "2026-11-17",
+     "quote": "and a container that’s at least 45cm (18in) wide and deep."
+    },
+    {
+     "title": "Central North Carolina Planting Calendar for Annual Vegetables, Fruits, and Herbs (Table 1, days to harvest)",
+     "publisher": "North Carolina State University Extension",
+     "url": "https://content.ces.ncsu.edu/central-north-carolina-planting-calendar-for-annual-vegetables-fruits-and-herbs",
+     "accessed": "2026-11-17",
+     "quote": "Onions, bulb B = 75–105 S = 90–120"
+    }
+   ]
+  },
+  "garlic": {
+   "scientific": "Allium sativum",
+   "habit": "allium",
+   "days_to_harvest": [
+    180,
+    210
+   ],
+   "days_basis": "from planting cloves (autumn planting, harvest following summer)",
+   "sun": "full",
+   "water": "low",
+   "container_ok": true,
+   "min_pot_l": null,
+   "min_pot_note": "RHS: pots at least 25cm (10in) deep",
+   "height_cm": [
+    30,
+    45
+   ],
+   "yield_per_plant": null,
+   "difficulty": "easy",
+   "sow_months_north": [
+    2,
+    3,
+    10,
+    11,
+    12
+   ],
+   "sow_months_basis": "RHS month-by-month planting calendar (crop is planted, not sown)",
+   "plant_months_north": [
+    2,
+    3,
+    10,
+    11,
+    12
+   ],
+   "harvest_months_north": [
+    5,
+    6,
+    7,
+    8
+   ],
+   "sow_months_south": [
+    4,
+    5,
+    6,
+    8,
+    9
+   ],
+   "tips": [
+    "Plant cloves in autumn in full sun; keep weeded so plants are not shaded.",
+    "Cut back watering before harvest and lift when leaves turn yellow."
+   ],
+   "visual": {
+    "leaf": "Long flat grass-like bright green leaves",
+    "fruit": "White papery bulb of cloves underground",
+    "flower": "Pinkish flower head on a stalk (scape) if produced",
+    "notes": "Allium: upright slender leaves 30–45cm"
+   },
+   "sources": [
+    {
+     "title": "How to grow Garlic – RHS Grow Your Own guide",
+     "publisher": "Royal Horticultural Society (RHS)",
+     "url": "https://www.rhs.org.uk/vegetables/garlic/grow-your-own",
+     "accessed": "2026-11-17",
+     "quote": "Pots should be at least 25cm (10in) deep, their width and length will determine how many cloves you can plant"
+    },
+    {
+     "title": "How to grow Garlic – RHS Grow Your Own guide",
+     "publisher": "Royal Horticultural Society (RHS)",
+     "url": "https://www.rhs.org.uk/vegetables/garlic/grow-your-own",
+     "accessed": "2026-11-17",
+     "quote": "Garlic bulbs are ready to harvest once the leaves have turned yellow."
+    },
+    {
+     "title": "Central North Carolina Planting Calendar for Annual Vegetables, Fruits, and Herbs (Table 1, days to harvest)",
+     "publisher": "North Carolina State University Extension",
+     "url": "https://content.ces.ncsu.edu/central-north-carolina-planting-calendar-for-annual-vegetables-fruits-and-herbs",
+     "accessed": "2026-11-17",
+     "quote": "Garlic B = 180-210"
+    }
+   ]
+  },
+  "peas": {
+   "scientific": "Pisum sativum",
+   "habit": "climber",
+   "days_to_harvest": [
+    54,
+    72
+   ],
+   "days_basis": "from sowing",
+   "sun": "full",
+   "water": "med",
+   "container_ok": true,
+   "min_pot_l": 7.6,
+   "min_pot_note": "NCSU: minimum 2 US gal (≈7.6 L), 12in deep; RHS: container at least 45cm (18in) wide",
+   "height_cm": [
+    45,
+    180
+   ],
+   "yield_per_plant": null,
+   "difficulty": "easy",
+   "sow_months_north": [
+    2,
+    3,
+    4,
+    5,
+    6
+   ],
+   "sow_months_basis": "RHS month-by-month sowing calendar",
+   "plant_months_north": [],
+   "harvest_months_north": [
+    6,
+    7,
+    8,
+    9,
+    10
+   ],
+   "sow_months_south": [
+    8,
+    9,
+    10,
+    11,
+    12
+   ],
+   "tips": [
+    "Sow from March once soil reaches ~10°C, in small batches every few weeks.",
+    "Give climbing types supports and pick pods every few days to keep them cropping."
+   ],
+   "visual": {
+    "leaf": "Pinnate leaves of 1–4 pairs of oval leaflets ending in tendrils, with large leafy stipules",
+    "fruit": "Green pods 5–8cm holding round green peas",
+    "flower": "White, pink or purple pea-shaped flowers 1.5–3.5cm",
+    "notes": "Climber with tendrils; dwarf 45cm to tall 1.8m on netting or twigs"
+   },
+   "sources": [
+    {
+     "title": "How to grow Peas – RHS Grow Your Own guide",
+     "publisher": "Royal Horticultural Society (RHS)",
+     "url": "https://www.rhs.org.uk/vegetables/peas/grow-your-own",
+     "accessed": "2026-11-17",
+     "quote": "The plants come in various sizes, from tall varieties that reach 1.8m (6ft), down to dwarf varieties of just 45cm (18in)"
+    },
+    {
+     "title": "Lathyrus oleraceus – Extension Gardener Plant Toolbox",
+     "publisher": "North Carolina State University Extension",
+     "url": "https://plants.ces.ncsu.edu/plants/lathyrus-oleraceus/",
+     "accessed": "2026-11-17",
+     "quote": "Peas can also be grown in containers of a minimum size of two gallons and a depth of 12 inches."
+    },
+    {
+     "title": "Central North Carolina Planting Calendar for Annual Vegetables, Fruits, and Herbs (Table 1, days to harvest)",
+     "publisher": "North Carolina State University Extension",
+     "url": "https://content.ces.ncsu.edu/central-north-carolina-planting-calendar-for-annual-vegetables-fruits-and-herbs",
+     "accessed": "2026-11-17",
+     "quote": "Peas, vining 54–72"
+    }
+   ]
+  },
+  "green-beans": {
+   "scientific": "Phaseolus vulgaris",
+   "habit": "climber",
+   "days_to_harvest": [
+    50,
+    70
+   ],
+   "days_basis": "from sowing (dwarf/bush types; climbing types take longer)",
+   "sun": "full",
+   "water": "med",
+   "container_ok": true,
+   "min_pot_l": null,
+   "min_pot_note": "RHS: climbing types need a container at least 75cm (30in) wide and 45cm (18in) deep; dwarf types suit containers",
+   "height_cm": [
+    45,
+    200
+   ],
+   "yield_per_plant": null,
+   "difficulty": "easy",
+   "sow_months_north": [
+    4,
+    5,
+    6,
+    7
+   ],
+   "sow_months_basis": "RHS month-by-month sowing calendar",
+   "plant_months_north": [],
+   "harvest_months_north": [
+    7,
+    8,
+    9,
+    10
+   ],
+   "sow_months_south": [
+    1,
+    10,
+    11,
+    12
+   ],
+   "tips": [
+    "Sow after frosts in warm soil; put supports in place before sowing climbing types.",
+    "Pick pods young and often to keep the plants producing."
+   ],
+   "visual": {
+    "leaf": "Trifoliate leaves with three broad ovate leaflets",
+    "fruit": "Slender green pods 10–15cm (also yellow or purple)",
+    "flower": "Pea-like white, pink, red or lilac flowers",
+    "notes": "Dwarf bush (≤45cm) or twining climber (~2m) on a cane wigwam"
+   },
+   "sources": [
+    {
+     "title": "How to grow French beans – RHS Grow Your Own guide",
+     "publisher": "Royal Horticultural Society (RHS)",
+     "url": "https://www.rhs.org.uk/vegetables/french-beans/grow-your-own",
+     "accessed": "2026-11-17",
+     "quote": "Dwarf French beans take up little space and start to crop in just eight to ten weeks"
+    },
+    {
+     "title": "How to grow French beans – RHS Grow Your Own guide",
+     "publisher": "Royal Horticultural Society (RHS)",
+     "url": "https://www.rhs.org.uk/vegetables/french-beans/grow-your-own",
+     "accessed": "2026-11-17",
+     "quote": "Dwarf beans (up to 45cm/18in tall) are perfect for small spaces, growing well in containers and in the ground."
+    },
+    {
+     "title": "How to grow French beans – RHS Grow Your Own guide",
+     "publisher": "Royal Horticultural Society (RHS)",
+     "url": "https://www.rhs.org.uk/vegetables/french-beans/grow-your-own",
+     "accessed": "2026-11-17",
+     "quote": "Climbing beans (2m/6ft tall) need tall supports and do best in the ground, but can also be grown in large containers ."
+    },
+    {
+     "title": "Central North Carolina Planting Calendar for Annual Vegetables, Fruits, and Herbs (Table 1, days to harvest)",
+     "publisher": "North Carolina State University Extension",
+     "url": "https://content.ces.ncsu.edu/central-north-carolina-planting-calendar-for-annual-vegetables-fruits-and-herbs",
+     "accessed": "2026-11-17",
+     "quote": "Beans, snap/bush 50–55"
+    }
+   ]
+  },
+  "kale": {
+   "scientific": "Brassica oleracea (Acephala Group)",
+   "habit": "rosette",
+   "days_to_harvest": [
+    40,
+    50
+   ],
+   "days_basis": "from sowing (NCSU; young leaves – full plants crop autumn to spring in UK/IE)",
+   "sun": "partial",
+   "water": "med",
+   "container_ok": true,
+   "min_pot_l": null,
+   "min_pot_note": "RHS: compact variety in a container at least 30cm (12in) wide and deep",
+   "height_cm": [
+    25,
+    90
+   ],
+   "yield_per_plant": null,
+   "difficulty": "easy",
+   "sow_months_north": [
+    3,
+    4,
+    5,
+    6
+   ],
+   "sow_months_basis": "RHS month-by-month sowing calendar",
+   "plant_months_north": [],
+   "harvest_months_north": [
+    1,
+    2,
+    3,
+    4,
+    10,
+    11,
+    12
+   ],
+   "sow_months_south": [
+    9,
+    10,
+    11,
+    12
+   ],
+   "tips": [
+    "Net plants against pigeons and cabbage white caterpillars.",
+    "Pick the lower leaves a few at a time from autumn to spring – it is fully hardy."
+   ],
+   "visual": {
+    "leaf": "Large thick leaves, smooth, ruffled or densely frilly/curled, green to purple-red, waxy bloom",
+    "fruit": "None harvested",
+    "flower": "Yellow 4-petalled flowers (second year)",
+    "notes": "Upright single stem with a crown of leaves, up to 90cm"
+   },
+   "sources": [
+    {
+     "title": "How to grow Kale – RHS Grow Your Own guide",
+     "publisher": "Royal Horticultural Society (RHS)",
+     "url": "https://www.rhs.org.uk/vegetables/kale/grow-your-own",
+     "accessed": "2026-11-17",
+     "quote": "It forms large, attractive plants up to 90cm (3ft) tall, although compact varieties are also available."
+    },
+    {
+     "title": "How to grow Kale – RHS Grow Your Own guide",
+     "publisher": "Royal Horticultural Society (RHS)",
+     "url": "https://www.rhs.org.uk/vegetables/kale/grow-your-own",
+     "accessed": "2026-11-17",
+     "quote": "It likes sun, but will also cope in light shade."
+    },
+    {
+     "title": "Central North Carolina Planting Calendar for Annual Vegetables, Fruits, and Herbs (Table 1, days to harvest)",
+     "publisher": "North Carolina State University Extension",
+     "url": "https://content.ces.ncsu.edu/central-north-carolina-planting-calendar-for-annual-vegetables-fruits-and-herbs",
+     "accessed": "2026-11-17",
+     "quote": "Kale T = 14–22 S = 40–50"
+    }
+   ]
+  },
+  "spinach": {
+   "scientific": "Spinacia oleracea",
+   "habit": "rosette",
+   "days_to_harvest": [
+    50,
+    60
+   ],
+   "days_basis": "from sowing",
+   "sun": "partial",
+   "water": "med",
+   "container_ok": true,
+   "min_pot_l": 3.8,
+   "min_pot_note": "NCSU: containers as small as 1 US gal (≈3.8 L), 4–6in deep; RHS: container at least 30cm (1ft) wide and deep",
+   "height_cm": [
+    15,
+    30
+   ],
+   "yield_per_plant": null,
+   "difficulty": "easy",
+   "sow_months_north": [
+    3,
+    4,
+    5,
+    8,
+    9
+   ],
+   "sow_months_basis": "RHS month-by-month sowing calendar",
+   "plant_months_north": [],
+   "harvest_months_north": [
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+   ],
+   "sow_months_south": [
+    2,
+    3,
+    9,
+    10,
+    11
+   ],
+   "tips": [
+    "Sow in light shade in warm weather and keep well watered to delay bolting.",
+    "Space at least 15cm apart to prevent downy mildew; pick leaves young for repeat harvests."
+   ],
+   "visual": {
+    "leaf": "Thick fleshy dark green leaves, round to arrow-shaped, smooth or crinkled (savoyed)",
+    "fruit": "None harvested",
+    "flower": "Tiny green wind-pollinated flowers (when bolting)",
+    "notes": "Low rosette 15–30cm"
+   },
+   "sources": [
+    {
+     "title": "Spinacia oleracea – Extension Gardener Plant Toolbox",
+     "publisher": "North Carolina State University Extension",
+     "url": "https://plants.ces.ncsu.edu/plants/spinacia-oleracea/",
+     "accessed": "2026-11-17",
+     "quote": "Spinach can be grown in containers as small as 1 gallon and as shallow as 4 to 6 inches."
+    },
+    {
+     "title": "Spinacia oleracea – Extension Gardener Plant Toolbox",
+     "publisher": "North Carolina State University Extension",
+     "url": "https://plants.ces.ncsu.edu/plants/spinacia-oleracea/",
+     "accessed": "2026-11-17",
+     "quote": "It can tolerate 3 to 4 hours of sun a day, and some shade can be beneficial in hot weather."
+    },
+    {
+     "title": "Central North Carolina Planting Calendar for Annual Vegetables, Fruits, and Herbs (Table 1, days to harvest)",
+     "publisher": "North Carolina State University Extension",
+     "url": "https://content.ces.ncsu.edu/central-north-carolina-planting-calendar-for-annual-vegetables-fruits-and-herbs",
+     "accessed": "2026-11-17",
+     "quote": "Spinach 50–60"
+    }
+   ]
+  },
+  "radish": {
+   "scientific": "Raphanus sativus",
+   "habit": "root",
+   "days_to_harvest": [
+    20,
+    42
+   ],
+   "days_basis": "from sowing (salad radishes)",
+   "sun": "full",
+   "water": "med",
+   "container_ok": true,
+   "min_pot_l": null,
+   "min_pot_note": "RHS: sown in the ground or in containers (no minimum size given)",
+   "height_cm": [
+    15,
+    45
+   ],
+   "yield_per_plant": null,
+   "difficulty": "easy",
+   "sow_months_north": [
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+   ],
+   "sow_months_basis": "RHS month-by-month sowing calendar",
+   "plant_months_north": [],
+   "harvest_months_north": [
+    1,
+    2,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12
+   ],
+   "sow_months_south": [
+    1,
+    2,
+    3,
+    9,
+    10,
+    11,
+    12
+   ],
+   "tips": [
+    "Sow little and often in spring and late summer; give light shade in midsummer.",
+    "Water regularly so roots stay tender and do not split or turn woody."
+   ],
+   "visual": {
+    "leaf": "Rough lobed leaves, rounded at tips, in a small rosette",
+    "fruit": "Round or long root, red/pink with white flesh (also white, purple, black), 2–3cm globe",
+    "flower": "White to purple 4-petalled flowers (if bolting)",
+    "notes": "Root crop: small leafy rosette with coloured shoulder of root showing"
+   },
+   "sources": [
+    {
+     "title": "How to grow Radishes – RHS Grow Your Own guide",
+     "publisher": "Royal Horticultural Society (RHS)",
+     "url": "https://www.rhs.org.uk/vegetables/radishes/grow-your-own",
+     "accessed": "2026-11-17",
+     "quote": "Salad radishes are quick and easy to grow from seed, and are ready to eat in as little as four weeks."
+    },
+    {
+     "title": "Raphanus raphanistrum subsp sativus – Extension Gardener Plant Toolbox",
+     "publisher": "North Carolina State University Extension",
+     "url": "https://plants.ces.ncsu.edu/plants/raphanus-raphanistrum-subsp-sativus/",
+     "accessed": "2026-11-17",
+     "quote": "They are fast growing vegetables, ready to harvest in 3-6 weeks, making them great for use in a children's garden."
+    },
+    {
+     "title": "How to grow Radishes – RHS Grow Your Own guide",
+     "publisher": "Royal Horticultural Society (RHS)",
+     "url": "https://www.rhs.org.uk/vegetables/radishes/grow-your-own",
+     "accessed": "2026-11-17",
+     "quote": "The leaves grow up to 45cm (18in) tall and are edible too."
+    },
+    {
+     "title": "Central North Carolina Planting Calendar for Annual Vegetables, Fruits, and Herbs (Table 1, days to harvest)",
+     "publisher": "North Carolina State University Extension",
+     "url": "https://content.ces.ncsu.edu/central-north-carolina-planting-calendar-for-annual-vegetables-fruits-and-herbs",
+     "accessed": "2026-11-17",
+     "quote": "Radishes 20–25"
+    }
+   ]
+  },
+  "blueberry": {
+   "scientific": "Vaccinium corymbosum",
+   "habit": "bush",
+   "days_to_harvest": null,
+   "days_basis": "perennial shrub – fruit ripens mid-summer (RHS harvest July–September)",
+   "sun": "full",
+   "water": "high",
+   "container_ok": true,
+   "min_pot_l": null,
+   "min_pot_note": "RHS: container at least 30cm (12in) diameter for a young plant, 45–50cm (18–20in) for a larger plant",
+   "height_cm": [
+    180,
+    365
+   ],
+   "yield_per_plant": "2.25–5 kg per mature (about seven-year-old) bush (RHS)",
+   "difficulty": "medium",
+   "sow_months_north": [
+    1,
+    2,
+    3,
+    10,
+    11,
+    12
+   ],
+   "sow_months_basis": "RHS month-by-month planting calendar (crop is planted, not sown)",
+   "plant_months_north": [
+    1,
+    2,
+    3,
+    10,
+    11,
+    12
+   ],
+   "harvest_months_north": [
+    7,
+    8,
+    9
+   ],
+   "sow_months_south": [
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+   ],
+   "tips": [
+    "Needs acidic (ericaceous) soil or compost; water with rainwater rather than tap water.",
+    "Keep soil moist but not waterlogged; plant two varieties for bigger crops."
+   ],
+   "visual": {
+    "leaf": "Elliptical leaves, reddish-green in spring, blue-green in summer, red/orange in autumn",
+    "fruit": "Round dusky blue berries ~1–1.5cm with a powdery bloom, in clusters; green to pink to blue as they ripen",
+    "flower": "Small white or pink bell-shaped flowers in clusters",
+    "notes": "Upright multi-stemmed deciduous shrub (NCSU: 6–12 ft in the US; smaller in pots)"
+   },
+   "sources": [
+    {
+     "title": "How to grow Blueberries – RHS Grow Your Own guide",
+     "publisher": "Royal Horticultural Society (RHS)",
+     "url": "https://www.rhs.org.uk/fruit/blueberries/grow-your-own",
+     "accessed": "2026-11-17",
+     "quote": "A fully productive plant, around seven years old, can produce 2.25–5kg (5–11lb) of blueberries."
+    },
+    {
+     "title": "How to grow Blueberries – RHS Grow Your Own guide",
+     "publisher": "Royal Horticultural Society (RHS)",
+     "url": "https://www.rhs.org.uk/fruit/blueberries/grow-your-own",
+     "accessed": "2026-11-17",
+     "quote": "The container should be at least 30cm (12in) in diameter for a young plant, and 45–50cm (18–20in) for a larger plant."
+    },
+    {
+     "title": "Vaccinium corymbosum – Extension Gardener Plant Toolbox",
+     "publisher": "North Carolina State University Extension",
+     "url": "https://plants.ces.ncsu.edu/plants/vaccinium-corymbosum/",
+     "accessed": "2026-11-17",
+     "quote": "It can grow 6 to 12 feet tall."
+    }
+   ]
+  },
+  "raspberry": {
+   "scientific": "Rubus idaeus",
+   "habit": "bush",
+   "days_to_harvest": null,
+   "days_basis": "perennial canes – summer types fruit from their second summer; autumn types crop late summer–autumn",
+   "sun": "full",
+   "water": "med",
+   "container_ok": true,
+   "min_pot_l": null,
+   "min_pot_note": "RHS: compact varieties in a pot at least 40cm (16in) wide and 30cm (12in) deep",
+   "height_cm": [
+    120,
+    180
+   ],
+   "yield_per_plant": null,
+   "difficulty": "medium",
+   "sow_months_north": [
+    1,
+    2,
+    3,
+    11,
+    12
+   ],
+   "sow_months_basis": "RHS month-by-month planting calendar (crop is planted, not sown)",
+   "plant_months_north": [
+    1,
+    2,
+    3,
+    11,
+    12
+   ],
+   "harvest_months_north": [
+    6,
+    7,
+    8,
+    9,
+    10
+   ],
+   "sow_months_south": [
+    5,
+    6,
+    7,
+    8,
+    9
+   ],
+   "tips": [
+    "Plant in a sunny, sheltered spot and give tall canes a post-and-wire support.",
+    "Prune every year: summer types after fruiting, autumn types to the ground in late winter."
+   ],
+   "visual": {
+    "leaf": "Pinnate leaves of 3–5 serrated, wrinkled leaflets with pale fuzzy undersides",
+    "fruit": "Red hollow thimble-shaped cluster of drupelets ~1.5–2cm (also yellow)",
+    "flower": "Small white 5-petalled flowers",
+    "notes": "Upright arching cane thicket 1.2–1.8m tied to wires"
+   },
+   "sources": [
+    {
+     "title": "How to grow Raspberries – RHS Grow Your Own guide",
+     "publisher": "Royal Horticultural Society (RHS)",
+     "url": "https://www.rhs.org.uk/fruit/raspberries/grow-your-own",
+     "accessed": "2026-11-17",
+     "quote": "Summer-fruiting raspberries usually grow to about 1.8m (6ft) tall and form bushy plants that need plenty of space."
+    },
+    {
+     "title": "How to grow Raspberries – RHS Grow Your Own guide",
+     "publisher": "Royal Horticultural Society (RHS)",
+     "url": "https://www.rhs.org.uk/fruit/raspberries/grow-your-own",
+     "accessed": "2026-11-17",
+     "quote": "For these, choose a pot at least 40cm (16in) wide and 30cm (12in) deep"
+    },
+    {
+     "title": "How to grow Raspberries – RHS Grow Your Own guide",
+     "publisher": "Royal Horticultural Society (RHS)",
+     "url": "https://www.rhs.org.uk/fruit/raspberries/grow-your-own",
+     "accessed": "2026-11-17",
+     "quote": "They prefer a sunny, sheltered position but can produce a decent crop in partial shade."
+    }
+   ]
+  },
+  "apple": {
+   "scientific": "Malus domestica",
+   "habit": "tree",
+   "days_to_harvest": null,
+   "days_basis": "perennial tree – fruit harvested August–November (RHS)",
+   "sun": "full",
+   "water": "med",
+   "container_ok": true,
+   "min_pot_l": null,
+   "min_pot_note": "RHS: dwarfing rootstocks (M9, M26) are best for pots (no pot size given)",
+   "height_cm": [
+    200,
+    900
+   ],
+   "yield_per_plant": null,
+   "difficulty": "medium",
+   "sow_months_north": [
+    1,
+    2,
+    3,
+    11,
+    12
+   ],
+   "sow_months_basis": "RHS month-by-month planting calendar (crop is planted, not sown)",
+   "plant_months_north": [
+    1,
+    2,
+    3,
+    11,
+    12
+   ],
+   "harvest_months_north": [
+    8,
+    9,
+    10,
+    11
+   ],
+   "sow_months_south": [
+    5,
+    6,
+    7,
+    8,
+    9
+   ],
+   "tips": [
+    "Choose the rootstock for your space: dwarfing (M9/M26) for pots and small gardens.",
+    "Plant in full sun in a sheltered site not prone to late frosts that damage blossom."
+   ],
+   "visual": {
+    "leaf": "Simple oval/elliptical toothed leaves with downy undersides",
+    "fruit": "Round apple 6–9cm, red, green or yellow, waxy skin",
+    "flower": "White blossom flushed pink, 5 petals, 2.5–4cm, in clusters of 4–6",
+    "notes": "Tree with dense rounded crown; height set by rootstock – semi-dwarfing up to 4m, seedling trees to ~9m"
+   },
+   "sources": [
+    {
+     "title": "How to grow Apples – RHS Grow Your Own guide",
+     "publisher": "Royal Horticultural Society (RHS)",
+     "url": "https://www.rhs.org.uk/fruit/apples/grow-your-own",
+     "accessed": "2026-11-17",
+     "quote": "dwarfing rootstocks (such as M9 or M26) are best for small gardens, pots and trained forms like cordons and small espaliers"
+    },
+    {
+     "title": "How to grow Apples – RHS Grow Your Own guide",
+     "publisher": "Royal Horticultural Society (RHS)",
+     "url": "https://www.rhs.org.uk/fruit/apples/grow-your-own",
+     "accessed": "2026-11-17",
+     "quote": "semi-dwarfing rootstocks (such as MM106) produce larger trees, up to 4m (13ft) tall."
+    },
+    {
+     "title": "Malus domestica – Extension Gardener Plant Toolbox",
+     "publisher": "North Carolina State University Extension",
+     "url": "https://plants.ces.ncsu.edu/plants/malus-domestica/",
+     "accessed": "2026-11-17",
+     "quote": "Although they grow up to 30 feet tall and wide from seed, many apple trees you can buy are grafted with dwarfing rootstocks"
+    }
+   ]
+  },
+  "lemon": {
+   "scientific": "Citrus × limon",
+   "habit": "tree",
+   "days_to_harvest": null,
+   "days_basis": "perennial tree – fruit ripens over many months; grown in pots outside the tropics",
+   "sun": "full",
+   "water": "med",
+   "container_ok": true,
+   "min_pot_l": null,
+   "min_pot_note": "RHS: most citrus stay under 1.5m and suit containers (no pot size given)",
+   "height_cm": [
+    100,
+    600
+   ],
+   "yield_per_plant": null,
+   "difficulty": "hard",
+   "sow_months_north": [],
+   "sow_months_basis": "RHS month-by-month planting calendar (crop is planted, not sown)",
+   "plant_months_north": [],
+   "harvest_months_north": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12
+   ],
+   "sow_months_south": [],
+   "tips": [
+    "Not frost hardy: overwinter indoors in a bright, cool spot and move outside in summer (UK/IE).",
+    "Water well in the growing season and thin young fruits – a 1m tree should carry no more than ~20."
+   ],
+   "visual": {
+    "leaf": "Glossy ovate dark green leaves, reddish when young; thorny twigs",
+    "fruit": "Oval bright yellow aromatic lemon 7–12cm with a nipple-like tip",
+    "flower": "Fragrant white flowers, purplish beneath, reddish buds",
+    "notes": "Small evergreen tree/shrub; under 1.5m in a pot, 3–6m in the ground in warm climates"
+   },
+   "sources": [
+    {
+     "title": "How to grow Citrus – RHS Grow Your Own guide",
+     "publisher": "Royal Horticultural Society (RHS)",
+     "url": "https://www.rhs.org.uk/fruit/citrus/grow-your-own",
+     "accessed": "2026-11-17",
+     "quote": "Most citrus form attractive small trees or shrubs less than 1.5m (5ft) tall, so are ideal for growing in containers."
+    },
+    {
+     "title": "Citrus x limon – Extension Gardener Plant Toolbox",
+     "publisher": "North Carolina State University Extension",
+     "url": "https://plants.ces.ncsu.edu/plants/citrus-x-limon/",
+     "accessed": "2026-11-17",
+     "quote": "small evergreen trees in the Rutaceae family that grows 10 to 20 feet tall and usually has sharp thorns on its twigs."
+    },
+    {
+     "title": "How to grow Citrus – RHS Grow Your Own guide",
+     "publisher": "Royal Horticultural Society (RHS)",
+     "url": "https://www.rhs.org.uk/fruit/citrus/grow-your-own",
+     "accessed": "2026-11-17",
+     "quote": "As a general guide, most citrus trees about 1m (3ft) tall should be allowed to carry no more than 20 fruits at one time."
+    }
+   ]
+  }
+ },
+ "trees": {
+  "birch": {
+   "co2_kg_per_year": [
+    22,
+    22
+   ],
+   "lifespan_years": "up to 120 (Forestry England); up to 150 (EUFORGEN)",
+   "height_m": "up to 30",
+   "note": "No reputable species-specific per-tree figure found for Betula pendula; uses EEA generic mature-tree figure (~22 kg CO2/yr).",
+   "sources": [
+    {
+     "title": "Forests, health and climate change (archived copy; live EEA URL now returns 410)",
+     "publisher": "European Environment Agency",
+     "url": "http://web.archive.org/web/20251213231041/https://www.eea.europa.eu/articles/forests-health-and-climate-change",
+     "accessed": "2026-11-17",
+     "quote": "over one year a mature tree will take up about 22 kilograms of carbon dioxide from the atmosphere"
+    },
+    {
+     "title": "Silver birch (Betula pendula)",
+     "publisher": "Woodland Trust",
+     "url": "https://www.woodlandtrust.org.uk/trees-woods-and-wildlife/british-trees/a-z-of-british-trees/silver-birch/",
+     "accessed": "2026-11-17",
+     "quote": "When mature they can reach 30m in height, forming a light canopy with elegant, drooping branches."
+    },
+    {
+     "title": "Silver birch",
+     "publisher": "Forestry England",
+     "url": "https://www.forestryengland.uk/tree-species/silver-birch",
+     "accessed": "2026-11-17",
+     "quote": "Lifespan: up to 120 years."
+    },
+    {
+     "title": "Betula pendula - Silver birch",
+     "publisher": "EUFORGEN",
+     "url": "https://www.euforgen.org/species/betula-pendula",
+     "accessed": "2026-11-17",
+     "quote": "is capable of living up to 150 years (Vakkari, 2009)."
+    },
+    {
+     "title": "Betula pendula – Extension Gardener Plant Toolbox",
+     "publisher": "North Carolina State University Extension",
+     "url": "https://plants.ces.ncsu.edu/plants/betula-pendula/",
+     "accessed": "2026-11-17",
+     "quote": "Glossy green leaves (to 2.5 inches long) have long tapered tips."
+    }
+   ],
+   "visual": {
+    "habit": "tree",
+    "leaf": "Glossy green ovate leaves to ~6cm with long tapered tips and toothed edges; yellow in autumn",
+    "fruit": "Drooping cone-like catkins with tiny winged seeds",
+    "flower": "Catkins (cream/tan)",
+    "notes": "Slender tree with white peeling bark and pendulous drooping branch tips; light open oval crown"
+   }
+  },
+  "oak": {
+   "co2_kg_per_year": [
+    22,
+    22
+   ],
+   "lifespan_years": "600 typical on many sites, up to 1,000",
+   "height_m": "20-40",
+   "note": "No reputable species-specific per-tree figure opened for Quercus robur (floodplain studies exist but full text was not accessible); uses EEA generic mature-tree figure.",
+   "sources": [
+    {
+     "title": "Forests, health and climate change (archived copy; live EEA URL now returns 410)",
+     "publisher": "European Environment Agency",
+     "url": "http://web.archive.org/web/20251213231041/https://www.eea.europa.eu/articles/forests-health-and-climate-change",
+     "accessed": "2026-11-17",
+     "quote": "over one year a mature tree will take up about 22 kilograms of carbon dioxide from the atmosphere"
+    },
+    {
+     "title": "English oak (Quercus robur)",
+     "publisher": "Woodland Trust",
+     "url": "https://www.woodlandtrust.org.uk/trees-woods-and-wildlife/british-trees/a-z-of-british-trees/english-oak/",
+     "accessed": "2026-11-17",
+     "quote": "A large, deciduous tree growing up to 20–40m tall."
+    },
+    {
+     "title": "Oak - species guide",
+     "publisher": "Woodland Trust Ancient Tree Inventory",
+     "url": "https://ati.woodlandtrust.org.uk/how-to-record/species-guides/oak/",
+     "accessed": "2026-11-17",
+     "quote": "Oak may live for 1,000 years, although 600 may be more typical on many sites."
+    },
+    {
+     "title": "Quercus robur – Extension Gardener Plant Toolbox",
+     "publisher": "North Carolina State University Extension",
+     "url": "https://plants.ces.ncsu.edu/plants/quercus-robur/",
+     "accessed": "2026-11-17",
+     "quote": "They are alternate, simple, and have 3 to 7 pairs of deep-rounded lobes with very short petioles."
+    }
+   ],
+   "visual": {
+    "habit": "tree",
+    "leaf": "Oblong leaves 7.5–12.5cm with 3–7 pairs of deep rounded lobes, very short stalks and ear-like lobes at the base",
+    "fruit": "Acorns 2–3cm, green to brown, in shallow cups on long stalks",
+    "flower": "Yellow-green hanging catkins",
+    "notes": "Broad spreading rounded crown, massive trunk, rugged grey bark"
+   }
+  },
+  "apple": {
+   "co2_kg_per_year": [
+    10,
+    22
+   ],
+   "lifespan_years": null,
+   "height_m": "4.6-9.1 (15-30 ft; less on dwarfing rootstock)",
+   "note": "Lower bound: 10.0-10.42 kg CO2/tree/yr from a Mediterranean mixed fruit orchard study (includes Malus domestica, not apple-only). Upper bound: EEA generic mature tree. Lifespan: no reputable source found.",
+   "sources": [
+    {
+     "title": "The role of mixed orchards in carbon sequestration and climate change mitigation in a Mediterranean island environment",
+     "publisher": "Frontiers in Sustainable Food Systems (2024)",
+     "url": "https://www.frontiersin.org/journals/sustainable-food-systems/articles/10.3389/fsufs.2024.1457462/full",
+     "accessed": "2026-11-17",
+     "quote": "did not differ significantly from each other in CO 2 sequestration (CO 2 seq) per tree per year (10.42 and 10 kg CO2eq, respectively)"
+    },
+    {
+     "title": "Forests, health and climate change (archived copy; live EEA URL now returns 410)",
+     "publisher": "European Environment Agency",
+     "url": "http://web.archive.org/web/20251213231041/https://www.eea.europa.eu/articles/forests-health-and-climate-change",
+     "accessed": "2026-11-17",
+     "quote": "over one year a mature tree will take up about 22 kilograms of carbon dioxide from the atmosphere"
+    },
+    {
+     "title": "Malus domestica (Apple)",
+     "publisher": "NC State Extension Gardener Plant Toolbox",
+     "url": "https://plants.ces.ncsu.edu/plants/malus-domestica/",
+     "accessed": "2026-11-17",
+     "quote": "Dimensions: Height: 15 ft. 0 in. - 30 ft. 0 in."
+    }
+   ],
+   "visual_ref": "see plants.apple.visual"
+  },
+  "lemon": {
+   "co2_kg_per_year": [
+    22.6,
+    26.2
+   ],
+   "lifespan_years": null,
+   "height_m": "3-6 (10-20 ft)",
+   "note": "Per-tree values from AILIMPO (Spanish lemon industry body) carbon footprint report, assuming 300 trees/ha; industry source, not peer-reviewed. Lifespan: no reputable source found.",
+   "sources": [
+    {
+     "title": "Carbon footprint of the lemon sector in Spain",
+     "publisher": "AILIMPO",
+     "url": "https://www.ailimpo.com/documentos/Carbon_footprint_of_the_lemon_sector_in_Spain.pdf",
+     "accessed": "2026-11-17",
+     "quote": "on average, 7.87 tonnes of CO2/ha per year is fixed, which results in a figure of 26,223 grams of CO2/tree."
+    },
+    {
+     "title": "Carbon footprint of the lemon sector in Spain",
+     "publisher": "AILIMPO",
+     "url": "https://www.ailimpo.com/documentos/Carbon_footprint_of_the_lemon_sector_in_Spain.pdf",
+     "accessed": "2026-11-17",
+     "quote": "Net carbon fixation per tree is 22,637 grams of CO2."
+    },
+    {
+     "title": "Lemon (Citrus limon)",
+     "publisher": "UF/IFAS Extension Florida Master Gardener Volunteer Program",
+     "url": "https://gardeningsolutions.ifas.ufl.edu/mastergardener/resources/plantid/fruits-and-nuts/lemon/",
+     "accessed": "2026-11-17",
+     "quote": "Lemons grow on small, thorny citrus trees that reach a height of 10 to 20 feet."
+    }
+   ],
+   "visual_ref": "see plants.lemon.visual"
+  }
+ },
+ "home_facts": [
+  {
+   "text": "In 2022 the world wasted 1.05 billion tonnes of food, about 19% of food available to consumers; households wasted 631 million tonnes, up to 60% of the total (UNEP Food Waste Index Report 2024).",
+   "sources": [
+    {
+     "title": "With 783 million people going hungry, a fifth of all food goes to waste",
+     "publisher": "UN News",
+     "url": "https://news.un.org/en/story/2024/03/1148036",
+     "accessed": "2026-11-17",
+     "quote": "latest data from 2022 shows 1.05 billion tonnes of food went to waste."
+    },
+    {
+     "title": "With 783 million people going hungry, a fifth of all food goes to waste",
+     "publisher": "UN News",
+     "url": "https://news.un.org/en/story/2024/03/1148036",
+     "accessed": "2026-11-17",
+     "quote": "Some 19 per cent of food available to consumers was lost overall at retail, food service, and household levels."
+    }
+   ]
+  },
+  {
+   "text": "About 75% of global food crop types depend on pollinators, and pollinators contribute to about 35% of global crop production by volume (FAO).",
+   "sources": [
+    {
+     "title": "Pollination - About",
+     "publisher": "FAO",
+     "url": "https://www.fao.org/pollination/about/en",
+     "accessed": "2026-11-17",
+     "quote": "About 75% of global food crop types depend on pollinators, highlighting their importance in the diversity of our food supply."
+    }
+   ]
+  },
+  {
+   "text": "UK households produce about 6.0 million tonnes of food waste a year, 58% of the UK's ~10.2 Mt total (WRAP, 2022 household data).",
+   "sources": [
+    {
+     "title": "UK Food Waste & Food Surplus - Key Facts (July 2025)",
+     "publisher": "WRAP",
+     "url": "https://www.wrap.ngo/sites/default/files/2025-06/WRAP-UK-Food-Waste-and-Food-Surplus-Key-Facts-July-2025-v5.pdf",
+     "accessed": "2026-11-17",
+     "quote": "By weight, household food waste makes up 58% of the total, on-farm 16%, manufacturing 13%, hospitality and food service 11%, and retail 2%."
+    }
+   ]
+  },
+  {
+   "text": "Edible food wasted in UK homes is about 4.36 million tonnes a year, worth £17.5 billion, linked to at least 16 million tonnes of GHG emissions (WRAP).",
+   "sources": [
+    {
+     "title": "UK Food Waste & Food Surplus - Key Facts (July 2025)",
+     "publisher": "WRAP",
+     "url": "https://www.wrap.ngo/sites/default/files/2025-06/WRAP-UK-Food-Waste-and-Food-Surplus-Key-Facts-July-2025-v5.pdf",
+     "accessed": "2026-11-17",
+     "quote": "Households* 4,360,000 17.5"
+    }
+   ]
+  },
+  {
+   "text": "UK homes waste over 2.5 million tonnes of fresh fruit and veg a year, of which 1.7 Mt could have been eaten (costing £4 billion) (WRAP / Love Food Hate Waste).",
+   "sources": [
+    {
+     "title": "UK bins thrive on a five-a-day diet of fruit & veg",
+     "publisher": "WRAP",
+     "url": "https://www.wrap.ngo/media-centre/press-releases/uk-bins-thrive-five-day-diet-fruit-veg",
+     "accessed": "2026-11-17",
+     "quote": "Total fresh fruit and veg waste tops 2.5 million tonnes per year of which 1.7Mt could have been eaten (costing £4 billion)"
+    }
+   ]
+  }
+ ],
+ "_notes": {
+  "compiled": "2026-11-17",
+  "water_and_difficulty": "water (low/med/high) and difficulty are editorial judgements from the cited source text, not values stated by the sources.",
+  "days_to_harvest": "Mostly NC State Extension Table 1 (US-South climate) cross-checked with RHS; null for perennial fruit/herbs where a days figure is not meaningful – see days_basis.",
+  "sow_months": "sow_months_north from the RHS month-by-month calendar (UK/Ireland). sow_months_south is a simple +6 month shift for Australia, not a sourced calendar.",
+  "min_pot_l": "Only filled where a source gives volume (NC State US gallons/quarts converted to litres); otherwise null with RHS diameter in min_pot_note.",
+  "height_cm": "Range covers the cultivar spread in the sources; trees/fruit trees given in cm too (apple depends on rootstock)."
+ }
+}

@@ -1,0 +1,1943 @@
+[
+  {
+    "region": "US",
+    "crop": "tomato",
+    "source_type": "import",
+    "origin_country": "Mexico",
+    "origin_place": "Sinaloa",
+    "origin_lat": 24.8,
+    "origin_lon": -107.4,
+    "share_pct": 62,
+    "year": 2025,
+    "transport_mode": "road",
+    "seasonal_note": "Florida field tomatoes dominate domestic shipments in winter-spring; Sinaloa is Mexico's key winter production region.",
+    "confidence": "high",
+    "notes": "share_pct derived: imports = 68.9% of 2025 US fresh tomato availability x Mexico ~90% of imports (2023-25). Sinaloa named by ERS as a key Mexican winter production region.",
+    "sources": [
+      {
+        "title": "Vegetables and Pulses Outlook: April 2026 (VGS-378)",
+        "publisher": "USDA Economic Research Service",
+        "url": "https://www.ers.usda.gov/media/20874/vgs-378.pdf?v=68587",
+        "accessed": "2026-11-17",
+        "quote": "imports accounted for 68.9 percent of domestic availability of fresh tomatoes in 2025"
+      },
+      {
+        "title": "Vegetables and Pulses Outlook: April 2026 (VGS-378)",
+        "publisher": "USDA Economic Research Service",
+        "url": "https://www.ers.usda.gov/media/20874/vgs-378.pdf?v=68587",
+        "accessed": "2026-11-17",
+        "quote": "Mexico remains the leading foreign supplier of fresh tomatoes, accounting for 90 percent of U.S. tomato imports during 2023–25."
+      },
+      {
+        "title": "Vegetables and Pulses Outlook: April 2026 (VGS-378)",
+        "publisher": "USDA Economic Research Service",
+        "url": "https://www.ers.usda.gov/media/20874/vgs-378.pdf?v=68587",
+        "accessed": "2026-11-17",
+        "quote": "adverse weather conditions in key production regions in Mexico, particularly in Sinaloa during the winter production season"
+      }
+    ]
+  },
+  {
+    "region": "US",
+    "crop": "lettuce",
+    "source_type": "domestic",
+    "origin_country": "United States",
+    "origin_place": "Salinas Valley, California (Yuma, Arizona / Imperial Valley in winter)",
+    "origin_lat": 36.68,
+    "origin_lon": -121.66,
+    "share_pct": 93,
+    "year": 2025,
+    "transport_mode": "road",
+    "seasonal_note": "Production shifts from western Arizona/southern California in winter to the Salinas area from about March-April.",
+    "confidence": "high",
+    "notes": "share_pct = US production share of 2025 fresh lettuce availability (ERS).",
+    "sources": [
+      {
+        "title": "Vegetables and Pulses Outlook: April 2026 (VGS-378)",
+        "publisher": "USDA Economic Research Service",
+        "url": "https://www.ers.usda.gov/media/20874/vgs-378.pdf?v=68587",
+        "accessed": "2026-11-17",
+        "quote": "U.S. lettuce production accounted for 93 percent of domestic availability in 2025"
+      },
+      {
+        "title": "Vegetables and Pulses Outlook: April 2025 (VGS-375)",
+        "publisher": "USDA Economic Research Service",
+        "url": "https://ers.usda.gov/sites/default/files/_laserfiche/outlooks/111478/VGS-375.pdf?v=68257",
+        "accessed": "2026-11-17",
+        "quote": "Leafy green production typically transitions from Western Arizona and Southern California to Central California (San Joaquin Valley and Salinas/Watsonville area) during March and April"
+      }
+    ]
+  },
+  {
+    "region": "US",
+    "crop": "potato",
+    "source_type": "domestic",
+    "origin_country": "United States",
+    "origin_place": "Idaho (Snake River Plain)",
+    "origin_lat": 43.0,
+    "origin_lon": -113.5,
+    "share_pct": 89,
+    "year": 2025,
+    "transport_mode": "road",
+    "seasonal_note": "",
+    "confidence": "high",
+    "notes": "share_pct = 100 - 11.3% fresh potato import share (ERS Table 7a, 2025). Idaho grew 32% of the 2024 US crop; Washington second.",
+    "sources": [
+      {
+        "title": "Vegetables and Pulses Yearbook Tables, Table 7a (fresh-market import shares)",
+        "publisher": "USDA Economic Research Service",
+        "url": "https://www.ers.usda.gov/media/5017/vegetables-and-pulses-yearbook-tables.xlsx?v=73308",
+        "accessed": "2026-11-17",
+        "quote": "Table 7a--Vegetables, fresh market: Share of domestic availability accounted for by imports"
+      },
+      {
+        "title": "Vegetables and Pulses Outlook: December 2024 (VGS-374)",
+        "publisher": "USDA Economic Research Service",
+        "url": "https://ers.usda.gov/sites/default/files/_laserfiche/outlooks/110615/VGS-374.pdf",
+        "accessed": "2026-11-17",
+        "quote": "In 2024, Idaho (which produced 32 percent of the domestic crop) and Washington (24 percent) continued to rank as the top two potato-producing States."
+      }
+    ]
+  },
+  {
+    "region": "US",
+    "crop": "carrot",
+    "source_type": "domestic",
+    "origin_country": "United States",
+    "origin_place": "Kern County (Bakersfield area), California",
+    "origin_lat": 35.37,
+    "origin_lon": -119.02,
+    "share_pct": 75,
+    "year": 2025,
+    "transport_mode": "road",
+    "seasonal_note": "",
+    "confidence": "high",
+    "notes": "share_pct = 100 - 24.6% fresh carrot import share (ERS Table 7a, 2025); main import partners Mexico and Canada. California = 73% of US carrot production (2024). Kern County as the core area is from general knowledge (Bakersfield mentioned in source).",
+    "sources": [
+      {
+        "title": "Vegetables and Pulses Yearbook Tables, Table 7a (fresh-market import shares)",
+        "publisher": "USDA Economic Research Service",
+        "url": "https://www.ers.usda.gov/media/5017/vegetables-and-pulses-yearbook-tables.xlsx?v=73308",
+        "accessed": "2026-11-17",
+        "quote": "Table 7a--Vegetables, fresh market: Share of domestic availability accounted for by imports"
+      },
+      {
+        "title": "United States carrot supply tightens due to California weather",
+        "publisher": "FreshPlaza",
+        "url": "https://www.freshplaza.com/asia/article/9822670/united-states-carrot-supply-tightens-due-to-california-weather",
+        "accessed": "2026-11-17",
+        "quote": "In 2024, California accounted for 73 per cent of total carrot production, according to the U.S. Department of Agriculture."
+      }
+    ]
+  },
+  {
+    "region": "US",
+    "crop": "strawberry",
+    "source_type": "domestic",
+    "origin_country": "United States",
+    "origin_place": "California (Central Coast: Watsonville-Salinas, Santa Maria, Oxnard)",
+    "origin_lat": 36.91,
+    "origin_lon": -121.76,
+    "share_pct": 79,
+    "year": 2025,
+    "transport_mode": "road",
+    "seasonal_note": "Mexico (Baja California/Michoacan) supplies much of the winter import share; Florida (Plant City) supplies in winter.",
+    "confidence": "high",
+    "notes": "share_pct = 100 - 21.0% fresh strawberry import share (ERS H-1, 2025); Mexico supplied 98% of 2024 fresh strawberry imports (Comtrade). California sub-regions/coordinates are a representative point, not from the cited sources.",
+    "sources": [
+      {
+        "title": "Fruit and Tree Nuts Yearbook, Table H-1 import share, fresh fruit",
+        "publisher": "USDA Economic Research Service",
+        "url": "https://www.ers.usda.gov/media/6513/import-share-of-domestic-availability-fresh-canned-frozen-juice-and-dried-fruit.xlsx?v=14774",
+        "accessed": "2026-11-17",
+        "quote": "Table H-1--Import share, fresh fruit: Percent of domestic fresh fruit availability accounted for by imports"
+      },
+      {
+        "title": "U.S. strawberry production led by California at 91% of supply",
+        "publisher": "FreshPlaza",
+        "url": "https://www.freshplaza.com/north-america/article/9826619/u-s-strawberry-production-led-by-california-at-91-of-supply/",
+        "accessed": "2026-11-17",
+        "quote": "Production is concentrated in California, which accounts for over 91 per cent of the national supply."
+      }
+    ]
+  },
+  {
+    "region": "US",
+    "crop": "basil",
+    "source_type": "domestic",
+    "origin_country": "United States",
+    "origin_place": "United States (growing area not identified)",
+    "origin_lat": 39.8,
+    "origin_lon": -98.6,
+    "share_pct": null,
+    "year": 2016,
+    "transport_mode": "road",
+    "seasonal_note": "Imports (Mexico, Peru) fill in during winter.",
+    "confidence": "low",
+    "notes": "No trade/production statistics found for fresh basil. Trade-press evidence only. Coordinates are a US centroid placeholder, not a sourced place.",
+    "sources": [
+      {
+        "title": "Don't Underestimate The Power Of Fresh Herbs",
+        "publisher": "Produce Business",
+        "url": "https://producebusiness.com/dont-underestimate-the-power-of-fresh-herbs/",
+        "accessed": "2026-11-17",
+        "quote": "a greater percentage of herbs sold in the United States are domestic."
+      },
+      {
+        "title": "Don't Underestimate The Power Of Fresh Herbs",
+        "publisher": "Produce Business",
+        "url": "https://producebusiness.com/dont-underestimate-the-power-of-fresh-herbs/",
+        "accessed": "2026-11-17",
+        "quote": "mint may be imported from Columbia; basil from Mexico and Peru; and sage from Mexico."
+      }
+    ]
+  },
+  {
+    "region": "US",
+    "crop": "mint",
+    "source_type": "domestic",
+    "origin_country": "United States",
+    "origin_place": "United States (growing area not identified)",
+    "origin_lat": 39.8,
+    "origin_lon": -98.6,
+    "share_pct": null,
+    "year": 2016,
+    "transport_mode": "road",
+    "seasonal_note": "Imports (e.g. Colombia) fill in during winter.",
+    "confidence": "low",
+    "notes": "No trade/production statistics found for fresh mint. Trade-press evidence only; coordinates are a US centroid placeholder.",
+    "sources": [
+      {
+        "title": "Don't Underestimate The Power Of Fresh Herbs",
+        "publisher": "Produce Business",
+        "url": "https://producebusiness.com/dont-underestimate-the-power-of-fresh-herbs/",
+        "accessed": "2026-11-17",
+        "quote": "During the winter months, however, herbs may be imported."
+      },
+      {
+        "title": "Don't Underestimate The Power Of Fresh Herbs",
+        "publisher": "Produce Business",
+        "url": "https://producebusiness.com/dont-underestimate-the-power-of-fresh-herbs/",
+        "accessed": "2026-11-17",
+        "quote": "mint may be imported from Columbia; basil from Mexico and Peru; and sage from Mexico."
+      }
+    ]
+  },
+  {
+    "region": "US",
+    "crop": "courgette",
+    "source_type": "import",
+    "origin_country": "Mexico",
+    "origin_place": "Sonora",
+    "origin_lat": 29.1,
+    "origin_lon": -110.95,
+    "share_pct": 55,
+    "year": 2025,
+    "transport_mode": "road",
+    "seasonal_note": "Sinaloa supplies Mexican squash in late autumn-winter; Sonora in spring and autumn.",
+    "confidence": "medium",
+    "notes": "share_pct derived: squash import share 64.5% of availability (ERS 2025) x Mexico 85.6% of 2024 HS 070993 import weight (Comtrade). HS 070993 covers all squash/pumpkins, not only zucchini; ERS notes zucchini ~45% of squash import volume. Sonora led Mexican squash exports in 2024 (DataMexico).",
+    "sources": [
+      {
+        "title": "Vegetables and Pulses Yearbook Tables, Table 7a (fresh-market import shares)",
+        "publisher": "USDA Economic Research Service",
+        "url": "https://www.ers.usda.gov/media/5017/vegetables-and-pulses-yearbook-tables.xlsx?v=73308",
+        "accessed": "2026-11-17",
+        "quote": "Table 7a--Vegetables, fresh market: Share of domestic availability accounted for by imports"
+      },
+      {
+        "title": "UN Comtrade imports, pumpkins, squash and gourds, reporter 842, 2024 (HS 070993)",
+        "publisher": "United Nations Comtrade (public preview API)",
+        "url": "https://comtradeapi.un.org/public/v1/preview/C/A/HS?reporterCode=842&period=2024&cmdCode=070200,070511,070519,070190,070610,081010,070993,070700,070960,070310,070320,070810,071021,070820,070490,070970,070690,081040,081020,080810,080550,070999,121190&flowCode=M&includeDesc=true",
+        "accessed": "2026-11-17",
+        "quote": "cmdCode \"070993\", partnerDesc \"Mexico\", netWgt 432718960; World netWgt 505445936"
+      },
+      {
+        "title": "Fresh or chilled pumpkins, squash and gourds - product profile",
+        "publisher": "DataMexico, Secretaria de Economia",
+        "url": "https://www.economia.gob.mx/datamexico/en/profile/product/fresh-or-chilled-pumpkins-squash-and-gourds-cucurbita-spp",
+        "accessed": "2026-11-17",
+        "quote": "the states with the highest international sales ... Sonora (US$340M), Sinaloa (US$122M)"
+      }
+    ]
+  },
+  {
+    "region": "US",
+    "crop": "cucumber",
+    "source_type": "import",
+    "origin_country": "Mexico",
+    "origin_place": "Sinaloa (and Sonora)",
+    "origin_lat": 24.8,
+    "origin_lon": -107.4,
+    "share_pct": 67,
+    "year": 2025,
+    "transport_mode": "road",
+    "seasonal_note": "US field cucumbers mainly in summer; Mexican imports peak in winter-spring; Canada supplies greenhouse cucumbers.",
+    "confidence": "high",
+    "notes": "share_pct derived: imports 91% of 2025 availability (ERS) x Mexico 73% of 2024 import weight (Comtrade).",
+    "sources": [
+      {
+        "title": "Vegetables and Pulses Outlook: April 2026 (VGS-378)",
+        "publisher": "USDA Economic Research Service",
+        "url": "https://www.ers.usda.gov/media/20874/vgs-378.pdf?v=68587",
+        "accessed": "2026-11-17",
+        "quote": "import shares exceeded 50 percent for tomatoes and exceeded 80 percent for cucumbers"
+      },
+      {
+        "title": "UN Comtrade imports, cucumbers, reporter 842, 2024 (HS 070700)",
+        "publisher": "United Nations Comtrade (public preview API)",
+        "url": "https://comtradeapi.un.org/public/v1/preview/C/A/HS?reporterCode=842&period=2024&cmdCode=070200,070511,070519,070190,070610,081010,070993,070700,070960,070310,070320,070810,071021,070820,070490,070970,070690,081040,081020,080810,080550,070999,121190&flowCode=M&includeDesc=true",
+        "accessed": "2026-11-17",
+        "quote": "cmdCode \"070700\", partnerDesc \"Mexico\", netWgt 863204676; World netWgt 1176955398"
+      },
+      {
+        "title": "Most US Fresh Cucumbers are Imported from Mexico",
+        "publisher": "Wilson Center Mexico Institute",
+        "url": "https://www.wilsoncenter.org/article/most-us-fresh-cucumbers-are-imported-mexico",
+        "accessed": "2026-11-17",
+        "quote": "Over half of Mexican cucumbers are from Sinaloa and Sonora"
+      }
+    ]
+  },
+  {
+    "region": "US",
+    "crop": "pepper",
+    "source_type": "import",
+    "origin_country": "Mexico",
+    "origin_place": "Sinaloa",
+    "origin_lat": 24.8,
+    "origin_lon": -107.4,
+    "share_pct": 60,
+    "year": 2025,
+    "transport_mode": "road",
+    "seasonal_note": "US domestic bell peppers (California, Florida, Georgia) peak in summer/autumn; Canada supplies greenhouse peppers.",
+    "confidence": "medium",
+    "notes": "share_pct derived: bell pepper import share 70.7% (ERS 2025) x Mexico 84.8% of 2024 HS 070960 import weight (HS 070960 includes chili peppers). Sinaloa had 60% of Mexican bell pepper acreage (2016).",
+    "sources": [
+      {
+        "title": "Vegetables and Pulses Yearbook Tables, Table 7a (fresh-market import shares)",
+        "publisher": "USDA Economic Research Service",
+        "url": "https://www.ers.usda.gov/media/5017/vegetables-and-pulses-yearbook-tables.xlsx?v=73308",
+        "accessed": "2026-11-17",
+        "quote": "Table 7a--Vegetables, fresh market: Share of domestic availability accounted for by imports"
+      },
+      {
+        "title": "UN Comtrade imports, capsicum peppers, reporter 842, 2024 (HS 070960)",
+        "publisher": "United Nations Comtrade (public preview API)",
+        "url": "https://comtradeapi.un.org/public/v1/preview/C/A/HS?reporterCode=842&period=2024&cmdCode=070200,070511,070519,070190,070610,081010,070993,070700,070960,070310,070320,070810,071021,070820,070490,070970,070690,081040,081020,080810,080550,070999,121190&flowCode=M&includeDesc=true",
+        "accessed": "2026-11-17",
+        "quote": "cmdCode \"070960\", partnerDesc \"Mexico\", netWgt 1077802584; World netWgt 1270729130"
+      },
+      {
+        "title": "Major Mexican Fruit and Vegetable Exports",
+        "publisher": "Wilson Center Mexico Institute",
+        "url": "https://wilsoncenter.org/article/major-mexican-fruit-and-vegetable-exports",
+        "accessed": "2026-11-17",
+        "quote": "60 percent of the acreage, but only 40 percent of the export revenue, were from Sinaloa."
+      }
+    ]
+  },
+  {
+    "region": "US",
+    "crop": "chilli",
+    "source_type": "import",
+    "origin_country": "Mexico",
+    "origin_place": "Chihuahua (also Sinaloa)",
+    "origin_lat": 28.2,
+    "origin_lon": -105.5,
+    "share_pct": 92,
+    "year": 2025,
+    "transport_mode": "road",
+    "seasonal_note": "",
+    "confidence": "high",
+    "notes": "share_pct derived: imports 95% of 2025 chili pepper availability (all uses) x 97% from Mexico. Chihuahua (25%) and Sinaloa (24%) lead Mexican green chili production (SIACON 2021).",
+    "sources": [
+      {
+        "title": "Vegetables and Pulses Outlook: April 2026 (VGS-378)",
+        "publisher": "USDA Economic Research Service",
+        "url": "https://www.ers.usda.gov/media/20874/vgs-378.pdf?v=68587",
+        "accessed": "2026-11-17",
+        "quote": "Imports accounted for 95 percent of chili pepper availability in 2025, with almost all (97 percent) originating in Mexico."
+      },
+      {
+        "title": "Competitiveness indices of green chili produced in Mexico in the world market",
+        "publisher": "Revista Mexicana de Ciencias Agricolas (INIFAP)",
+        "url": "https://cienciasagricolas.inifap.gob.mx/index.php/agricolas/article/download/3056/7023?inline=1",
+        "accessed": "2026-11-17",
+        "quote": "The main green chili producing states in Mexico are Chihuahua with 663 179.4 t (25%) of national production"
+      }
+    ]
+  },
+  {
+    "region": "US",
+    "crop": "onion",
+    "source_type": "domestic",
+    "origin_country": "United States",
+    "origin_place": "Washington (Columbia Basin); Idaho-Eastern Oregon",
+    "origin_lat": 46.6,
+    "origin_lon": -119.3,
+    "share_pct": 77,
+    "year": 2025,
+    "transport_mode": "road",
+    "seasonal_note": "Georgia (Vidalia) sweet onions mid-April to September; Mexico and Peru supply most imports.",
+    "confidence": "medium",
+    "notes": "share_pct = 100 - 23.2% import share (ERS Table 7a, 2025; VGS-378 gives 19% for bulb onions). Mexico 64% of imports 2023-25. Area ranking from National Onion Association via AgMRC (no % given); Columbia Basin coordinate is representative.",
+    "sources": [
+      {
+        "title": "Vegetables and Pulses Outlook: April 2026 (VGS-378)",
+        "publisher": "USDA Economic Research Service",
+        "url": "https://www.ers.usda.gov/media/20874/vgs-378.pdf?v=68587",
+        "accessed": "2026-11-17",
+        "quote": "Imports accounted for 19 percent of fresh bulb onion availability in 2025"
+      },
+      {
+        "title": "Onions",
+        "publisher": "Agricultural Marketing Resource Center (AgMRC)",
+        "url": "https://www.agmrc.org/commodities-products/vegetables/onions",
+        "accessed": "2026-11-17",
+        "quote": "the top four onion producing areas or states are Washington, Idaho-Eastern Oregon, California, and Georgia."
+      }
+    ]
+  },
+  {
+    "region": "US",
+    "crop": "garlic",
+    "source_type": "domestic",
+    "origin_country": "United States",
+    "origin_place": "Western San Joaquin Valley (Fresno, Kings, Kern counties), California",
+    "origin_lat": 36.2,
+    "origin_lon": -120.1,
+    "share_pct": 42,
+    "year": 2025,
+    "transport_mode": "road",
+    "seasonal_note": "",
+    "confidence": "medium",
+    "notes": "Imports are 57.8% of availability (ERS 2025), so no single source supplies most; but domestic (~42%, ~90% of it Californian) exceeds the top import partner China (47% of 2024 import weight, i.e. ~27% of supply). share_pct = domestic share.",
+    "sources": [
+      {
+        "title": "Vegetables and Pulses Yearbook Tables, Table 7a (fresh-market import shares)",
+        "publisher": "USDA Economic Research Service",
+        "url": "https://www.ers.usda.gov/media/5017/vegetables-and-pulses-yearbook-tables.xlsx?v=73308",
+        "accessed": "2026-11-17",
+        "quote": "Table 7a--Vegetables, fresh market: Share of domestic availability accounted for by imports"
+      },
+      {
+        "title": "UN Comtrade imports, garlic, reporter 842, 2024 (HS 070320)",
+        "publisher": "United Nations Comtrade (public preview API)",
+        "url": "https://comtradeapi.un.org/public/v1/preview/C/A/HS?reporterCode=842&period=2024&cmdCode=070200,070511,070519,070190,070610,081010,070993,070700,070960,070310,070320,070810,071021,070820,070490,070970,070690,081040,081020,080810,080550,070999,121190&flowCode=M&includeDesc=true",
+        "accessed": "2026-11-17",
+        "quote": "cmdCode \"070320\", partnerDesc \"China\", netWgt 59448786; World netWgt 125486335"
+      },
+      {
+        "title": "Pest Management Strategic Plan for California Garlic Production (2019)",
+        "publisher": "IPM Centers / California Garlic and Onion Research Advisory Board",
+        "url": "https://ipmdata.ipmcenters.org/documents/pmsps/2019%20Garlic%20PMSP.pdf",
+        "accessed": "2026-11-17",
+        "quote": "nearly 92% of the total garlic grown in the state is in the western San Joaquin Valley counties of Fresno, Kings and Kern."
+      }
+    ]
+  },
+  {
+    "region": "US",
+    "crop": "peas",
+    "source_type": "domestic",
+    "origin_country": "United States",
+    "origin_place": "United States processing-pea states (not verified)",
+    "origin_lat": 39.8,
+    "origin_lon": -98.6,
+    "share_pct": 79,
+    "year": 2025,
+    "transport_mode": "road",
+    "seasonal_note": "Fresh snow/snap peas are largely imported (Guatemala 41%, Mexico 38% of 2024 HS 070810 weight).",
+    "confidence": "low",
+    "notes": "Treated as frozen/canned green peas, the main supermarket form: imports are 20.6% of processing green pea availability (ERS Table 7b, 2025). Fresh peas are mainly imported. State-level source not opened; coordinates are a US centroid placeholder.",
+    "sources": [
+      {
+        "title": "Vegetables and Pulses Yearbook Tables, Table 7b (processing import shares)",
+        "publisher": "USDA Economic Research Service",
+        "url": "https://www.ers.usda.gov/media/5017/vegetables-and-pulses-yearbook-tables.xlsx?v=73308",
+        "accessed": "2026-11-17",
+        "quote": "Table 7b--Vegetables, processing market: Share of domestic availability accounted for by imports"
+      },
+      {
+        "title": "UN Comtrade imports, fresh peas, reporter 842, 2024 (HS 070810)",
+        "publisher": "United Nations Comtrade (public preview API)",
+        "url": "https://comtradeapi.un.org/public/v1/preview/C/A/HS?reporterCode=842&period=2024&cmdCode=070200,070511,070519,070190,070610,081010,070993,070700,070960,070310,070320,070810,071021,070820,070490,070970,070690,081040,081020,080810,080550,070999,121190&flowCode=M&includeDesc=true",
+        "accessed": "2026-11-17",
+        "quote": "cmdCode \"070810\", partnerDesc \"Guatemala\", netWgt 13888046; World netWgt 34154560"
+      }
+    ]
+  },
+  {
+    "region": "US",
+    "crop": "green-beans",
+    "source_type": "import",
+    "origin_country": "Mexico",
+    "origin_place": "Mexico (producing state not identified)",
+    "origin_lat": 23.6,
+    "origin_lon": -102.5,
+    "share_pct": 41,
+    "year": 2025,
+    "transport_mode": "road",
+    "seasonal_note": "Florida is the main domestic winter supplier (34% of US fresh snap bean production).",
+    "confidence": "low",
+    "notes": "Imports = 57.1% of fresh snap bean availability (ERS 2025); Mexico 72% of 2024 import weight (Comtrade) -> ~41% of supply, roughly tied with all US production (~43%) and above any single US state. Coordinates are a Mexico centroid placeholder.",
+    "sources": [
+      {
+        "title": "Vegetables and Pulses Yearbook Tables, Table 7a (fresh-market import shares)",
+        "publisher": "USDA Economic Research Service",
+        "url": "https://www.ers.usda.gov/media/5017/vegetables-and-pulses-yearbook-tables.xlsx?v=73308",
+        "accessed": "2026-11-17",
+        "quote": "Table 7a--Vegetables, fresh market: Share of domestic availability accounted for by imports"
+      },
+      {
+        "title": "UN Comtrade imports, beans, reporter 842, 2024 (HS 070820)",
+        "publisher": "United Nations Comtrade (public preview API)",
+        "url": "https://comtradeapi.un.org/public/v1/preview/C/A/HS?reporterCode=842&period=2024&cmdCode=070200,070511,070519,070190,070610,081010,070993,070700,070960,070310,070320,070810,071021,070820,070490,070970,070690,081040,081020,080810,080550,070999,121190&flowCode=M&includeDesc=true",
+        "accessed": "2026-11-17",
+        "quote": "cmdCode \"070820\", partnerDesc \"Mexico\", netWgt 86317528; World netWgt 119550398"
+      },
+      {
+        "title": "Vegetables - Ag in the Virtual Classroom",
+        "publisher": "University of Florida IFAS",
+        "url": "https://sites.google.com/ufl.edu/ag-in-the-virtual-classroom/crops/vegetables",
+        "accessed": "2026-11-17",
+        "quote": "Florida is the second largest producer of fresh snap beans in the US, accounting for 34% of total production."
+      }
+    ]
+  },
+  {
+    "region": "US",
+    "crop": "kale",
+    "source_type": "domestic",
+    "origin_country": "United States",
+    "origin_place": "California (Salinas Valley / Central Coast)",
+    "origin_lat": 36.68,
+    "origin_lon": -121.66,
+    "share_pct": 94,
+    "year": 2025,
+    "transport_mode": "road",
+    "seasonal_note": "Winter supply from western Arizona/southern California.",
+    "confidence": "medium",
+    "notes": "share_pct = domestic share computed from ERS Table 27 (2025: production 228, imports 15.5 million lb). California location inferred from ERS leafy-greens seasonality, not a kale-specific statistic.",
+    "sources": [
+      {
+        "title": "Vegetables and Pulses Yearbook Tables, Table 27 Kale",
+        "publisher": "USDA Economic Research Service",
+        "url": "https://www.ers.usda.gov/media/5017/vegetables-and-pulses-yearbook-tables.xlsx?v=73308",
+        "accessed": "2026-11-17",
+        "quote": "Table 27--U.S. kale, all uses: supply, availability, price, and farm weight/1"
+      },
+      {
+        "title": "Vegetables and Pulses Outlook: April 2025 (VGS-375)",
+        "publisher": "USDA Economic Research Service",
+        "url": "https://ers.usda.gov/sites/default/files/_laserfiche/outlooks/111478/VGS-375.pdf?v=68257",
+        "accessed": "2026-11-17",
+        "quote": "Leafy green production typically transitions from Western Arizona and Southern California to Central California (San Joaquin Valley and Salinas/Watsonville area) during March and April"
+      }
+    ]
+  },
+  {
+    "region": "US",
+    "crop": "spinach",
+    "source_type": "domestic",
+    "origin_country": "United States",
+    "origin_place": "Salinas Valley, California (Yuma/Imperial in winter)",
+    "origin_lat": 36.68,
+    "origin_lon": -121.66,
+    "share_pct": 89,
+    "year": 2025,
+    "transport_mode": "road",
+    "seasonal_note": "Production moves from western Arizona/southern California to Salinas around March-April.",
+    "confidence": "medium",
+    "notes": "share_pct = 100 - 10.7% fresh spinach import share (ERS Table 7a, 2025).",
+    "sources": [
+      {
+        "title": "Vegetables and Pulses Yearbook Tables, Table 7a (fresh-market import shares)",
+        "publisher": "USDA Economic Research Service",
+        "url": "https://www.ers.usda.gov/media/5017/vegetables-and-pulses-yearbook-tables.xlsx?v=73308",
+        "accessed": "2026-11-17",
+        "quote": "Table 7a--Vegetables, fresh market: Share of domestic availability accounted for by imports"
+      },
+      {
+        "title": "Vegetables and Pulses Outlook: April 2025 (VGS-375)",
+        "publisher": "USDA Economic Research Service",
+        "url": "https://ers.usda.gov/sites/default/files/_laserfiche/outlooks/111478/VGS-375.pdf?v=68257",
+        "accessed": "2026-11-17",
+        "quote": "Leafy green production typically transitions from Western Arizona and Southern California to Central California (San Joaquin Valley and Salinas/Watsonville area) during March and April"
+      }
+    ]
+  },
+  {
+    "region": "US",
+    "crop": "radish",
+    "source_type": "domestic",
+    "origin_country": "United States",
+    "origin_place": "Florida (Everglades Agricultural Area) - not confirmed as top state",
+    "origin_lat": 26.68,
+    "origin_lon": -80.67,
+    "share_pct": 75,
+    "year": 2025,
+    "transport_mode": "road",
+    "seasonal_note": "",
+    "confidence": "low",
+    "notes": "share_pct = 100 - 25.5% fresh radish import share (ERS 2025). Florida grows >20% of US radishes; whether it is the leading state was not confirmed. Coordinate is representative.",
+    "sources": [
+      {
+        "title": "Vegetables and Pulses Yearbook Tables, Table 7a (fresh-market import shares)",
+        "publisher": "USDA Economic Research Service",
+        "url": "https://www.ers.usda.gov/media/5017/vegetables-and-pulses-yearbook-tables.xlsx?v=73308",
+        "accessed": "2026-11-17",
+        "quote": "Table 7a--Vegetables, fresh market: Share of domestic availability accounted for by imports"
+      },
+      {
+        "title": "Vegetables - Ag in the Virtual Classroom",
+        "publisher": "University of Florida IFAS",
+        "url": "https://sites.google.com/ufl.edu/ag-in-the-virtual-classroom/crops/vegetables",
+        "accessed": "2026-11-17",
+        "quote": "Florida produces over 20% of radishes grown in the US."
+      }
+    ]
+  },
+  {
+    "region": "US",
+    "crop": "blueberry",
+    "source_type": "import",
+    "origin_country": "Peru",
+    "origin_place": "La Libertad (Trujillo area)",
+    "origin_lat": -8.4,
+    "origin_lon": -78.8,
+    "share_pct": 34,
+    "year": 2025,
+    "transport_mode": "sea+road",
+    "seasonal_note": "Peruvian supply peaks roughly Aug-Jan; US domestic and Mexican/Canadian fruit fill other months.",
+    "confidence": "medium",
+    "notes": "Imports = 69.0% of 2025 fresh blueberry availability (ERS); Peru 49.8% of 2024 import weight (Comtrade) -> ~34% of supply, slightly more than all US production (~31%).",
+    "sources": [
+      {
+        "title": "Fruit and Tree Nuts Yearbook, Table H-1 import share, fresh fruit",
+        "publisher": "USDA Economic Research Service",
+        "url": "https://www.ers.usda.gov/media/6513/import-share-of-domestic-availability-fresh-canned-frozen-juice-and-dried-fruit.xlsx?v=14774",
+        "accessed": "2026-11-17",
+        "quote": "Table H-1--Import share, fresh fruit: Percent of domestic fresh fruit availability accounted for by imports"
+      },
+      {
+        "title": "UN Comtrade imports, blueberries, reporter 842, 2024 (HS 081040)",
+        "publisher": "United Nations Comtrade (public preview API)",
+        "url": "https://comtradeapi.un.org/public/v1/preview/C/A/HS?reporterCode=842&period=2024&cmdCode=070200,070511,070519,070190,070610,081010,070993,070700,070960,070310,070320,070810,071021,070820,070490,070970,070690,081040,081020,080810,080550,070999,121190&flowCode=M&includeDesc=true",
+        "accessed": "2026-11-17",
+        "quote": "cmdCode \"081040\", partnerDesc \"Peru\", netWgt 174240451; World netWgt 349531809"
+      },
+      {
+        "title": "Peruvian blueberry exports rise 65% to 66,737 tons in 2026/27",
+        "publisher": "FreshPlaza",
+        "url": "https://www.freshplaza.com/oceania/article/9866175/peruvian-blueberry-exports-rise-65-to-66-737-tons-in-2026-27/",
+        "accessed": "2026-11-17",
+        "quote": "La Libertad is the primary producing region, contributing 32,843 tons and 49% of total exported volume."
+      }
+    ]
+  },
+  {
+    "region": "US",
+    "crop": "raspberry",
+    "source_type": "import",
+    "origin_country": "Mexico",
+    "origin_place": "Jalisco",
+    "origin_lat": 19.7,
+    "origin_lon": -103.46,
+    "share_pct": 82,
+    "year": 2025,
+    "transport_mode": "road",
+    "seasonal_note": "",
+    "confidence": "high",
+    "notes": "share_pct derived: imports 82.7% of 2025 availability (ERS) x Mexico 98.8% of 2024 HS 081020 weight (HS includes blackberries).",
+    "sources": [
+      {
+        "title": "Fruit and Tree Nuts Yearbook, Table H-1 import share, fresh fruit",
+        "publisher": "USDA Economic Research Service",
+        "url": "https://www.ers.usda.gov/media/6513/import-share-of-domestic-availability-fresh-canned-frozen-juice-and-dried-fruit.xlsx?v=14774",
+        "accessed": "2026-11-17",
+        "quote": "Table H-1--Import share, fresh fruit: Percent of domestic fresh fruit availability accounted for by imports"
+      },
+      {
+        "title": "UN Comtrade imports, raspberries and blackberries, reporter 842, 2024 (HS 081020)",
+        "publisher": "United Nations Comtrade (public preview API)",
+        "url": "https://comtradeapi.un.org/public/v1/preview/C/A/HS?reporterCode=842&period=2024&cmdCode=070200,070511,070519,070190,070610,081010,070993,070700,070960,070310,070320,070810,071021,070820,070490,070970,070690,081040,081020,080810,080550,070999,121190&flowCode=M&includeDesc=true",
+        "accessed": "2026-11-17",
+        "quote": "cmdCode \"081020\", partnerDesc \"Mexico\", netWgt 201853608; World netWgt 204281605"
+      },
+      {
+        "title": "Agronometrics in Charts: A $296M drop in Mexico's berry exports",
+        "publisher": "FreshFruitPortal",
+        "url": "https://www.freshfruitportal.com/news/2026/09/10/mexicos-berry-trade-26/",
+        "accessed": "2026-11-17",
+        "quote": "Jalisco accounted for about 77.5 percent of the country's raspberry and blackberry export value"
+      }
+    ]
+  },
+  {
+    "region": "US",
+    "crop": "apple",
+    "source_type": "domestic",
+    "origin_country": "United States",
+    "origin_place": "Washington (Yakima / Wenatchee)",
+    "origin_lat": 46.6,
+    "origin_lon": -120.5,
+    "share_pct": 97,
+    "year": 2025,
+    "transport_mode": "road",
+    "seasonal_note": "",
+    "confidence": "high",
+    "notes": "share_pct = 100 - 2.9% import share (ERS H-1, 2025). Yakima coordinate is representative.",
+    "sources": [
+      {
+        "title": "Fruit and Tree Nuts Yearbook, Table H-1 import share, fresh fruit",
+        "publisher": "USDA Economic Research Service",
+        "url": "https://www.ers.usda.gov/media/6513/import-share-of-domestic-availability-fresh-canned-frozen-juice-and-dried-fruit.xlsx?v=14774",
+        "accessed": "2026-11-17",
+        "quote": "Table H-1--Import share, fresh fruit: Percent of domestic fresh fruit availability accounted for by imports"
+      },
+      {
+        "title": "Washington apple crop outlook",
+        "publisher": "FruitSmart",
+        "url": "https://www.fruitsmart.com/?p=1627",
+        "accessed": "2026-11-17",
+        "quote": "In the 2024/25 CY, it is expected that the state will be responsible for 72% of the fresh apples"
+      }
+    ]
+  },
+  {
+    "region": "US",
+    "crop": "lemon",
+    "source_type": "domestic",
+    "origin_country": "United States",
+    "origin_place": "California (Ventura County and southern San Joaquin Valley)",
+    "origin_lat": 34.36,
+    "origin_lon": -119.06,
+    "share_pct": 80,
+    "year": 2025,
+    "transport_mode": "road",
+    "seasonal_note": "Mexico supplies most imports (73% of 2024 HS 080550 weight, lemons+limes).",
+    "confidence": "medium",
+    "notes": "share_pct = 100 - 19.6% import share (ERS H-1, 2025). California produced ~1.06 of 1.12 million tons in 2022-23. Ventura coordinate is representative, not from the cited source.",
+    "sources": [
+      {
+        "title": "Fruit and Tree Nuts Yearbook, Table H-1 import share, fresh fruit",
+        "publisher": "USDA Economic Research Service",
+        "url": "https://www.ers.usda.gov/media/6513/import-share-of-domestic-availability-fresh-canned-frozen-juice-and-dried-fruit.xlsx?v=14774",
+        "accessed": "2026-11-17",
+        "quote": "Table H-1--Import share, fresh fruit: Percent of domestic fresh fruit availability accounted for by imports"
+      },
+      {
+        "title": "U.S. Lemon Crop on the Rise",
+        "publisher": "Citrus Industry Magazine",
+        "url": "https://citrusindustry.net/2024/01/03/u-s-lemon-crop-on-the-rise/",
+        "accessed": "2026-11-17",
+        "quote": "Arizona supplied 5% of the U.S. lemon crop this season (56,000 tons)."
+      }
+    ]
+  },
+  {
+    "region": "HK",
+    "crop": "tomato",
+    "source_type": "import",
+    "origin_country": "China",
+    "origin_place": "Guangdong (e.g. Zhaoqing)",
+    "origin_lat": 23.05,
+    "origin_lon": 112.47,
+    "share_pct": 95,
+    "year": 2024,
+    "transport_mode": "road",
+    "seasonal_note": "",
+    "confidence": "medium",
+    "notes": "China 95.4% of 2024 HK tomato import weight. Province not given in trade data; Guangdong inferred from mainland vegetable-base reporting.",
+    "sources": [
+      {
+        "title": "UN Comtrade imports, tomatoes, reporter 344, 2024 (HS 070200)",
+        "publisher": "United Nations Comtrade (public preview API)",
+        "url": "https://comtradeapi.un.org/public/v1/preview/C/A/HS?reporterCode=344&period=2024&cmdCode=070200,070511,070519,070190,070610,081010,070993,070700,070960,070310,070320,070810,071021,070820,070490,070970,070690,081040,081020,080810,080550,070999,121190&flowCode=M&includeDesc=true",
+        "accessed": "2026-11-17",
+        "quote": "cmdCode \"070200\", partnerDesc \"China\", netWgt 31169500; World netWgt 32660630"
+      },
+      {
+        "title": "Mainland city builds vegetable bases to feed Hong Kong (Zhaoqing, Guangdong)",
+        "publisher": "China Daily Hong Kong",
+        "url": "https://www.chinadailyhk.com/hk/article/371076",
+        "accessed": "2026-11-17",
+        "quote": "contributing a significant portion of the 92 percent of Hong Kong's vegetable imports from the mainland"
+      }
+    ]
+  },
+  {
+    "region": "HK",
+    "crop": "lettuce",
+    "source_type": "import",
+    "origin_country": "China",
+    "origin_place": "Guangdong (e.g. Zhaoqing)",
+    "origin_lat": 23.05,
+    "origin_lon": 112.47,
+    "share_pct": 100,
+    "year": 2024,
+    "transport_mode": "road",
+    "seasonal_note": "",
+    "confidence": "medium",
+    "notes": "China 99.8% of 2024 HS 070511 import weight (HS 070519 other lettuce: China 89%). Province inferred.",
+    "sources": [
+      {
+        "title": "UN Comtrade imports, cabbage lettuce, reporter 344, 2024 (HS 070511)",
+        "publisher": "United Nations Comtrade (public preview API)",
+        "url": "https://comtradeapi.un.org/public/v1/preview/C/A/HS?reporterCode=344&period=2024&cmdCode=070200,070511,070519,070190,070610,081010,070993,070700,070960,070310,070320,070810,071021,070820,070490,070970,070690,081040,081020,080810,080550,070999,121190&flowCode=M&includeDesc=true",
+        "accessed": "2026-11-17",
+        "quote": "cmdCode \"070511\", partnerDesc \"China\", netWgt 16275200; World netWgt 16305145"
+      },
+      {
+        "title": "Mainland city builds vegetable bases to feed Hong Kong (Zhaoqing, Guangdong)",
+        "publisher": "China Daily Hong Kong",
+        "url": "https://www.chinadailyhk.com/hk/article/371076",
+        "accessed": "2026-11-17",
+        "quote": "contributing a significant portion of the 92 percent of Hong Kong's vegetable imports from the mainland"
+      },
+      {
+        "title": "LegCo question 8 reply: vegetable supply (2009)",
+        "publisher": "Food and Health Bureau, HKSAR Government",
+        "url": "https://www.healthbureau.gov.hk/en/legco/replies/2009/lq090204_q08.htm",
+        "accessed": "2026-11-17",
+        "quote": "accounting for more than 90% of Hong Kong's total vegetable import"
+      }
+    ]
+  },
+  {
+    "region": "HK",
+    "crop": "potato",
+    "source_type": "import",
+    "origin_country": "China",
+    "origin_place": "Mainland China (province not identified)",
+    "origin_lat": 35.0,
+    "origin_lon": 105.0,
+    "share_pct": 88,
+    "year": 2024,
+    "transport_mode": "road",
+    "seasonal_note": "",
+    "confidence": "low",
+    "notes": "China 87.8% of 2024 import weight. No source found for the supplying province; coordinates are a China centroid placeholder.",
+    "sources": [
+      {
+        "title": "UN Comtrade imports, potatoes, reporter 344, 2024 (HS 070190)",
+        "publisher": "United Nations Comtrade (public preview API)",
+        "url": "https://comtradeapi.un.org/public/v1/preview/C/A/HS?reporterCode=344&period=2024&cmdCode=070200,070511,070519,070190,070610,081010,070993,070700,070960,070310,070320,070810,071021,070820,070490,070970,070690,081040,081020,080810,080550,070999,121190&flowCode=M&includeDesc=true",
+        "accessed": "2026-11-17",
+        "quote": "cmdCode \"070190\", partnerDesc \"China\", netWgt 54592800; World netWgt 62160162"
+      },
+      {
+        "title": "Mainland city builds vegetable bases to feed Hong Kong (Zhaoqing, Guangdong)",
+        "publisher": "China Daily Hong Kong",
+        "url": "https://www.chinadailyhk.com/hk/article/371076",
+        "accessed": "2026-11-17",
+        "quote": "contributing a significant portion of the 92 percent of Hong Kong's vegetable imports from the mainland"
+      }
+    ]
+  },
+  {
+    "region": "HK",
+    "crop": "cucumber",
+    "source_type": "import",
+    "origin_country": "China",
+    "origin_place": "Guangdong (e.g. Zhaoqing)",
+    "origin_lat": 23.05,
+    "origin_lon": 112.47,
+    "share_pct": 99,
+    "year": 2024,
+    "transport_mode": "road",
+    "seasonal_note": "",
+    "confidence": "medium",
+    "notes": "China 99.0% of 2024 import weight. Province inferred.",
+    "sources": [
+      {
+        "title": "UN Comtrade imports, cucumbers, reporter 344, 2024 (HS 070700)",
+        "publisher": "United Nations Comtrade (public preview API)",
+        "url": "https://comtradeapi.un.org/public/v1/preview/C/A/HS?reporterCode=344&period=2024&cmdCode=070200,070511,070519,070190,070610,081010,070993,070700,070960,070310,070320,070810,071021,070820,070490,070970,070690,081040,081020,080810,080550,070999,121190&flowCode=M&includeDesc=true",
+        "accessed": "2026-11-17",
+        "quote": "cmdCode \"070700\", partnerDesc \"China\", netWgt 31232280; World netWgt 31538994"
+      },
+      {
+        "title": "Mainland city builds vegetable bases to feed Hong Kong (Zhaoqing, Guangdong)",
+        "publisher": "China Daily Hong Kong",
+        "url": "https://www.chinadailyhk.com/hk/article/371076",
+        "accessed": "2026-11-17",
+        "quote": "contributing a significant portion of the 92 percent of Hong Kong's vegetable imports from the mainland"
+      }
+    ]
+  },
+  {
+    "region": "HK",
+    "crop": "pepper",
+    "source_type": "import",
+    "origin_country": "China",
+    "origin_place": "Guangdong (e.g. Zhaoqing)",
+    "origin_lat": 23.05,
+    "origin_lon": 112.47,
+    "share_pct": 93,
+    "year": 2024,
+    "transport_mode": "road",
+    "seasonal_note": "",
+    "confidence": "low",
+    "notes": "HS 070960 mixes sweet and chili peppers; by value Netherlands/Korea are larger for bell peppers. Province inferred.",
+    "sources": [
+      {
+        "title": "UN Comtrade imports, capsicum peppers, reporter 344, 2024 (HS 070960)",
+        "publisher": "United Nations Comtrade (public preview API)",
+        "url": "https://comtradeapi.un.org/public/v1/preview/C/A/HS?reporterCode=344&period=2024&cmdCode=070200,070511,070519,070190,070610,081010,070993,070700,070960,070310,070320,070810,071021,070820,070490,070970,070690,081040,081020,080810,080550,070999,121190&flowCode=M&includeDesc=true",
+        "accessed": "2026-11-17",
+        "quote": "cmdCode \"070960\", partnerDesc \"China\", netWgt 3033740; World netWgt 3251236"
+      },
+      {
+        "title": "Mainland city builds vegetable bases to feed Hong Kong (Zhaoqing, Guangdong)",
+        "publisher": "China Daily Hong Kong",
+        "url": "https://www.chinadailyhk.com/hk/article/371076",
+        "accessed": "2026-11-17",
+        "quote": "contributing a significant portion of the 92 percent of Hong Kong's vegetable imports from the mainland"
+      }
+    ]
+  },
+  {
+    "region": "HK",
+    "crop": "chilli",
+    "source_type": "import",
+    "origin_country": "China",
+    "origin_place": "Guangdong (e.g. Zhaoqing)",
+    "origin_lat": 23.05,
+    "origin_lon": 112.47,
+    "share_pct": 93,
+    "year": 2024,
+    "transport_mode": "road",
+    "seasonal_note": "",
+    "confidence": "medium",
+    "notes": "China 93% of 2024 HS 070960 import weight (includes sweet peppers). Province inferred.",
+    "sources": [
+      {
+        "title": "UN Comtrade imports, capsicum peppers, reporter 344, 2024 (HS 070960)",
+        "publisher": "United Nations Comtrade (public preview API)",
+        "url": "https://comtradeapi.un.org/public/v1/preview/C/A/HS?reporterCode=344&period=2024&cmdCode=070200,070511,070519,070190,070610,081010,070993,070700,070960,070310,070320,070810,071021,070820,070490,070970,070690,081040,081020,080810,080550,070999,121190&flowCode=M&includeDesc=true",
+        "accessed": "2026-11-17",
+        "quote": "cmdCode \"070960\", partnerDesc \"China\", netWgt 3033740; World netWgt 3251236"
+      },
+      {
+        "title": "Mainland city builds vegetable bases to feed Hong Kong (Zhaoqing, Guangdong)",
+        "publisher": "China Daily Hong Kong",
+        "url": "https://www.chinadailyhk.com/hk/article/371076",
+        "accessed": "2026-11-17",
+        "quote": "contributing a significant portion of the 92 percent of Hong Kong's vegetable imports from the mainland"
+      }
+    ]
+  },
+  {
+    "region": "HK",
+    "crop": "kale",
+    "source_type": "import",
+    "origin_country": "China",
+    "origin_place": "Guangdong (e.g. Zhaoqing)",
+    "origin_lat": 23.05,
+    "origin_lon": 112.47,
+    "share_pct": 100,
+    "year": 2024,
+    "transport_mode": "road",
+    "seasonal_note": "",
+    "confidence": "low",
+    "notes": "HS 070490 is dominated by Chinese brassicas (choy sum etc.); no kale-specific data. Province inferred.",
+    "sources": [
+      {
+        "title": "UN Comtrade imports, other brassicas, reporter 344, 2024 (HS 070490)",
+        "publisher": "United Nations Comtrade (public preview API)",
+        "url": "https://comtradeapi.un.org/public/v1/preview/C/A/HS?reporterCode=344&period=2024&cmdCode=070200,070511,070519,070190,070610,081010,070993,070700,070960,070310,070320,070810,071021,070820,070490,070970,070690,081040,081020,080810,080550,070999,121190&flowCode=M&includeDesc=true",
+        "accessed": "2026-11-17",
+        "quote": "cmdCode \"070490\", partnerDesc \"China\", netWgt 269863680; World netWgt 270933816"
+      },
+      {
+        "title": "Mainland city builds vegetable bases to feed Hong Kong (Zhaoqing, Guangdong)",
+        "publisher": "China Daily Hong Kong",
+        "url": "https://www.chinadailyhk.com/hk/article/371076",
+        "accessed": "2026-11-17",
+        "quote": "contributing a significant portion of the 92 percent of Hong Kong's vegetable imports from the mainland"
+      }
+    ]
+  },
+  {
+    "region": "HK",
+    "crop": "basil",
+    "source_type": "import",
+    "origin_country": "China",
+    "origin_place": "Guangdong (e.g. Zhaoqing)",
+    "origin_lat": 23.05,
+    "origin_lon": 112.47,
+    "share_pct": null,
+    "year": 2024,
+    "transport_mode": "road",
+    "seasonal_note": "",
+    "confidence": "low",
+    "notes": "No basil-specific data; uses HS 070999 'other vegetables' (China 98.6%). Province inferred.",
+    "sources": [
+      {
+        "title": "UN Comtrade imports, other vegetables n.e.s., reporter 344, 2024 (HS 070999)",
+        "publisher": "United Nations Comtrade (public preview API)",
+        "url": "https://comtradeapi.un.org/public/v1/preview/C/A/HS?reporterCode=344&period=2024&cmdCode=070200,070511,070519,070190,070610,081010,070993,070700,070960,070310,070320,070810,071021,070820,070490,070970,070690,081040,081020,080810,080550,070999,121190&flowCode=M&includeDesc=true",
+        "accessed": "2026-11-17",
+        "quote": "cmdCode \"070999\", partnerDesc \"China\", netWgt 358427757; World netWgt 363544980"
+      },
+      {
+        "title": "Mainland city builds vegetable bases to feed Hong Kong (Zhaoqing, Guangdong)",
+        "publisher": "China Daily Hong Kong",
+        "url": "https://www.chinadailyhk.com/hk/article/371076",
+        "accessed": "2026-11-17",
+        "quote": "contributing a significant portion of the 92 percent of Hong Kong's vegetable imports from the mainland"
+      }
+    ]
+  },
+  {
+    "region": "HK",
+    "crop": "mint",
+    "source_type": "import",
+    "origin_country": "China",
+    "origin_place": "Guangdong (e.g. Zhaoqing)",
+    "origin_lat": 23.05,
+    "origin_lon": 112.47,
+    "share_pct": null,
+    "year": 2024,
+    "transport_mode": "road",
+    "seasonal_note": "",
+    "confidence": "low",
+    "notes": "No mint-specific data; HS 121190 (China 95.6%) also covers dried/medicinal herbs. Province inferred.",
+    "sources": [
+      {
+        "title": "UN Comtrade imports, plants/herbs n.e.s., reporter 344, 2024 (HS 121190)",
+        "publisher": "United Nations Comtrade (public preview API)",
+        "url": "https://comtradeapi.un.org/public/v1/preview/C/A/HS?reporterCode=344&period=2024&cmdCode=070200,070511,070519,070190,070610,081010,070993,070700,070960,070310,070320,070810,071021,070820,070490,070970,070690,081040,081020,080810,080550,070999,121190&flowCode=M&includeDesc=true",
+        "accessed": "2026-11-17",
+        "quote": "cmdCode \"121190\", partnerDesc \"China\", netWgt 11101852; World netWgt 11606878"
+      },
+      {
+        "title": "Mainland city builds vegetable bases to feed Hong Kong (Zhaoqing, Guangdong)",
+        "publisher": "China Daily Hong Kong",
+        "url": "https://www.chinadailyhk.com/hk/article/371076",
+        "accessed": "2026-11-17",
+        "quote": "contributing a significant portion of the 92 percent of Hong Kong's vegetable imports from the mainland"
+      }
+    ]
+  },
+  {
+    "region": "HK",
+    "crop": "carrot",
+    "source_type": "import",
+    "origin_country": "Taiwan",
+    "origin_place": "Taiwan (area not identified)",
+    "origin_lat": 23.7,
+    "origin_lon": 120.96,
+    "share_pct": 42,
+    "year": 2024,
+    "transport_mode": "sea",
+    "seasonal_note": "Australia and mainland China are the other main suppliers.",
+    "confidence": "low",
+    "notes": "Comtrade reports Taiwan as 'Other Asia, nes'. Taiwan 42.4% of 2024 HK carrot (HS 070610, carrots and turnips) import weight; China 27%, Australia 24%. Coordinates are a Taiwan centroid.",
+    "sources": [
+      {
+        "title": "UN Comtrade imports, carrots and turnips, reporter 344, 2024 (HS 070610)",
+        "publisher": "United Nations Comtrade (public preview API)",
+        "url": "https://comtradeapi.un.org/public/v1/preview/C/A/HS?reporterCode=344&period=2024&cmdCode=070200,070511,070519,070190,070610,081010,070993,070700,070960,070310,070320,070810,071021,070820,070490,070970,070690,081040,081020,080810,080550,070999,121190&flowCode=M&includeDesc=true",
+        "accessed": "2026-11-17",
+        "quote": "cmdCode \"070610\", partnerDesc \"Other Asia, nes\", netWgt 3573235; World netWgt 8433944"
+      }
+    ]
+  },
+  {
+    "region": "HK",
+    "crop": "strawberry",
+    "source_type": "import",
+    "origin_country": "Japan",
+    "origin_place": "Tochigi Prefecture",
+    "origin_lat": 36.57,
+    "origin_lon": 139.88,
+    "share_pct": 45,
+    "year": 2024,
+    "transport_mode": "sea",
+    "seasonal_note": "Japanese and Korean strawberries are winter-spring; US fruit in other months.",
+    "confidence": "low",
+    "notes": "Japan 44.5% of 2024 import weight (Korea 24%, USA 19%). Tochigi chosen as Japan's largest producing prefecture, not as a confirmed HK-export origin. Transport mode not verified (premium Japanese fruit may be air-freighted).",
+    "sources": [
+      {
+        "title": "UN Comtrade imports, strawberries, reporter 344, 2024 (HS 081010)",
+        "publisher": "United Nations Comtrade (public preview API)",
+        "url": "https://comtradeapi.un.org/public/v1/preview/C/A/HS?reporterCode=344&period=2024&cmdCode=070200,070511,070519,070190,070610,081010,070993,070700,070960,070310,070320,070810,071021,070820,070490,070970,070690,081040,081020,080810,080550,070999,121190&flowCode=M&includeDesc=true",
+        "accessed": "2026-11-17",
+        "quote": "cmdCode \"081010\", partnerDesc \"Japan\", netWgt 1823500; World netWgt 4094846"
+      },
+      {
+        "title": "Tochigi's Strawberries: Red Jewels for the Crown of Japanese Agriculture",
+        "publisher": "Nippon.com",
+        "url": "https://www.nippon.com/en/views/b06006/tochigi%E2%80%99s-strawberries-red-jewels-for-the-crown-of-japanese-agriculture.html",
+        "accessed": "2026-11-17",
+        "quote": "Tochigi has been the largest producer of strawberries in Japan for almost five decades."
+      }
+    ]
+  },
+  {
+    "region": "HK",
+    "crop": "courgette",
+    "source_type": "import",
+    "origin_country": "Japan",
+    "origin_place": "Japan (area not identified)",
+    "origin_lat": 36.2,
+    "origin_lon": 138.25,
+    "share_pct": 29,
+    "year": 2024,
+    "transport_mode": "sea",
+    "seasonal_note": "",
+    "confidence": "low",
+    "notes": "HS 070993 (pumpkins, squash, gourds) likely dominated by kabocha, not courgette. Japan 29%, China 26%, NZ 21% of 2024 weight. Coordinates are a Japan centroid.",
+    "sources": [
+      {
+        "title": "UN Comtrade imports, pumpkins, squash and gourds, reporter 344, 2024 (HS 070993)",
+        "publisher": "United Nations Comtrade (public preview API)",
+        "url": "https://comtradeapi.un.org/public/v1/preview/C/A/HS?reporterCode=344&period=2024&cmdCode=070200,070511,070519,070190,070610,081010,070993,070700,070960,070310,070320,070810,071021,070820,070490,070970,070690,081040,081020,080810,080550,070999,121190&flowCode=M&includeDesc=true",
+        "accessed": "2026-11-17",
+        "quote": "cmdCode \"070993\", partnerDesc \"Japan\", netWgt 393280; World netWgt 1352025"
+      }
+    ]
+  },
+  {
+    "region": "HK",
+    "crop": "onion",
+    "source_type": "import",
+    "origin_country": "New Zealand",
+    "origin_place": "New Zealand (area not identified)",
+    "origin_lat": -40.9,
+    "origin_lon": 174.9,
+    "share_pct": 37,
+    "year": 2024,
+    "transport_mode": "sea",
+    "seasonal_note": "China was nearly as large (34%); Australia 11%.",
+    "confidence": "low",
+    "notes": "NZ 36.6% of 2024 HK onion import weight vs China 34%. Recorded volume (3,013 t) looks small for HK consumption, so mainland onions may be under-recorded. Coordinates are an NZ centroid.",
+    "sources": [
+      {
+        "title": "UN Comtrade imports, onions and shallots, reporter 344, 2024 (HS 070310)",
+        "publisher": "United Nations Comtrade (public preview API)",
+        "url": "https://comtradeapi.un.org/public/v1/preview/C/A/HS?reporterCode=344&period=2024&cmdCode=070200,070511,070519,070190,070610,081010,070993,070700,070960,070310,070320,070810,071021,070820,070490,070970,070690,081040,081020,080810,080550,070999,121190&flowCode=M&includeDesc=true",
+        "accessed": "2026-11-17",
+        "quote": "cmdCode \"070310\", partnerDesc \"New Zealand\", netWgt 1101950; World netWgt 3013177"
+      }
+    ]
+  },
+  {
+    "region": "HK",
+    "crop": "garlic",
+    "source_type": "import",
+    "origin_country": "China",
+    "origin_place": "Jinxiang County, Shandong",
+    "origin_lat": 35.07,
+    "origin_lon": 116.31,
+    "share_pct": 92,
+    "year": 2024,
+    "transport_mode": "road",
+    "seasonal_note": "",
+    "confidence": "medium",
+    "notes": "China 92.3% of 2024 recorded import weight (small recorded volume). Jinxiang chosen because it dominates Chinese garlic exports, not from HK-specific data.",
+    "sources": [
+      {
+        "title": "UN Comtrade imports, garlic, reporter 344, 2024 (HS 070320)",
+        "publisher": "United Nations Comtrade (public preview API)",
+        "url": "https://comtradeapi.un.org/public/v1/preview/C/A/HS?reporterCode=344&period=2024&cmdCode=070200,070511,070519,070190,070610,081010,070993,070700,070960,070310,070320,070810,071021,070820,070490,070970,070690,081040,081020,080810,080550,070999,121190&flowCode=M&includeDesc=true",
+        "accessed": "2026-11-17",
+        "quote": "cmdCode \"070320\", partnerDesc \"China\", netWgt 126143; World netWgt 136723"
+      },
+      {
+        "title": "Four regions form core of China's garlic supply industry",
+        "publisher": "FreshPlaza",
+        "url": "https://www.freshplaza.com/asia/article/9874097/four-regions-form-core-of-china-s-garlic-supply-industry/",
+        "accessed": "2026-11-17",
+        "quote": "garlic exports from the region account for more than 70% of China's total garlic exports."
+      }
+    ]
+  },
+  {
+    "region": "HK",
+    "crop": "peas",
+    "source_type": "import",
+    "origin_country": "United States",
+    "origin_place": "United States (area not identified)",
+    "origin_lat": 39.8,
+    "origin_lon": -98.6,
+    "share_pct": 41,
+    "year": 2024,
+    "transport_mode": "sea",
+    "seasonal_note": "",
+    "confidence": "low",
+    "notes": "Frozen peas (HS 071021, 258 t) assumed main supermarket form: USA 40.8%, China 34% of 2024 weight. Fresh peas recorded at only 6 t. Coordinates are a US centroid.",
+    "sources": [
+      {
+        "title": "UN Comtrade imports, frozen peas, reporter 344, 2024 (HS 071021)",
+        "publisher": "United Nations Comtrade (public preview API)",
+        "url": "https://comtradeapi.un.org/public/v1/preview/C/A/HS?reporterCode=344&period=2024&cmdCode=070200,070511,070519,070190,070610,081010,070993,070700,070960,070310,070320,070810,071021,070820,070490,070970,070690,081040,081020,080810,080550,070999,121190&flowCode=M&includeDesc=true",
+        "accessed": "2026-11-17",
+        "quote": "cmdCode \"071021\", partnerDesc \"USA\", netWgt 105458; World netWgt 258420"
+      }
+    ]
+  },
+  {
+    "region": "HK",
+    "crop": "green-beans",
+    "source_type": "import",
+    "origin_country": "Kenya",
+    "origin_place": "Kenya (area not identified)",
+    "origin_lat": -0.02,
+    "origin_lon": 37.9,
+    "share_pct": 93,
+    "year": 2024,
+    "transport_mode": "sea",
+    "seasonal_note": "",
+    "confidence": "low",
+    "notes": "Kenya 92.6% of recorded 2024 HS 070820 weight (213 t). Long beans from the mainland may be recorded under other codes. Transport mode not verified (Kenyan beans are commonly air-freighted). Coordinates are a Kenya centroid.",
+    "sources": [
+      {
+        "title": "UN Comtrade imports, beans, reporter 344, 2024 (HS 070820)",
+        "publisher": "United Nations Comtrade (public preview API)",
+        "url": "https://comtradeapi.un.org/public/v1/preview/C/A/HS?reporterCode=344&period=2024&cmdCode=070200,070511,070519,070190,070610,081010,070993,070700,070960,070310,070320,070810,071021,070820,070490,070970,070690,081040,081020,080810,080550,070999,121190&flowCode=M&includeDesc=true",
+        "accessed": "2026-11-17",
+        "quote": "cmdCode \"070820\", partnerDesc \"Kenya\", netWgt 197241; World netWgt 212984"
+      }
+    ]
+  },
+  {
+    "region": "HK",
+    "crop": "spinach",
+    "source_type": "import",
+    "origin_country": "United States",
+    "origin_place": "United States (area not identified)",
+    "origin_lat": 39.8,
+    "origin_lon": -98.6,
+    "share_pct": 33,
+    "year": 2024,
+    "transport_mode": "sea",
+    "seasonal_note": "In 2023 China supplied 86% of a larger 573 t.",
+    "confidence": "low",
+    "notes": "Recorded 2024 volume only 66 t (USA 33%, UK 32%, Japan 25%); most mainland leafy greens appear to be recorded under other codes. Coordinates are a US centroid.",
+    "sources": [
+      {
+        "title": "UN Comtrade imports, spinach, reporter 344, 2024 (HS 070970)",
+        "publisher": "United Nations Comtrade (public preview API)",
+        "url": "https://comtradeapi.un.org/public/v1/preview/C/A/HS?reporterCode=344&period=2024&cmdCode=070200,070511,070519,070190,070610,081010,070993,070700,070960,070310,070320,070810,071021,070820,070490,070970,070690,081040,081020,080810,080550,070999,121190&flowCode=M&includeDesc=true",
+        "accessed": "2026-11-17",
+        "quote": "cmdCode \"070970\", partnerDesc \"USA\", netWgt 21631; World netWgt 65530"
+      }
+    ]
+  },
+  {
+    "region": "HK",
+    "crop": "radish",
+    "source_type": "import",
+    "origin_country": "Japan",
+    "origin_place": "Japan (area not identified)",
+    "origin_lat": 36.2,
+    "origin_lon": 138.25,
+    "share_pct": 58,
+    "year": 2024,
+    "transport_mode": "sea",
+    "seasonal_note": "",
+    "confidence": "low",
+    "notes": "HS 070690 also covers beetroot and salsify; recorded volume is small (211 t), so mainland Chinese radish may be under-recorded. Coordinates are a Japan centroid.",
+    "sources": [
+      {
+        "title": "UN Comtrade imports, beetroot, radishes etc., reporter 344, 2024 (HS 070690)",
+        "publisher": "United Nations Comtrade (public preview API)",
+        "url": "https://comtradeapi.un.org/public/v1/preview/C/A/HS?reporterCode=344&period=2024&cmdCode=070200,070511,070519,070190,070610,081010,070993,070700,070960,070310,070320,070810,071021,070820,070490,070970,070690,081040,081020,080810,080550,070999,121190&flowCode=M&includeDesc=true",
+        "accessed": "2026-11-17",
+        "quote": "cmdCode \"070690\", partnerDesc \"Japan\", netWgt 122666; World netWgt 211491"
+      }
+    ]
+  },
+  {
+    "region": "HK",
+    "crop": "blueberry",
+    "source_type": "import",
+    "origin_country": "Peru",
+    "origin_place": "La Libertad (Trujillo area)",
+    "origin_lat": -8.4,
+    "origin_lon": -78.8,
+    "share_pct": 79,
+    "year": 2024,
+    "transport_mode": "sea",
+    "seasonal_note": "Peru mainly supplies Aug-Jan; Chile follows in early year.",
+    "confidence": "high",
+    "notes": "Peru 78.7% of 2024 HK blueberry (HS 081040) import weight.",
+    "sources": [
+      {
+        "title": "UN Comtrade imports, blueberries, reporter 344, 2024 (HS 081040)",
+        "publisher": "United Nations Comtrade (public preview API)",
+        "url": "https://comtradeapi.un.org/public/v1/preview/C/A/HS?reporterCode=344&period=2024&cmdCode=070200,070511,070519,070190,070610,081010,070993,070700,070960,070310,070320,070810,071021,070820,070490,070970,070690,081040,081020,080810,080550,070999,121190&flowCode=M&includeDesc=true",
+        "accessed": "2026-11-17",
+        "quote": "cmdCode \"081040\", partnerDesc \"Peru\", netWgt 25611200; World netWgt 32538204"
+      },
+      {
+        "title": "Peruvian blueberry exports rise 65% to 66,737 tons in 2026/27",
+        "publisher": "FreshPlaza",
+        "url": "https://www.freshplaza.com/oceania/article/9866175/peruvian-blueberry-exports-rise-65-to-66-737-tons-in-2026-27/",
+        "accessed": "2026-11-17",
+        "quote": "La Libertad is the primary producing region, contributing 32,843 tons and 49% of total exported volume."
+      }
+    ]
+  },
+  {
+    "region": "HK",
+    "crop": "raspberry",
+    "source_type": "import",
+    "origin_country": "China",
+    "origin_place": "Mainland China (area not identified)",
+    "origin_lat": 35.0,
+    "origin_lon": 105.0,
+    "share_pct": 57,
+    "year": 2024,
+    "transport_mode": "road",
+    "seasonal_note": "In 2023 the USA was the top supplier (59%).",
+    "confidence": "low",
+    "notes": "Small volume (256 t, HS 081020 incl. blackberries). Coordinates are a China centroid.",
+    "sources": [
+      {
+        "title": "UN Comtrade imports, raspberries and blackberries, reporter 344, 2024 (HS 081020)",
+        "publisher": "United Nations Comtrade (public preview API)",
+        "url": "https://comtradeapi.un.org/public/v1/preview/C/A/HS?reporterCode=344&period=2024&cmdCode=070200,070511,070519,070190,070610,081010,070993,070700,070960,070310,070320,070810,071021,070820,070490,070970,070690,081040,081020,080810,080550,070999,121190&flowCode=M&includeDesc=true",
+        "accessed": "2026-11-17",
+        "quote": "cmdCode \"081020\", partnerDesc \"China\", netWgt 146508; World netWgt 256227"
+      }
+    ]
+  },
+  {
+    "region": "HK",
+    "crop": "apple",
+    "source_type": "import",
+    "origin_country": "China",
+    "origin_place": "Shaanxi Province",
+    "origin_lat": 35.76,
+    "origin_lon": 109.43,
+    "share_pct": 52,
+    "year": 2024,
+    "transport_mode": "road",
+    "seasonal_note": "New Zealand (22%) and USA (9%) are the next suppliers.",
+    "confidence": "medium",
+    "notes": "China 52.3% of 2024 HK apple import weight. Shaanxi chosen as China's largest apple province, not from HK-specific data.",
+    "sources": [
+      {
+        "title": "UN Comtrade imports, apples, reporter 344, 2024 (HS 080810)",
+        "publisher": "United Nations Comtrade (public preview API)",
+        "url": "https://comtradeapi.un.org/public/v1/preview/C/A/HS?reporterCode=344&period=2024&cmdCode=070200,070511,070519,070190,070610,081010,070993,070700,070960,070310,070320,070810,071021,070820,070490,070970,070690,081040,081020,080810,080550,070999,121190&flowCode=M&includeDesc=true",
+        "accessed": "2026-11-17",
+        "quote": "cmdCode \"080810\", partnerDesc \"China\", netWgt 77885400; World netWgt 148821735"
+      },
+      {
+        "title": "Authority Release: 2025 Production Season Apple Supply and Demand Situation Analysis Report",
+        "publisher": "Tridge",
+        "url": "https://www.tridge.com/news/authority-release-2025-production-season-app-asygtr",
+        "accessed": "2026-11-17",
+        "quote": "Shaanxi Province produced 1449.9 million tons, a 5.4% year-on-year increase"
+      }
+    ]
+  },
+  {
+    "region": "HK",
+    "crop": "lemon",
+    "source_type": "import",
+    "origin_country": "South Africa",
+    "origin_place": "Eastern Cape (Sundays River Valley)",
+    "origin_lat": -33.42,
+    "origin_lon": 25.6,
+    "share_pct": 41,
+    "year": 2024,
+    "transport_mode": "sea",
+    "seasonal_note": "Southern-hemisphere supply mainly mid-year; China and Egypt also supply.",
+    "confidence": "medium",
+    "notes": "South Africa 41.5% of 2024 HS 080550 (lemons and limes) import weight; China 35%.",
+    "sources": [
+      {
+        "title": "UN Comtrade imports, lemons and limes, reporter 344, 2024 (HS 080550)",
+        "publisher": "United Nations Comtrade (public preview API)",
+        "url": "https://comtradeapi.un.org/public/v1/preview/C/A/HS?reporterCode=344&period=2024&cmdCode=070200,070511,070519,070190,070610,081010,070993,070700,070960,070310,070320,070810,071021,070820,070490,070970,070690,081040,081020,080810,080550,070999,121190&flowCode=M&includeDesc=true",
+        "accessed": "2026-11-17",
+        "quote": "cmdCode \"080550\", partnerDesc \"South Africa\", netWgt 9978290; World netWgt 24048008"
+      },
+      {
+        "title": "Lemon Production in South Africa",
+        "publisher": "Citrus Industry Magazine",
+        "url": "https://citrusindustry.net/2025/02/17/lemon-production-south-africa/",
+        "accessed": "2026-11-17",
+        "quote": "The country's largest growing region for lemons is the Eastern Cape province, accounting for 41% of total area planted."
+      }
+    ]
+  },
+  {
+    "region": "AU",
+    "crop": "tomato",
+    "source_type": "domestic",
+    "origin_country": "Australia",
+    "origin_place": "South Australia (largest state after excluding Victoria's processing crop)",
+    "origin_lat": -34.6,
+    "origin_lon": 138.6,
+    "share_pct": null,
+    "year": 2025,
+    "transport_mode": "road",
+    "seasonal_note": "Bowen-Gumlu (QLD) supplies up to 90% of tomatoes in September-October.",
+    "confidence": "low",
+    "notes": "Fresh imports negligible (30 t, 2024/25). Victoria's 256,289 t includes most of the 211,011 t processing crop, so SA and QLD lead fresh supply; ranking is an inference.",
+    "sources": [
+      {
+        "title": "Australian Horticulture Statistics Handbook 2024/25 - Tomato",
+        "publisher": "Hort Innovation",
+        "url": "https://edge.sitecorecloud.io/hortinnovat2fab-hortinnovat9661-production6d5f-0e78/media/Sub-pages/About-us/What-we-do/PDFs-and-other-media/australian-horticulture-statistics-handbook-2024-25-vegetables.pdf",
+        "accessed": "2026-11-17",
+        "quote": "South Australia 60,646"
+      },
+      {
+        "title": "Bowen-Gumlu growers feed nation of Australia",
+        "publisher": "FreshPlaza",
+        "url": "https://www.freshplaza.com/latin-america/article/9095278/bowen-gumlu-growers-feed-nation-of-australia/",
+        "accessed": "2026-11-17",
+        "quote": "produces up to 90 per cent of all of tomatoes and capsicums needed for the Australian market"
+      }
+    ]
+  },
+  {
+    "region": "AU",
+    "crop": "lettuce",
+    "source_type": "domestic",
+    "origin_country": "Australia",
+    "origin_place": "Victoria",
+    "origin_lat": -37.9,
+    "origin_lon": 144.6,
+    "share_pct": null,
+    "year": 2025,
+    "transport_mode": "road",
+    "seasonal_note": "Queensland (Lockyer Valley) supplies much of winter lettuce (not verified in cited source).",
+    "confidence": "medium",
+    "notes": "Head lettuce imports 14 t vs production 160,382 t (2024/25). Coordinate is a representative point (Werribee area).",
+    "sources": [
+      {
+        "title": "Australian Horticulture Statistics Handbook 2024/25 - Head lettuce",
+        "publisher": "Hort Innovation",
+        "url": "https://edge.sitecorecloud.io/hortinnovat2fab-hortinnovat9661-production6d5f-0e78/media/Sub-pages/About-us/What-we-do/PDFs-and-other-media/australian-horticulture-statistics-handbook-2024-25-vegetables.pdf",
+        "accessed": "2026-11-17",
+        "quote": "Victoria 69,042"
+      }
+    ]
+  },
+  {
+    "region": "AU",
+    "crop": "potato",
+    "source_type": "domestic",
+    "origin_country": "Australia",
+    "origin_place": "South Australia (Mallee, South East)",
+    "origin_lat": -35.1,
+    "origin_lon": 139.9,
+    "share_pct": null,
+    "year": 2025,
+    "transport_mode": "road",
+    "seasonal_note": "",
+    "confidence": "high",
+    "notes": "No fresh potato imports. Tasmania tops total production but largely for processing; SA grows ~80% of fresh-market potatoes.",
+    "sources": [
+      {
+        "title": "Australian Horticulture Statistics Handbook 2024/25 - Potato",
+        "publisher": "Hort Innovation",
+        "url": "https://edge.sitecorecloud.io/hortinnovat2fab-hortinnovat9661-production6d5f-0e78/media/Sub-pages/About-us/What-we-do/PDFs-and-other-media/australian-horticulture-statistics-handbook-2024-25-vegetables.pdf",
+        "accessed": "2026-11-17",
+        "quote": "Fresh Import Volume (t) - - - - - - - - - -"
+      },
+      {
+        "title": "PT16001 final report",
+        "publisher": "Hort Innovation",
+        "url": "https://edge.sitecorecloud.io/hortinnovat2fab-hortinnovat9661-production6d5f-0e78/media/Sub-pages/Information-hub/Project-reports/P/pt16001-final-report-complete.pdf",
+        "accessed": "2026-11-17",
+        "quote": "comprising 80% of Australia's fresh market potatoes."
+      }
+    ]
+  },
+  {
+    "region": "AU",
+    "crop": "carrot",
+    "source_type": "domestic",
+    "origin_country": "Australia",
+    "origin_place": "Western Australia",
+    "origin_lat": -31.9,
+    "origin_lon": 115.9,
+    "share_pct": null,
+    "year": 2025,
+    "transport_mode": "road",
+    "seasonal_note": "",
+    "confidence": "high",
+    "notes": "Fresh carrot imports essentially nil; WA is also the export hub. Coordinate is representative (Perth region).",
+    "sources": [
+      {
+        "title": "Australian Horticulture Statistics Handbook 2024/25 - Carrot",
+        "publisher": "Hort Innovation",
+        "url": "https://edge.sitecorecloud.io/hortinnovat2fab-hortinnovat9661-production6d5f-0e78/media/Sub-pages/About-us/What-we-do/PDFs-and-other-media/australian-horticulture-statistics-handbook-2024-25-vegetables.pdf",
+        "accessed": "2026-11-17",
+        "quote": "Western Australia 117,402"
+      }
+    ]
+  },
+  {
+    "region": "AU",
+    "crop": "strawberry",
+    "source_type": "domestic",
+    "origin_country": "Australia",
+    "origin_place": "Queensland (Sunshine Coast / Moreton Bay)",
+    "origin_lat": -26.8,
+    "origin_lon": 152.9,
+    "share_pct": null,
+    "year": 2025,
+    "transport_mode": "road",
+    "seasonal_note": "Queensland fruit mainly winter-spring; Victoria (Yarra Valley) summer-autumn.",
+    "confidence": "medium",
+    "notes": "Imports under 1 t in 2024/25. QLD supplies winter-spring; Victoria summer. Coordinate is representative.",
+    "sources": [
+      {
+        "title": "Australian Horticulture Statistics Handbook 2024/25 - Berries - Strawberry",
+        "publisher": "Hort Innovation",
+        "url": "https://edge.sitecorecloud.io/hortinnovat2fab-hortinnovat9661-production6d5f-0e78/media/Sub-pages/About-us/What-we-do/PDFs-and-other-media/australian-horticulture-statistics-handbook-2024-25--fruit.pdf",
+        "accessed": "2026-11-17",
+        "quote": "Queensland 30,287"
+      }
+    ]
+  },
+  {
+    "region": "AU",
+    "crop": "basil",
+    "source_type": "domestic",
+    "origin_country": "Australia",
+    "origin_place": "Queensland",
+    "origin_lat": -27.5,
+    "origin_lon": 153.0,
+    "share_pct": null,
+    "year": 2025,
+    "transport_mode": "road",
+    "seasonal_note": "",
+    "confidence": "low",
+    "notes": "Handbook groups basil with 'parsley and other fresh herbs'; no basil-specific data. No fresh imports recorded.",
+    "sources": [
+      {
+        "title": "Australian Horticulture Statistics Handbook 2024/25 - Fresh herbs - parsley and other fresh herbs",
+        "publisher": "Hort Innovation",
+        "url": "https://edge.sitecorecloud.io/hortinnovat2fab-hortinnovat9661-production6d5f-0e78/media/Sub-pages/About-us/What-we-do/PDFs-and-other-media/australian-horticulture-statistics-handbook-2024-25-vegetables.pdf",
+        "accessed": "2026-11-17",
+        "quote": "Queensland 4,896"
+      }
+    ]
+  },
+  {
+    "region": "AU",
+    "crop": "mint",
+    "source_type": "domestic",
+    "origin_country": "Australia",
+    "origin_place": "Queensland",
+    "origin_lat": -27.5,
+    "origin_lon": 153.0,
+    "share_pct": null,
+    "year": 2025,
+    "transport_mode": "road",
+    "seasonal_note": "",
+    "confidence": "low",
+    "notes": "Handbook groups mint with 'parsley and other fresh herbs'; no mint-specific data. No fresh imports recorded.",
+    "sources": [
+      {
+        "title": "Australian Horticulture Statistics Handbook 2024/25 - Fresh herbs - parsley and other fresh herbs",
+        "publisher": "Hort Innovation",
+        "url": "https://edge.sitecorecloud.io/hortinnovat2fab-hortinnovat9661-production6d5f-0e78/media/Sub-pages/About-us/What-we-do/PDFs-and-other-media/australian-horticulture-statistics-handbook-2024-25-vegetables.pdf",
+        "accessed": "2026-11-17",
+        "quote": "Queensland 4,896"
+      }
+    ]
+  },
+  {
+    "region": "AU",
+    "crop": "courgette",
+    "source_type": "domestic",
+    "origin_country": "Australia",
+    "origin_place": "Queensland (Bundaberg / Wide Bay)",
+    "origin_lat": -24.9,
+    "origin_lon": 152.3,
+    "share_pct": null,
+    "year": 2025,
+    "transport_mode": "road",
+    "seasonal_note": "",
+    "confidence": "medium",
+    "notes": "No zucchini imports recorded. Coordinate is representative.",
+    "sources": [
+      {
+        "title": "Australian Horticulture Statistics Handbook 2024/25 - Zucchini",
+        "publisher": "Hort Innovation",
+        "url": "https://edge.sitecorecloud.io/hortinnovat2fab-hortinnovat9661-production6d5f-0e78/media/Sub-pages/About-us/What-we-do/PDFs-and-other-media/australian-horticulture-statistics-handbook-2024-25-vegetables.pdf",
+        "accessed": "2026-11-17",
+        "quote": "Queensland 16,745"
+      }
+    ]
+  },
+  {
+    "region": "AU",
+    "crop": "cucumber",
+    "source_type": "domestic",
+    "origin_country": "Australia",
+    "origin_place": "South Australia (Northern Adelaide Plains)",
+    "origin_lat": -34.65,
+    "origin_lon": 138.6,
+    "share_pct": null,
+    "year": 2025,
+    "transport_mode": "road",
+    "seasonal_note": "",
+    "confidence": "medium",
+    "notes": "Fresh imports 12 t vs production 113,815 t. Adelaide Plains greenhouse location not stated in source.",
+    "sources": [
+      {
+        "title": "Australian Horticulture Statistics Handbook 2024/25 - Cucumber",
+        "publisher": "Hort Innovation",
+        "url": "https://edge.sitecorecloud.io/hortinnovat2fab-hortinnovat9661-production6d5f-0e78/media/Sub-pages/About-us/What-we-do/PDFs-and-other-media/australian-horticulture-statistics-handbook-2024-25-vegetables.pdf",
+        "accessed": "2026-11-17",
+        "quote": "South Australia 38,758"
+      }
+    ]
+  },
+  {
+    "region": "AU",
+    "crop": "pepper",
+    "source_type": "domestic",
+    "origin_country": "Australia",
+    "origin_place": "Queensland (Bowen-Gumlu)",
+    "origin_lat": -20.0,
+    "origin_lon": 148.2,
+    "share_pct": null,
+    "year": 2025,
+    "transport_mode": "road",
+    "seasonal_note": "Bowen-Gumlu supplies most capsicums in September-October.",
+    "confidence": "high",
+    "notes": "Fresh imports 667 t vs production 73,719 t (2024/25).",
+    "sources": [
+      {
+        "title": "Australian Horticulture Statistics Handbook 2024/25 - Capsicum",
+        "publisher": "Hort Innovation",
+        "url": "https://edge.sitecorecloud.io/hortinnovat2fab-hortinnovat9661-production6d5f-0e78/media/Sub-pages/About-us/What-we-do/PDFs-and-other-media/australian-horticulture-statistics-handbook-2024-25-vegetables.pdf",
+        "accessed": "2026-11-17",
+        "quote": "Queensland 45,030"
+      },
+      {
+        "title": "Bowen-Gumlu growers feed nation of Australia",
+        "publisher": "FreshPlaza",
+        "url": "https://www.freshplaza.com/latin-america/article/9095278/bowen-gumlu-growers-feed-nation-of-australia/",
+        "accessed": "2026-11-17",
+        "quote": "produces up to 90 per cent of all of tomatoes and capsicums needed for the Australian market"
+      }
+    ]
+  },
+  {
+    "region": "AU",
+    "crop": "chilli",
+    "source_type": "domestic",
+    "origin_country": "Australia",
+    "origin_place": "Queensland",
+    "origin_lat": -20.0,
+    "origin_lon": 148.2,
+    "share_pct": null,
+    "year": 2025,
+    "transport_mode": "road",
+    "seasonal_note": "",
+    "confidence": "medium",
+    "notes": "Fresh imports 41 t vs production 2,218 t. Bowen coordinate is representative.",
+    "sources": [
+      {
+        "title": "Australian Horticulture Statistics Handbook 2024/25 - Chilli",
+        "publisher": "Hort Innovation",
+        "url": "https://edge.sitecorecloud.io/hortinnovat2fab-hortinnovat9661-production6d5f-0e78/media/Sub-pages/About-us/What-we-do/PDFs-and-other-media/australian-horticulture-statistics-handbook-2024-25-vegetables.pdf",
+        "accessed": "2026-11-17",
+        "quote": "Queensland 1,644"
+      }
+    ]
+  },
+  {
+    "region": "AU",
+    "crop": "onion",
+    "source_type": "domestic",
+    "origin_country": "Australia",
+    "origin_place": "South Australia",
+    "origin_lat": -34.6,
+    "origin_lon": 138.7,
+    "share_pct": null,
+    "year": 2025,
+    "transport_mode": "road",
+    "seasonal_note": "",
+    "confidence": "high",
+    "notes": "Fresh imports 1,430 t vs production 272,604 t. Coordinate is representative.",
+    "sources": [
+      {
+        "title": "Australian Horticulture Statistics Handbook 2024/25 - Onion",
+        "publisher": "Hort Innovation",
+        "url": "https://edge.sitecorecloud.io/hortinnovat2fab-hortinnovat9661-production6d5f-0e78/media/Sub-pages/About-us/What-we-do/PDFs-and-other-media/australian-horticulture-statistics-handbook-2024-25-vegetables.pdf",
+        "accessed": "2026-11-17",
+        "quote": "South Australia 120,392"
+      }
+    ]
+  },
+  {
+    "region": "AU",
+    "crop": "garlic",
+    "source_type": "import",
+    "origin_country": "China",
+    "origin_place": "Jinxiang County, Shandong",
+    "origin_lat": 35.07,
+    "origin_lon": 116.31,
+    "share_pct": 78,
+    "year": 2023,
+    "transport_mode": "sea",
+    "seasonal_note": "",
+    "confidence": "high",
+    "notes": "Fresh imports 16,743 t vs domestic production 3,147 t (2024/25). China 78.2% of 2023 Australian garlic import weight (Comtrade).",
+    "sources": [
+      {
+        "title": "Australian Horticulture Statistics Handbook 2024/25 - Garlic",
+        "publisher": "Hort Innovation",
+        "url": "https://edge.sitecorecloud.io/hortinnovat2fab-hortinnovat9661-production6d5f-0e78/media/Sub-pages/About-us/What-we-do/PDFs-and-other-media/australian-horticulture-statistics-handbook-2024-25-vegetables.pdf",
+        "accessed": "2026-11-17",
+        "quote": "Fresh Import Volume (t) 13,966 +3% 14,729 +5% 15,428 +5% 16,454 +7% 16,743 +2%"
+      },
+      {
+        "title": "UN Comtrade imports, garlic, reporter 36, 2023 (HS 070320)",
+        "publisher": "United Nations Comtrade (public preview API)",
+        "url": "https://comtradeapi.un.org/public/v1/preview/C/A/HS?reporterCode=36&period=2023&cmdCode=070200,070511,070519,070190,070610,081010,070993,070700,070960,070310,070320,070810,071021,070820,070490,070970,070690,081040,081020,080810,080550,070999,121190&flowCode=M&includeDesc=true",
+        "accessed": "2026-11-17",
+        "quote": "cmdCode \"070320\", partnerDesc \"China\", netWgt 12325002; World netWgt 15758692"
+      },
+      {
+        "title": "Four regions form core of China's garlic supply industry",
+        "publisher": "FreshPlaza",
+        "url": "https://www.freshplaza.com/asia/article/9874097/four-regions-form-core-of-china-s-garlic-supply-industry/",
+        "accessed": "2026-11-17",
+        "quote": "garlic exports from the region account for more than 70% of China's total garlic exports."
+      }
+    ]
+  },
+  {
+    "region": "AU",
+    "crop": "peas",
+    "source_type": "domestic",
+    "origin_country": "Australia",
+    "origin_place": "Tasmania",
+    "origin_lat": -41.2,
+    "origin_lon": 146.4,
+    "share_pct": null,
+    "year": 2025,
+    "transport_mode": "road",
+    "seasonal_note": "",
+    "confidence": "low",
+    "notes": "Most peas are sold frozen: total production 25,448 t (mostly processing, Tasmania) vs frozen pea imports 16,843 t in 2023 (NZ 75%). Domestic is the larger share but imports are substantial.",
+    "sources": [
+      {
+        "title": "Australian Horticulture Statistics Handbook 2024/25 - Peas",
+        "publisher": "Hort Innovation",
+        "url": "https://edge.sitecorecloud.io/hortinnovat2fab-hortinnovat9661-production6d5f-0e78/media/Sub-pages/About-us/What-we-do/PDFs-and-other-media/australian-horticulture-statistics-handbook-2024-25-vegetables.pdf",
+        "accessed": "2026-11-17",
+        "quote": "Tasmania 17,324"
+      },
+      {
+        "title": "UN Comtrade imports, frozen peas, reporter 36, 2023 (HS 071021)",
+        "publisher": "United Nations Comtrade (public preview API)",
+        "url": "https://comtradeapi.un.org/public/v1/preview/C/A/HS?reporterCode=36&period=2023&cmdCode=070200,070511,070519,070190,070610,081010,070993,070700,070960,070310,070320,070810,071021,070820,070490,070970,070690,081040,081020,080810,080550,070999,121190&flowCode=M&includeDesc=true",
+        "accessed": "2026-11-17",
+        "quote": "cmdCode \"071021\", partnerDesc \"New Zealand\", netWgt 12612421; World netWgt 16842610"
+      }
+    ]
+  },
+  {
+    "region": "AU",
+    "crop": "green-beans",
+    "source_type": "domestic",
+    "origin_country": "Australia",
+    "origin_place": "Queensland (Bundaberg / Lockyer)",
+    "origin_lat": -24.9,
+    "origin_lon": 152.3,
+    "share_pct": null,
+    "year": 2025,
+    "transport_mode": "road",
+    "seasonal_note": "",
+    "confidence": "medium",
+    "notes": "Fresh imports 654 t vs production 28,169 t. Coordinate is representative.",
+    "sources": [
+      {
+        "title": "Australian Horticulture Statistics Handbook 2024/25 - Beans",
+        "publisher": "Hort Innovation",
+        "url": "https://edge.sitecorecloud.io/hortinnovat2fab-hortinnovat9661-production6d5f-0e78/media/Sub-pages/About-us/What-we-do/PDFs-and-other-media/australian-horticulture-statistics-handbook-2024-25-vegetables.pdf",
+        "accessed": "2026-11-17",
+        "quote": "Queensland 14,712"
+      }
+    ]
+  },
+  {
+    "region": "AU",
+    "crop": "kale",
+    "source_type": "domestic",
+    "origin_country": "Australia",
+    "origin_place": "Victoria",
+    "origin_lat": -37.9,
+    "origin_lon": 144.6,
+    "share_pct": null,
+    "year": 2025,
+    "transport_mode": "road",
+    "seasonal_note": "",
+    "confidence": "low",
+    "notes": "Handbook combines English spinach, silverbeet and kale; imports 3 t.",
+    "sources": [
+      {
+        "title": "Australian Horticulture Statistics Handbook 2024/25 - English spinach/silverbeet/kale",
+        "publisher": "Hort Innovation",
+        "url": "https://edge.sitecorecloud.io/hortinnovat2fab-hortinnovat9661-production6d5f-0e78/media/Sub-pages/About-us/What-we-do/PDFs-and-other-media/australian-horticulture-statistics-handbook-2024-25-vegetables.pdf",
+        "accessed": "2026-11-17",
+        "quote": "Victoria 3,036"
+      }
+    ]
+  },
+  {
+    "region": "AU",
+    "crop": "spinach",
+    "source_type": "domestic",
+    "origin_country": "Australia",
+    "origin_place": "Victoria",
+    "origin_lat": -37.9,
+    "origin_lon": 144.6,
+    "share_pct": null,
+    "year": 2025,
+    "transport_mode": "road",
+    "seasonal_note": "",
+    "confidence": "medium",
+    "notes": "Handbook combines English spinach, silverbeet and kale; imports 3 t. Baby spinach may sit under 'leafy salad vegetables' (Victoria also largest).",
+    "sources": [
+      {
+        "title": "Australian Horticulture Statistics Handbook 2024/25 - English spinach/silverbeet/kale",
+        "publisher": "Hort Innovation",
+        "url": "https://edge.sitecorecloud.io/hortinnovat2fab-hortinnovat9661-production6d5f-0e78/media/Sub-pages/About-us/What-we-do/PDFs-and-other-media/australian-horticulture-statistics-handbook-2024-25-vegetables.pdf",
+        "accessed": "2026-11-17",
+        "quote": "Victoria 3,036"
+      }
+    ]
+  },
+  {
+    "region": "AU",
+    "crop": "radish",
+    "source_type": "domestic",
+    "origin_country": "Australia",
+    "origin_place": "Australia (state not identified)",
+    "origin_lat": -25.3,
+    "origin_lon": 133.8,
+    "share_pct": null,
+    "year": 2023,
+    "transport_mode": "road",
+    "seasonal_note": "",
+    "confidence": "low",
+    "notes": "Radish is not covered in the Handbook. Comtrade shows only 51 t of 2023 HS 070690 imports (beetroot, radish etc.), implying domestic supply. Coordinates are an Australia centroid.",
+    "sources": [
+      {
+        "title": "UN Comtrade imports, beetroot/radishes etc., reporter 36, 2023 (HS 070690)",
+        "publisher": "United Nations Comtrade (public preview API)",
+        "url": "https://comtradeapi.un.org/public/v1/preview/C/A/HS?reporterCode=36&period=2023&cmdCode=070200,070511,070519,070190,070610,081010,070993,070700,070960,070310,070320,070810,071021,070820,070490,070970,070690,081040,081020,080810,080550,070999,121190&flowCode=M&includeDesc=true",
+        "accessed": "2026-11-17",
+        "quote": "cmdCode \"070690\", partnerDesc \"Spain\", netWgt 50400; World netWgt 51130"
+      }
+    ]
+  },
+  {
+    "region": "AU",
+    "crop": "blueberry",
+    "source_type": "domestic",
+    "origin_country": "Australia",
+    "origin_place": "New South Wales (Coffs Harbour region)",
+    "origin_lat": -30.3,
+    "origin_lon": 153.1,
+    "share_pct": null,
+    "year": 2025,
+    "transport_mode": "road",
+    "seasonal_note": "",
+    "confidence": "high",
+    "notes": "Imports 788 t vs production 20,211 t. Coffs Harbour location is representative.",
+    "sources": [
+      {
+        "title": "Australian Horticulture Statistics Handbook 2024/25 - Berries - Blueberry",
+        "publisher": "Hort Innovation",
+        "url": "https://edge.sitecorecloud.io/hortinnovat2fab-hortinnovat9661-production6d5f-0e78/media/Sub-pages/About-us/What-we-do/PDFs-and-other-media/australian-horticulture-statistics-handbook-2024-25--fruit.pdf",
+        "accessed": "2026-11-17",
+        "quote": "New South Wales 22,413"
+      }
+    ]
+  },
+  {
+    "region": "AU",
+    "crop": "raspberry",
+    "source_type": "domestic",
+    "origin_country": "Australia",
+    "origin_place": "Tasmania",
+    "origin_lat": -41.2,
+    "origin_lon": 146.8,
+    "share_pct": null,
+    "year": 2025,
+    "transport_mode": "road",
+    "seasonal_note": "",
+    "confidence": "medium",
+    "notes": "Rubus includes blackberries; no fresh imports recorded.",
+    "sources": [
+      {
+        "title": "Australian Horticulture Statistics Handbook 2024/25 - Berries - Rubus",
+        "publisher": "Hort Innovation",
+        "url": "https://edge.sitecorecloud.io/hortinnovat2fab-hortinnovat9661-production6d5f-0e78/media/Sub-pages/About-us/What-we-do/PDFs-and-other-media/australian-horticulture-statistics-handbook-2024-25--fruit.pdf",
+        "accessed": "2026-11-17",
+        "quote": "Tasmania 4,775"
+      }
+    ]
+  },
+  {
+    "region": "AU",
+    "crop": "apple",
+    "source_type": "domestic",
+    "origin_country": "Australia",
+    "origin_place": "Victoria (Goulburn Valley)",
+    "origin_lat": -36.4,
+    "origin_lon": 145.4,
+    "share_pct": null,
+    "year": 2025,
+    "transport_mode": "road",
+    "seasonal_note": "",
+    "confidence": "high",
+    "notes": "Imports 925 t vs production 307,630 t. Goulburn Valley coordinate is representative.",
+    "sources": [
+      {
+        "title": "Australian Horticulture Statistics Handbook 2024/25 - Apple",
+        "publisher": "Hort Innovation",
+        "url": "https://edge.sitecorecloud.io/hortinnovat2fab-hortinnovat9661-production6d5f-0e78/media/Sub-pages/About-us/What-we-do/PDFs-and-other-media/australian-horticulture-statistics-handbook-2024-25--fruit.pdf",
+        "accessed": "2026-11-17",
+        "quote": "Victoria 134,976"
+      }
+    ]
+  },
+  {
+    "region": "AU",
+    "crop": "lemon",
+    "source_type": "domestic",
+    "origin_country": "Australia",
+    "origin_place": "Queensland",
+    "origin_lat": -25.6,
+    "origin_lon": 151.6,
+    "share_pct": null,
+    "year": 2025,
+    "transport_mode": "road",
+    "seasonal_note": "",
+    "confidence": "medium",
+    "notes": "Lemons and limes combined; imports 736 t vs production 73,120 t. QLD figure may include many limes. Coordinate is representative (Central Burnett).",
+    "sources": [
+      {
+        "title": "Australian Horticulture Statistics Handbook 2024/25 - Citrus - Lemon/Lime",
+        "publisher": "Hort Innovation",
+        "url": "https://edge.sitecorecloud.io/hortinnovat2fab-hortinnovat9661-production6d5f-0e78/media/Sub-pages/About-us/What-we-do/PDFs-and-other-media/australian-horticulture-statistics-handbook-2024-25--fruit.pdf",
+        "accessed": "2026-11-17",
+        "quote": "Queensland 52,198"
+      }
+    ]
+  }
+]

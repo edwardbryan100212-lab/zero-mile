@@ -1,0 +1,1102 @@
+{
+  "_meta": {
+    "generated": "2026-11-17",
+    "notes": [
+      "Nutrients per 100 g raw, from USDA FoodData Central SR Legacy (CSV release 2018-04, the current SR Legacy).",
+      "kg_co2e_per_kg = Poore & Nemecek 2018 global mean per kg of product (farm to retail incl. transport & packaging), via Our World in Data.",
+      "healthier_pct = the % of the nutrient a source reports was LOST from stored/shop-style produce under the stated conditions (not a % gain); null when no crop-specific figure was found.",
+      "greenhouse_heated_kg and air_freight_kg come from different studies with different system boundaries than Poore & Nemecek; compare with care."
+    ]
+  },
+  "crops": {
+    "tomato": {
+      "kcal_per_100g": 18.0,
+      "nutrients": {
+        "vitamin_c_mg": 13.7,
+        "fibre_g": 1.2,
+        "potassium_mg": 237.0
+      },
+      "fdc": {
+        "id": "170457",
+        "description": "Tomatoes, red, ripe, raw, year round average",
+        "url": "https://fdc.nal.usda.gov/food-details/170457/nutrients"
+      },
+      "carbon": {
+        "kg_co2e_per_kg": 2.09,
+        "category": "Tomatoes",
+        "greenhouse_heated_kg": 1.397,
+        "air_freight_kg": null,
+        "sources": [
+          {
+            "title": "Greenhouse gas emissions per kilogram of food product",
+            "publisher": "Our World in Data (data: Poore & Nemecek 2018, Science 360:987-992)",
+            "url": "https://ourworldindata.org/grapher/ghg-per-kg-poore",
+            "accessed": "2026-11-17",
+            "quote": "Poore and Nemecek (2018) - processed by Our World in Data. CSV row: \"Tomatoes,2010,2.09\""
+          },
+          {
+            "title": "Contrasted greenhouse gas emissions from local versus long-range tomato production (Theurl, Haberl, Erb & Lindenthal, Agron. Sustain. Dev. 2014, DOI 10.1007/s13593-013-0171-8)",
+            "publisher": "Springer / INRA (open access copy hosted by FiBL)",
+            "url": "https://www.fibl.org/fileadmin/documents/de/oesterreich/arbeitsschwerpunkte/Klima/theurl_production_tomato_1312.pdf",
+            "accessed": "2026-11-17",
+            "quote": "Austrian tomatoes grown in Venlo houses are associated with the highest carbon emissions ... corresponding to 1,397 g CO2e per kg product."
+          }
+        ],
+        "notes": "Heated figure: Austrian Venlo glasshouse at point of sale (partly district heating; heating paused Dec-Jan), Theurl et al. 2014; Spanish imports 0.759 and Austrian organic unheated tunnels 0.180 kg in the same study. Lower than Poore's global mean, which uses different methods; UK boiler-heated glasshouses are likely higher (Williams 2006: heating = 97% of GWP)."
+      },
+      "home_vs_shop": {
+        "verdict": "about-the-same",
+        "healthier_pct": null,
+        "nutrient": "vitamin C",
+        "explanation": "Sources say picking ripe affects flavour and vitamin C, but none we opened gives a vine-ripened vs shop percentage for tomatoes, so we don't claim one.",
+        "sources": [
+          {
+            "title": "Preharvest and postharvest factors influencing vitamin C content of horticultural crops (Lee & Kader, Postharvest Biol Technol 20:207-220, 2000)",
+            "publisher": "Aprifel scientific summary",
+            "url": "https://www.aprifel.com/fr/resume-scientifique/preharvest-and-postharvest-factors-influencing-vitamin-c/",
+            "accessed": "2026-11-17",
+            "quote": "losses are accelerated at higher temperatures and with longer storage durations"
+          }
+        ]
+      },
+      "kid_fact": "A tomato is really a fruit, because it grows from a flower and holds the plant's seeds.",
+      "kid_fact_source": null
+    },
+    "lettuce": {
+      "kcal_per_100g": 15.0,
+      "nutrients": {
+        "vitamin_c_mg": 9.2,
+        "fibre_g": 1.3,
+        "vitamin_k_ug": 126.3
+      },
+      "fdc": {
+        "id": "169249",
+        "description": "Lettuce, green leaf, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/169249/nutrients"
+      },
+      "carbon": {
+        "kg_co2e_per_kg": 0.53,
+        "category": "Other Vegetables",
+        "greenhouse_heated_kg": null,
+        "air_freight_kg": null,
+        "sources": [
+          {
+            "title": "Greenhouse gas emissions per kilogram of food product",
+            "publisher": "Our World in Data (data: Poore & Nemecek 2018, Science 360:987-992)",
+            "url": "https://ourworldindata.org/grapher/ghg-per-kg-poore",
+            "accessed": "2026-11-17",
+            "quote": "Poore and Nemecek (2018) - processed by Our World in Data. CSV row: \"Other Vegetables,2010,0.53\""
+          },
+          {
+            "title": "You want to reduce the carbon footprint of your food? Focus on what you eat, not whether your food is local",
+            "publisher": "Our World in Data",
+            "url": "https://ourworldindata.org/food-choice-vs-eating-local",
+            "accessed": "2026-11-17",
+            "quote": "it emits 50 times more CO2eq than a boat per tonne kilometer."
+          }
+        ],
+        "notes": "Lettuce is not separate; Other Vegetables. OWID notes Spanish winter lettuce imported to the UK has 3-8x lower emissions than local heated production."
+      },
+      "home_vs_shop": {
+        "verdict": "more",
+        "healthier_pct": 86,
+        "nutrient": "vitamin C",
+        "explanation": "Stored salad leaves lost 35-86% of their vitamin C over 10 days at 4°C; lettuce lost the most (baby iceberg 86%). Freshly picked lettuce skips that wait.",
+        "sources": [
+          {
+            "title": "Novel insights into ascorbate retention and degradation during the washing and post-harvest storage of spinach and other salad leaves (Dewhirst et al., Food Chemistry 2017)",
+            "publisher": "Elsevier (open access via PMC/Europe PMC)",
+            "url": "https://europepmc.org/article/PMC/PMC5441274",
+            "accessed": "2026-11-17",
+            "quote": "Salad leaves lost 35–86% of their ascorbate during 10 d storage at 4 °C."
+          },
+          {
+            "title": "Novel insights into ascorbate retention and degradation during the washing and post-harvest storage of spinach and other salad leaves (Dewhirst et al., Food Chemistry 2017)",
+            "publisher": "Elsevier (open access via PMC/Europe PMC)",
+            "url": "https://europepmc.org/article/PMC/PMC5441274",
+            "accessed": "2026-11-17",
+            "quote": "The mean ascorbate loss during the 10-d period was 59%, the extreme being an 86% loss in baby iceberg lettuce."
+          }
+        ]
+      },
+      "kid_fact": "Green leaf lettuce is about 95% water.",
+      "kid_fact_source": {
+        "title": "FoodData Central SR Legacy: Lettuce, green leaf, raw (FDC 169249)",
+        "publisher": "USDA Agricultural Research Service",
+        "url": "https://fdc.nal.usda.gov/food-details/169249/nutrients",
+        "accessed": "2026-11-17",
+        "quote": "Lettuce, green leaf, raw: Energy 15 kcal per 100 g (values read from the SR Legacy CSV release, https://fdc.nal.usda.gov/fdc-datasets/FoodData_Central_sr_legacy_food_csv_2018-04.zip)"
+      }
+    },
+    "potato": {
+      "kcal_per_100g": 77.0,
+      "nutrients": {
+        "vitamin_c_mg": 19.7,
+        "fibre_g": 2.1,
+        "potassium_mg": 425.0
+      },
+      "fdc": {
+        "id": "170026",
+        "description": "Potatoes, flesh and skin, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/170026/nutrients"
+      },
+      "carbon": {
+        "kg_co2e_per_kg": 0.46,
+        "category": "Potatoes",
+        "greenhouse_heated_kg": null,
+        "air_freight_kg": null,
+        "sources": [
+          {
+            "title": "Greenhouse gas emissions per kilogram of food product",
+            "publisher": "Our World in Data (data: Poore & Nemecek 2018, Science 360:987-992)",
+            "url": "https://ourworldindata.org/grapher/ghg-per-kg-poore",
+            "accessed": "2026-11-17",
+            "quote": "Poore and Nemecek (2018) - processed by Our World in Data. CSV row: \"Potatoes,2010,0.46\""
+          }
+        ]
+      },
+      "home_vs_shop": {
+        "verdict": "more",
+        "healthier_pct": 50,
+        "nutrient": "vitamin C",
+        "explanation": "Shop potatoes are often stored for months; Bintje potatoes lost about 50% of vitamin C after 3 months at 12°C. Freshly dug new potatoes avoid this (home-stored ones lose it too).",
+        "sources": [
+          {
+            "title": "[Changes in vitamin C content of Bintje potatoes during storage and usual culinary preparations] (Mareschi et al., Int J Vitam Nutr Res, 1983)",
+            "publisher": "Europe PMC (PMID 6668141)",
+            "url": "https://europepmc.org/article/MED/6668141",
+            "accessed": "2026-11-17",
+            "quote": "Storage for 3 months in the dark at +12 degrees C decreases the ascorbic acid level by about 50%"
+          }
+        ]
+      },
+      "kid_fact": "A potato is a swollen underground stem called a tuber, and its 'eyes' can sprout into new plants.",
+      "kid_fact_source": null
+    },
+    "carrot": {
+      "kcal_per_100g": 41.0,
+      "nutrients": {
+        "vitamin_c_mg": 5.9,
+        "fibre_g": 2.8,
+        "vitamin_a_rae_ug": 835.0
+      },
+      "fdc": {
+        "id": "170393",
+        "description": "Carrots, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/170393/nutrients"
+      },
+      "carbon": {
+        "kg_co2e_per_kg": 0.43,
+        "category": "Root Vegetables",
+        "greenhouse_heated_kg": null,
+        "air_freight_kg": null,
+        "sources": [
+          {
+            "title": "Greenhouse gas emissions per kilogram of food product",
+            "publisher": "Our World in Data (data: Poore & Nemecek 2018, Science 360:987-992)",
+            "url": "https://ourworldindata.org/grapher/ghg-per-kg-poore",
+            "accessed": "2026-11-17",
+            "quote": "Poore and Nemecek (2018) - processed by Our World in Data. CSV row: \"Root Vegetables,2010,0.43\""
+          }
+        ]
+      },
+      "home_vs_shop": {
+        "verdict": "more",
+        "healthier_pct": 10,
+        "nutrient": "vitamin C",
+        "explanation": "Carrots lost about 10% of vitamin C after 7 days in the fridge (27% at room temperature) - a small difference.",
+        "sources": [
+          {
+            "title": "Nutritional comparison of fresh, frozen and canned fruits and vegetables. Part 1. Vitamins C and B and phenolic compounds (Rickman, Barrett & Bruhn, J Sci Food Agric 87:930-944, 2007)",
+            "publisher": "Society of Chemical Industry / Wiley (copy hosted by UC ANR)",
+            "url": "https://ucanr.edu/sites/default/files/2010-06/19187.pdf",
+            "accessed": "2026-11-17",
+            "quote": "Table 6. Losses of ascorbic acid (% dry weight) due to fresh and frozen storage ... Carrots 27 10"
+          }
+        ]
+      },
+      "kid_fact": "Carrots don't only come in orange - they can also be purple, yellow, white or red.",
+      "kid_fact_source": null
+    },
+    "strawberry": {
+      "kcal_per_100g": 32.0,
+      "nutrients": {
+        "vitamin_c_mg": 58.8,
+        "fibre_g": 2.0,
+        "folate_ug": 24.0
+      },
+      "fdc": {
+        "id": "167762",
+        "description": "Strawberries, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/167762/nutrients"
+      },
+      "carbon": {
+        "kg_co2e_per_kg": 1.53,
+        "category": "Berries & Grapes",
+        "greenhouse_heated_kg": null,
+        "air_freight_kg": null,
+        "sources": [
+          {
+            "title": "Greenhouse gas emissions per kilogram of food product",
+            "publisher": "Our World in Data (data: Poore & Nemecek 2018, Science 360:987-992)",
+            "url": "https://ourworldindata.org/grapher/ghg-per-kg-poore",
+            "accessed": "2026-11-17",
+            "quote": "Poore and Nemecek (2018) - processed by Our World in Data. CSV row: \"Berries & Grapes,2010,1.53\""
+          }
+        ],
+        "notes": "Category covers berries and grapes together."
+      },
+      "home_vs_shop": {
+        "verdict": "about-the-same",
+        "healthier_pct": null,
+        "nutrient": "vitamin C",
+        "explanation": "A study found no vitamin C loss in strawberries over 8 days of cool storage, so shop and home strawberries can be similar.",
+        "sources": [
+          {
+            "title": "Antioxidant capacity, vitamin C, phenolics, and anthocyanins after fresh storage of small fruits (Kalt, Forney, Martin & Prior, J Agric Food Chem 47:4638-4644, 1999)",
+            "publisher": "Aprifel scientific summary",
+            "url": "https://www.aprifel.com/fr/resume-scientifique/antioxidant-capacity-vitamin-c-phenolics-and-anthocyanins/",
+            "accessed": "2026-11-17",
+            "quote": "There were no ascorbate losses in strawberries or highbush blueberries: during 8 days of storage at the various temperatures"
+          }
+        ]
+      },
+      "kid_fact": "The little 'seeds' on the outside of a strawberry are actually tiny fruits, each holding one seed.",
+      "kid_fact_source": null
+    },
+    "basil": {
+      "kcal_per_100g": 23.0,
+      "nutrients": {
+        "vitamin_c_mg": 18.0,
+        "fibre_g": 1.6,
+        "vitamin_k_ug": 414.8
+      },
+      "fdc": {
+        "id": "172232",
+        "description": "Basil, fresh",
+        "url": "https://fdc.nal.usda.gov/food-details/172232/nutrients"
+      },
+      "carbon": {
+        "kg_co2e_per_kg": 0.53,
+        "category": "Other Vegetables",
+        "greenhouse_heated_kg": null,
+        "air_freight_kg": null,
+        "sources": [
+          {
+            "title": "Greenhouse gas emissions per kilogram of food product",
+            "publisher": "Our World in Data (data: Poore & Nemecek 2018, Science 360:987-992)",
+            "url": "https://ourworldindata.org/grapher/ghg-per-kg-poore",
+            "accessed": "2026-11-17",
+            "quote": "Poore and Nemecek (2018) - processed by Our World in Data. CSV row: \"Other Vegetables,2010,0.53\""
+          }
+        ],
+        "notes": "Herbs are not a separate Poore & Nemecek category; mapped to Other Vegetables as an approximation."
+      },
+      "home_vs_shop": {
+        "verdict": "about-the-same",
+        "healthier_pct": null,
+        "nutrient": "vitamin C",
+        "explanation": "No peer-reviewed source found giving a crop-specific number for home-grown versus shop basil; vitamin C generally falls with storage time and warmth, so eat it soon after picking.",
+        "sources": [
+          {
+            "title": "Preharvest and postharvest factors influencing vitamin C content of horticultural crops (Lee & Kader, Postharvest Biol Technol 20:207-220, 2000)",
+            "publisher": "Aprifel scientific summary",
+            "url": "https://www.aprifel.com/fr/resume-scientifique/preharvest-and-postharvest-factors-influencing-vitamin-c/",
+            "accessed": "2026-11-17",
+            "quote": "losses are accelerated at higher temperatures and with longer storage durations"
+          }
+        ]
+      },
+      "kid_fact": "Basil belongs to the mint family.",
+      "kid_fact_source": null
+    },
+    "mint": {
+      "kcal_per_100g": 44.0,
+      "nutrients": {
+        "vitamin_c_mg": 13.3,
+        "fibre_g": 6.8,
+        "folate_ug": 105.0
+      },
+      "fdc": {
+        "id": "173475",
+        "description": "Spearmint, fresh",
+        "url": "https://fdc.nal.usda.gov/food-details/173475/nutrients"
+      },
+      "carbon": {
+        "kg_co2e_per_kg": 0.53,
+        "category": "Other Vegetables",
+        "greenhouse_heated_kg": null,
+        "air_freight_kg": null,
+        "sources": [
+          {
+            "title": "Greenhouse gas emissions per kilogram of food product",
+            "publisher": "Our World in Data (data: Poore & Nemecek 2018, Science 360:987-992)",
+            "url": "https://ourworldindata.org/grapher/ghg-per-kg-poore",
+            "accessed": "2026-11-17",
+            "quote": "Poore and Nemecek (2018) - processed by Our World in Data. CSV row: \"Other Vegetables,2010,0.53\""
+          }
+        ],
+        "notes": "Herbs are not a separate Poore & Nemecek category; mapped to Other Vegetables as an approximation."
+      },
+      "home_vs_shop": {
+        "verdict": "about-the-same",
+        "healthier_pct": null,
+        "nutrient": "vitamin C",
+        "explanation": "No peer-reviewed source found giving a crop-specific number for home-grown versus shop mint; vitamin C generally falls with storage time and warmth, so eat it soon after picking.",
+        "sources": [
+          {
+            "title": "Preharvest and postharvest factors influencing vitamin C content of horticultural crops (Lee & Kader, Postharvest Biol Technol 20:207-220, 2000)",
+            "publisher": "Aprifel scientific summary",
+            "url": "https://www.aprifel.com/fr/resume-scientifique/preharvest-and-postharvest-factors-influencing-vitamin-c/",
+            "accessed": "2026-11-17",
+            "quote": "losses are accelerated at higher temperatures and with longer storage durations"
+          }
+        ]
+      },
+      "kid_fact": "Mint spreads with underground runners, so gardeners often grow it in a pot to stop it taking over.",
+      "kid_fact_source": null
+    },
+    "courgette": {
+      "kcal_per_100g": 17.0,
+      "nutrients": {
+        "vitamin_c_mg": 17.9,
+        "fibre_g": 1.0,
+        "potassium_mg": 261.0
+      },
+      "fdc": {
+        "id": "169291",
+        "description": "Squash, summer, zucchini, includes skin, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/169291/nutrients"
+      },
+      "carbon": {
+        "kg_co2e_per_kg": 0.53,
+        "category": "Other Vegetables",
+        "greenhouse_heated_kg": null,
+        "air_freight_kg": null,
+        "sources": [
+          {
+            "title": "Greenhouse gas emissions per kilogram of food product",
+            "publisher": "Our World in Data (data: Poore & Nemecek 2018, Science 360:987-992)",
+            "url": "https://ourworldindata.org/grapher/ghg-per-kg-poore",
+            "accessed": "2026-11-17",
+            "quote": "Poore and Nemecek (2018) - processed by Our World in Data. CSV row: \"Other Vegetables,2010,0.53\""
+          }
+        ]
+      },
+      "home_vs_shop": {
+        "verdict": "about-the-same",
+        "healthier_pct": null,
+        "nutrient": "vitamin C",
+        "explanation": "No peer-reviewed source found giving a crop-specific number for home-grown versus shop courgettes; vitamin C generally falls with storage time and warmth, so eat it soon after picking.",
+        "sources": [
+          {
+            "title": "Preharvest and postharvest factors influencing vitamin C content of horticultural crops (Lee & Kader, Postharvest Biol Technol 20:207-220, 2000)",
+            "publisher": "Aprifel scientific summary",
+            "url": "https://www.aprifel.com/fr/resume-scientifique/preharvest-and-postharvest-factors-influencing-vitamin-c/",
+            "accessed": "2026-11-17",
+            "quote": "losses are accelerated at higher temperatures and with longer storage durations"
+          }
+        ]
+      },
+      "kid_fact": "A courgette is a young summer squash - leave it on the plant and it can grow into a big marrow.",
+      "kid_fact_source": null
+    },
+    "cucumber": {
+      "kcal_per_100g": 15.0,
+      "nutrients": {
+        "vitamin_c_mg": 2.8,
+        "fibre_g": 0.5,
+        "vitamin_k_ug": 16.4
+      },
+      "fdc": {
+        "id": "168409",
+        "description": "Cucumber, with peel, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/168409/nutrients"
+      },
+      "carbon": {
+        "kg_co2e_per_kg": 0.53,
+        "category": "Other Vegetables",
+        "greenhouse_heated_kg": 2.13,
+        "air_freight_kg": null,
+        "sources": [
+          {
+            "title": "Greenhouse gas emissions per kilogram of food product",
+            "publisher": "Our World in Data (data: Poore & Nemecek 2018, Science 360:987-992)",
+            "url": "https://ourworldindata.org/grapher/ghg-per-kg-poore",
+            "accessed": "2026-11-17",
+            "quote": "Poore and Nemecek (2018) - processed by Our World in Data. CSV row: \"Other Vegetables,2010,0.53\""
+          },
+          {
+            "title": "Fresh cucumber (heated greenhouse production) - WRAP Emission Factor Database v2.0 (from Frankowska et al. 2019)",
+            "publisher": "Climatiq (data: WRAP)",
+            "url": "https://www.climatiq.io/data/emission-factor/122493b2-ff8f-4e68-9929-b2cb0fb77d34",
+            "accessed": "2026-11-17",
+            "quote": "Fresh cucumber (heated greenhouse production): 2.134017 kgCO2e/kg; region GB; boundary cradle_to_processing_gate."
+          }
+        ],
+        "notes": "Heated figure: UK heated-greenhouse cucumber, cradle to processing gate (WRAP, from Frankowska et al. 2019), about 4x the Poore Other Vegetables mean."
+      },
+      "home_vs_shop": {
+        "verdict": "about-the-same",
+        "healthier_pct": null,
+        "nutrient": "vitamin C",
+        "explanation": "No peer-reviewed source found giving a crop-specific number for home-grown versus shop cucumbers; vitamin C generally falls with storage time and warmth, so eat it soon after picking.",
+        "sources": [
+          {
+            "title": "Preharvest and postharvest factors influencing vitamin C content of horticultural crops (Lee & Kader, Postharvest Biol Technol 20:207-220, 2000)",
+            "publisher": "Aprifel scientific summary",
+            "url": "https://www.aprifel.com/fr/resume-scientifique/preharvest-and-postharvest-factors-influencing-vitamin-c/",
+            "accessed": "2026-11-17",
+            "quote": "losses are accelerated at higher temperatures and with longer storage durations"
+          }
+        ]
+      },
+      "kid_fact": "A cucumber is about 95% water.",
+      "kid_fact_source": {
+        "title": "FoodData Central SR Legacy: Cucumber, with peel, raw (FDC 168409)",
+        "publisher": "USDA Agricultural Research Service",
+        "url": "https://fdc.nal.usda.gov/food-details/168409/nutrients",
+        "accessed": "2026-11-17",
+        "quote": "Cucumber, with peel, raw: Energy 15 kcal per 100 g (values read from the SR Legacy CSV release, https://fdc.nal.usda.gov/fdc-datasets/FoodData_Central_sr_legacy_food_csv_2018-04.zip)"
+      }
+    },
+    "pepper": {
+      "kcal_per_100g": 26.0,
+      "nutrients": {
+        "vitamin_c_mg": 127.7,
+        "fibre_g": 2.1,
+        "vitamin_a_rae_ug": 157.0
+      },
+      "fdc": {
+        "id": "170108",
+        "description": "Peppers, sweet, red, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/170108/nutrients"
+      },
+      "carbon": {
+        "kg_co2e_per_kg": 0.53,
+        "category": "Other Vegetables",
+        "greenhouse_heated_kg": null,
+        "air_freight_kg": null,
+        "sources": [
+          {
+            "title": "Greenhouse gas emissions per kilogram of food product",
+            "publisher": "Our World in Data (data: Poore & Nemecek 2018, Science 360:987-992)",
+            "url": "https://ourworldindata.org/grapher/ghg-per-kg-poore",
+            "accessed": "2026-11-17",
+            "quote": "Poore and Nemecek (2018) - processed by Our World in Data. CSV row: \"Other Vegetables,2010,0.53\""
+          }
+        ]
+      },
+      "home_vs_shop": {
+        "verdict": "about-the-same",
+        "healthier_pct": null,
+        "nutrient": "vitamin C",
+        "explanation": "No peer-reviewed source found giving a crop-specific number for home-grown versus shop peppers; vitamin C generally falls with storage time and warmth, so eat it soon after picking.",
+        "sources": [
+          {
+            "title": "Preharvest and postharvest factors influencing vitamin C content of horticultural crops (Lee & Kader, Postharvest Biol Technol 20:207-220, 2000)",
+            "publisher": "Aprifel scientific summary",
+            "url": "https://www.aprifel.com/fr/resume-scientifique/preharvest-and-postharvest-factors-influencing-vitamin-c/",
+            "accessed": "2026-11-17",
+            "quote": "losses are accelerated at higher temperatures and with longer storage durations"
+          }
+        ]
+      },
+      "kid_fact": "Gram for gram, a red pepper has more than twice as much vitamin C as a lemon.",
+      "kid_fact_source": {
+        "title": "FoodData Central SR Legacy: Peppers, sweet, red, raw (FDC 170108)",
+        "publisher": "USDA Agricultural Research Service",
+        "url": "https://fdc.nal.usda.gov/food-details/170108/nutrients",
+        "accessed": "2026-11-17",
+        "quote": "Peppers, sweet, red, raw: Energy 26 kcal per 100 g (values read from the SR Legacy CSV release, https://fdc.nal.usda.gov/fdc-datasets/FoodData_Central_sr_legacy_food_csv_2018-04.zip)"
+      }
+    },
+    "chilli": {
+      "kcal_per_100g": 40.0,
+      "nutrients": {
+        "vitamin_c_mg": 143.7,
+        "fibre_g": 1.5,
+        "potassium_mg": 322.0
+      },
+      "fdc": {
+        "id": "170106",
+        "description": "Peppers, hot chili, red, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/170106/nutrients"
+      },
+      "carbon": {
+        "kg_co2e_per_kg": 0.53,
+        "category": "Other Vegetables",
+        "greenhouse_heated_kg": null,
+        "air_freight_kg": null,
+        "sources": [
+          {
+            "title": "Greenhouse gas emissions per kilogram of food product",
+            "publisher": "Our World in Data (data: Poore & Nemecek 2018, Science 360:987-992)",
+            "url": "https://ourworldindata.org/grapher/ghg-per-kg-poore",
+            "accessed": "2026-11-17",
+            "quote": "Poore and Nemecek (2018) - processed by Our World in Data. CSV row: \"Other Vegetables,2010,0.53\""
+          }
+        ]
+      },
+      "home_vs_shop": {
+        "verdict": "about-the-same",
+        "healthier_pct": null,
+        "nutrient": "vitamin C",
+        "explanation": "No peer-reviewed source found giving a crop-specific number for home-grown versus shop chillies; vitamin C generally falls with storage time and warmth, so eat it soon after picking.",
+        "sources": [
+          {
+            "title": "Preharvest and postharvest factors influencing vitamin C content of horticultural crops (Lee & Kader, Postharvest Biol Technol 20:207-220, 2000)",
+            "publisher": "Aprifel scientific summary",
+            "url": "https://www.aprifel.com/fr/resume-scientifique/preharvest-and-postharvest-factors-influencing-vitamin-c/",
+            "accessed": "2026-11-17",
+            "quote": "losses are accelerated at higher temperatures and with longer storage durations"
+          }
+        ]
+      },
+      "kid_fact": "A chilli's heat comes from a chemical called capsaicin, measured on the Scoville scale.",
+      "kid_fact_source": null
+    },
+    "onion": {
+      "kcal_per_100g": 40.0,
+      "nutrients": {
+        "vitamin_c_mg": 7.4,
+        "fibre_g": 1.7,
+        "folate_ug": 19.0
+      },
+      "fdc": {
+        "id": "170000",
+        "description": "Onions, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/170000/nutrients"
+      },
+      "carbon": {
+        "kg_co2e_per_kg": 0.5,
+        "category": "Onions & Leeks",
+        "greenhouse_heated_kg": null,
+        "air_freight_kg": null,
+        "sources": [
+          {
+            "title": "Greenhouse gas emissions per kilogram of food product",
+            "publisher": "Our World in Data (data: Poore & Nemecek 2018, Science 360:987-992)",
+            "url": "https://ourworldindata.org/grapher/ghg-per-kg-poore",
+            "accessed": "2026-11-17",
+            "quote": "Poore and Nemecek (2018) - processed by Our World in Data. CSV row: \"Onions & Leeks,2010,0.5\""
+          }
+        ]
+      },
+      "home_vs_shop": {
+        "verdict": "about-the-same",
+        "healthier_pct": null,
+        "nutrient": "vitamin C",
+        "explanation": "No peer-reviewed source found giving a crop-specific number for home-grown versus shop onions; vitamin C generally falls with storage time and warmth, so eat it soon after picking.",
+        "sources": [
+          {
+            "title": "Preharvest and postharvest factors influencing vitamin C content of horticultural crops (Lee & Kader, Postharvest Biol Technol 20:207-220, 2000)",
+            "publisher": "Aprifel scientific summary",
+            "url": "https://www.aprifel.com/fr/resume-scientifique/preharvest-and-postharvest-factors-influencing-vitamin-c/",
+            "accessed": "2026-11-17",
+            "quote": "losses are accelerated at higher temperatures and with longer storage durations"
+          }
+        ]
+      },
+      "kid_fact": "Cutting an onion releases a gas that makes your eyes sting and water.",
+      "kid_fact_source": null
+    },
+    "garlic": {
+      "kcal_per_100g": 149.0,
+      "nutrients": {
+        "vitamin_c_mg": 31.2,
+        "fibre_g": 2.1,
+        "protein_g": 6.36
+      },
+      "fdc": {
+        "id": "169230",
+        "description": "Garlic, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/169230/nutrients"
+      },
+      "carbon": {
+        "kg_co2e_per_kg": 0.5,
+        "category": "Onions & Leeks",
+        "greenhouse_heated_kg": null,
+        "air_freight_kg": null,
+        "sources": [
+          {
+            "title": "Greenhouse gas emissions per kilogram of food product",
+            "publisher": "Our World in Data (data: Poore & Nemecek 2018, Science 360:987-992)",
+            "url": "https://ourworldindata.org/grapher/ghg-per-kg-poore",
+            "accessed": "2026-11-17",
+            "quote": "Poore and Nemecek (2018) - processed by Our World in Data. CSV row: \"Onions & Leeks,2010,0.5\""
+          }
+        ],
+        "notes": "Garlic is not listed separately; mapped to the closest allium category, Onions & Leeks."
+      },
+      "home_vs_shop": {
+        "verdict": "about-the-same",
+        "healthier_pct": null,
+        "nutrient": "vitamin C",
+        "explanation": "No peer-reviewed source found giving a crop-specific number for home-grown versus shop garlic; vitamin C generally falls with storage time and warmth, so eat it soon after picking.",
+        "sources": [
+          {
+            "title": "Preharvest and postharvest factors influencing vitamin C content of horticultural crops (Lee & Kader, Postharvest Biol Technol 20:207-220, 2000)",
+            "publisher": "Aprifel scientific summary",
+            "url": "https://www.aprifel.com/fr/resume-scientifique/preharvest-and-postharvest-factors-influencing-vitamin-c/",
+            "accessed": "2026-11-17",
+            "quote": "losses are accelerated at higher temperatures and with longer storage durations"
+          }
+        ]
+      },
+      "kid_fact": "You can plant a single garlic clove and it will grow into a whole new bulb.",
+      "kid_fact_source": null
+    },
+    "peas": {
+      "kcal_per_100g": 81.0,
+      "nutrients": {
+        "vitamin_c_mg": 40.0,
+        "fibre_g": 5.7,
+        "protein_g": 5.42
+      },
+      "fdc": {
+        "id": "170419",
+        "description": "Peas, green, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/170419/nutrients"
+      },
+      "carbon": {
+        "kg_co2e_per_kg": 0.98,
+        "category": "Peas",
+        "greenhouse_heated_kg": null,
+        "air_freight_kg": null,
+        "sources": [
+          {
+            "title": "Greenhouse gas emissions per kilogram of food product",
+            "publisher": "Our World in Data (data: Poore & Nemecek 2018, Science 360:987-992)",
+            "url": "https://ourworldindata.org/grapher/ghg-per-kg-poore",
+            "accessed": "2026-11-17",
+            "quote": "Poore and Nemecek (2018) - processed by Our World in Data. CSV row: \"Peas,2010,0.98\""
+          }
+        ],
+        "notes": "Poore & Nemecek \"Peas\" are dried peas (a pulse), per kg of dry product; fresh garden peas would likely sit closer to Other Vegetables (0.53)."
+      },
+      "home_vs_shop": {
+        "verdict": "more",
+        "healthier_pct": 15,
+        "nutrient": "vitamin C",
+        "explanation": "Peas lost 15% of vitamin C after 7 days in the fridge, and one study found 51.5% lost in the first 24-48 h after picking, so peas eaten straight from the pod keep more.",
+        "sources": [
+          {
+            "title": "Nutritional comparison of fresh, frozen and canned fruits and vegetables. Part 1. Vitamins C and B and phenolic compounds (Rickman, Barrett & Bruhn, J Sci Food Agric 87:930-944, 2007)",
+            "publisher": "Society of Chemical Industry / Wiley (copy hosted by UC ANR)",
+            "url": "https://ucanr.edu/sites/default/files/2010-06/19187.pdf",
+            "accessed": "2026-11-17",
+            "quote": "Green peas, for example, were found to lose 51.5% WW of ascorbic acid during the ﬁrst 24–48 h after picking."
+          },
+          {
+            "title": "Nutritional comparison of fresh, frozen and canned fruits and vegetables. Part 1. Vitamins C and B and phenolic compounds (Rickman, Barrett & Bruhn, J Sci Food Agric 87:930-944, 2007)",
+            "publisher": "Society of Chemical Industry / Wiley (copy hosted by UC ANR)",
+            "url": "https://ucanr.edu/sites/default/files/2010-06/19187.pdf",
+            "accessed": "2026-11-17",
+            "quote": "Table 6 ... Fresh, 4 °C, 7 days ... Green peas 60 15 10"
+          }
+        ]
+      },
+      "kid_fact": "A pea pod is a fruit, and the peas inside are its seeds.",
+      "kid_fact_source": null
+    },
+    "green-beans": {
+      "kcal_per_100g": 31.0,
+      "nutrients": {
+        "vitamin_c_mg": 12.2,
+        "fibre_g": 2.7,
+        "vitamin_k_ug": 43.0
+      },
+      "fdc": {
+        "id": "169961",
+        "description": "Beans, snap, green, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/169961/nutrients"
+      },
+      "carbon": {
+        "kg_co2e_per_kg": 0.53,
+        "category": "Other Vegetables",
+        "greenhouse_heated_kg": null,
+        "air_freight_kg": null,
+        "sources": [
+          {
+            "title": "Greenhouse gas emissions per kilogram of food product",
+            "publisher": "Our World in Data (data: Poore & Nemecek 2018, Science 360:987-992)",
+            "url": "https://ourworldindata.org/grapher/ghg-per-kg-poore",
+            "accessed": "2026-11-17",
+            "quote": "Poore and Nemecek (2018) - processed by Our World in Data. CSV row: \"Other Vegetables,2010,0.53\""
+          },
+          {
+            "title": "The relative importance of transport in determining an appropriate sustainability strategy for food sourcing (Sim et al., Int J LCA 12(6):422-431, 2007)",
+            "publisher": "ecomed / Springer (copy hosted by International Egg Commission)",
+            "url": "https://internationalegg.com/app/uploads/2010/11/Sim_-_2007_1.pdf",
+            "accessed": "2026-11-17",
+            "quote": "beans sourced via the Kenyan or Guatemalan supply chains is between 20 and 26 times the potential estimated for UK beans."
+          },
+          {
+            "title": "Very little of global food is transported by air; this greatly reduces the climate benefits of eating local",
+            "publisher": "Our World in Data",
+            "url": "https://ourworldindata.org/food-transport-by-mode",
+            "accessed": "2026-11-17",
+            "quote": "Transporting food by air emits around 50 times as much greenhouse gases as transporting the same amount by sea."
+          }
+        ],
+        "notes": "No citable per-kg air-freight figure opened; Sim et al. 2007 found air-freighted Kenyan/Guatemalan beans had 20-26x the GWP of UK beans. OWID: air freight ~50x boat per tonne-km (1.13 vs 0.023 kg CO2e/t-km)."
+      },
+      "home_vs_shop": {
+        "verdict": "more",
+        "healthier_pct": 77,
+        "nutrient": "vitamin C",
+        "explanation": "Green beans lost up to 77% of their vitamin C after 7 days at 4°C (55% at 20°C) in Favell's study, so freshly picked beans keep much more.",
+        "sources": [
+          {
+            "title": "Nutritional comparison of fresh, frozen and canned fruits and vegetables. Part 1. Vitamins C and B and phenolic compounds (Rickman, Barrett & Bruhn, J Sci Food Agric 87:930-944, 2007)",
+            "publisher": "Society of Chemical Industry / Wiley (copy hosted by UC ANR)",
+            "url": "https://ucanr.edu/sites/default/files/2010-06/19187.pdf",
+            "accessed": "2026-11-17",
+            "quote": "Table 6 ... Fresh, 20 °C, 7 days | Fresh, 4 °C, 7 days ... Green beans 55 77 20"
+          }
+        ]
+      },
+      "kid_fact": "Bean plants team up with bacteria in their roots to pull nitrogen from the air and feed the soil.",
+      "kid_fact_source": null
+    },
+    "kale": {
+      "kcal_per_100g": 35.0,
+      "nutrients": {
+        "vitamin_c_mg": 93.4,
+        "fibre_g": 4.1,
+        "vitamin_k_ug": 389.6
+      },
+      "fdc": {
+        "id": "168421",
+        "description": "Kale, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/168421/nutrients"
+      },
+      "carbon": {
+        "kg_co2e_per_kg": 0.51,
+        "category": "Brassicas",
+        "greenhouse_heated_kg": null,
+        "air_freight_kg": null,
+        "sources": [
+          {
+            "title": "Greenhouse gas emissions per kilogram of food product",
+            "publisher": "Our World in Data (data: Poore & Nemecek 2018, Science 360:987-992)",
+            "url": "https://ourworldindata.org/grapher/ghg-per-kg-poore",
+            "accessed": "2026-11-17",
+            "quote": "Poore and Nemecek (2018) - processed by Our World in Data. CSV row: \"Brassicas,2010,0.51\""
+          }
+        ]
+      },
+      "home_vs_shop": {
+        "verdict": "about-the-same",
+        "healthier_pct": null,
+        "nutrient": "vitamin C",
+        "explanation": "Cold storage lowers kale's vitamin C, but the source we opened gives no percentage, so we don't claim a number.",
+        "sources": [
+          {
+            "title": "Effect of cold storage and harvest date on bioactive compounds in curly kale (Hagen et al., Postharvest Biol Technol 51(1):36-42, 2009)",
+            "publisher": "Nofima",
+            "url": "https://nofima.com/publication/766718/",
+            "accessed": "2026-11-17",
+            "quote": "[cold storage] reduced the content of vitamin C and soluble sugars."
+          }
+        ]
+      },
+      "kid_fact": "Kale is the same plant species as cabbage, broccoli and cauliflower.",
+      "kid_fact_source": null
+    },
+    "spinach": {
+      "kcal_per_100g": 23.0,
+      "nutrients": {
+        "vitamin_c_mg": 28.1,
+        "fibre_g": 2.2,
+        "folate_ug": 194.0
+      },
+      "fdc": {
+        "id": "168462",
+        "description": "Spinach, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/168462/nutrients"
+      },
+      "carbon": {
+        "kg_co2e_per_kg": 0.53,
+        "category": "Other Vegetables",
+        "greenhouse_heated_kg": null,
+        "air_freight_kg": null,
+        "sources": [
+          {
+            "title": "Greenhouse gas emissions per kilogram of food product",
+            "publisher": "Our World in Data (data: Poore & Nemecek 2018, Science 360:987-992)",
+            "url": "https://ourworldindata.org/grapher/ghg-per-kg-poore",
+            "accessed": "2026-11-17",
+            "quote": "Poore and Nemecek (2018) - processed by Our World in Data. CSV row: \"Other Vegetables,2010,0.53\""
+          }
+        ]
+      },
+      "home_vs_shop": {
+        "verdict": "more",
+        "healthier_pct": 75,
+        "nutrient": "vitamin C",
+        "explanation": "Spinach lost 75% of its vitamin C after 7 days at 4°C and all of it within 4 days at room temperature; freshly picked spinach keeps far more.",
+        "sources": [
+          {
+            "title": "Nutritional comparison of fresh, frozen and canned fruits and vegetables. Part 1. Vitamins C and B and phenolic compounds (Rickman, Barrett & Bruhn, J Sci Food Agric 87:930-944, 2007)",
+            "publisher": "Society of Chemical Industry / Wiley (copy hosted by UC ANR)",
+            "url": "https://ucanr.edu/sites/default/files/2010-06/19187.pdf",
+            "accessed": "2026-11-17",
+            "quote": "Table 6 ... Fresh, 20 °C, 7 days | Fresh, 4 °C, 7 days ... Spinach 100 75 30"
+          },
+          {
+            "title": "Novel insights into ascorbate retention and degradation during the washing and post-harvest storage of spinach and other salad leaves (Dewhirst et al., Food Chemistry 2017)",
+            "publisher": "Elsevier (open access via PMC/Europe PMC)",
+            "url": "https://europepmc.org/article/PMC/PMC5441274",
+            "accessed": "2026-11-17",
+            "quote": "After 3 d of storage, mature spinach had lost about 80% of its ascorbate, whereas juvenile spinach had lost only 25–45%."
+          }
+        ]
+      },
+      "kid_fact": "Spinach leaves are over 90% water, which is why a big pile shrinks so much when you cook it.",
+      "kid_fact_source": {
+        "title": "FoodData Central SR Legacy: Spinach, raw (FDC 168462)",
+        "publisher": "USDA Agricultural Research Service",
+        "url": "https://fdc.nal.usda.gov/food-details/168462/nutrients",
+        "accessed": "2026-11-17",
+        "quote": "Spinach, raw: Energy 23 kcal per 100 g (values read from the SR Legacy CSV release, https://fdc.nal.usda.gov/fdc-datasets/FoodData_Central_sr_legacy_food_csv_2018-04.zip)"
+      }
+    },
+    "radish": {
+      "kcal_per_100g": 16.0,
+      "nutrients": {
+        "vitamin_c_mg": 14.8,
+        "fibre_g": 1.6,
+        "folate_ug": 25.0
+      },
+      "fdc": {
+        "id": "169276",
+        "description": "Radishes, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/169276/nutrients"
+      },
+      "carbon": {
+        "kg_co2e_per_kg": 0.43,
+        "category": "Root Vegetables",
+        "greenhouse_heated_kg": null,
+        "air_freight_kg": null,
+        "sources": [
+          {
+            "title": "Greenhouse gas emissions per kilogram of food product",
+            "publisher": "Our World in Data (data: Poore & Nemecek 2018, Science 360:987-992)",
+            "url": "https://ourworldindata.org/grapher/ghg-per-kg-poore",
+            "accessed": "2026-11-17",
+            "quote": "Poore and Nemecek (2018) - processed by Our World in Data. CSV row: \"Root Vegetables,2010,0.43\""
+          }
+        ],
+        "notes": "Mapped to Root Vegetables."
+      },
+      "home_vs_shop": {
+        "verdict": "about-the-same",
+        "healthier_pct": null,
+        "nutrient": "vitamin C",
+        "explanation": "No peer-reviewed source found giving a crop-specific number for home-grown versus shop radishes; vitamin C generally falls with storage time and warmth, so eat it soon after picking.",
+        "sources": [
+          {
+            "title": "Preharvest and postharvest factors influencing vitamin C content of horticultural crops (Lee & Kader, Postharvest Biol Technol 20:207-220, 2000)",
+            "publisher": "Aprifel scientific summary",
+            "url": "https://www.aprifel.com/fr/resume-scientifique/preharvest-and-postharvest-factors-influencing-vitamin-c/",
+            "accessed": "2026-11-17",
+            "quote": "losses are accelerated at higher temperatures and with longer storage durations"
+          }
+        ]
+      },
+      "kid_fact": "Radishes are one of the fastest crops - some are ready to pick about four weeks after sowing.",
+      "kid_fact_source": null
+    },
+    "blueberry": {
+      "kcal_per_100g": 57.0,
+      "nutrients": {
+        "vitamin_c_mg": 9.7,
+        "fibre_g": 2.4,
+        "vitamin_k_ug": 19.3
+      },
+      "fdc": {
+        "id": "171711",
+        "description": "Blueberries, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/171711/nutrients"
+      },
+      "carbon": {
+        "kg_co2e_per_kg": 1.53,
+        "category": "Berries & Grapes",
+        "greenhouse_heated_kg": null,
+        "air_freight_kg": null,
+        "sources": [
+          {
+            "title": "Greenhouse gas emissions per kilogram of food product",
+            "publisher": "Our World in Data (data: Poore & Nemecek 2018, Science 360:987-992)",
+            "url": "https://ourworldindata.org/grapher/ghg-per-kg-poore",
+            "accessed": "2026-11-17",
+            "quote": "Poore and Nemecek (2018) - processed by Our World in Data. CSV row: \"Berries & Grapes,2010,1.53\""
+          }
+        ],
+        "notes": "Category covers berries and grapes together."
+      },
+      "home_vs_shop": {
+        "verdict": "about-the-same",
+        "healthier_pct": null,
+        "nutrient": "vitamin C",
+        "explanation": "Highbush blueberries showed no vitamin C loss over 8 days of storage, so shop and home blueberries can be similar.",
+        "sources": [
+          {
+            "title": "Antioxidant capacity, vitamin C, phenolics, and anthocyanins after fresh storage of small fruits (Kalt, Forney, Martin & Prior, J Agric Food Chem 47:4638-4644, 1999)",
+            "publisher": "Aprifel scientific summary",
+            "url": "https://www.aprifel.com/fr/resume-scientifique/antioxidant-capacity-vitamin-c-phenolics-and-anthocyanins/",
+            "accessed": "2026-11-17",
+            "quote": "There were no ascorbate losses in strawberries or highbush blueberries: during 8 days of storage at the various temperatures"
+          }
+        ]
+      },
+      "kid_fact": "Blueberry bushes need acidic soil to grow well.",
+      "kid_fact_source": null
+    },
+    "raspberry": {
+      "kcal_per_100g": 52.0,
+      "nutrients": {
+        "vitamin_c_mg": 26.2,
+        "fibre_g": 6.5,
+        "folate_ug": 21.0
+      },
+      "fdc": {
+        "id": "167755",
+        "description": "Raspberries, raw",
+        "url": "https://fdc.nal.usda.gov/food-details/167755/nutrients"
+      },
+      "carbon": {
+        "kg_co2e_per_kg": 1.53,
+        "category": "Berries & Grapes",
+        "greenhouse_heated_kg": null,
+        "air_freight_kg": null,
+        "sources": [
+          {
+            "title": "Greenhouse gas emissions per kilogram of food product",
+            "publisher": "Our World in Data (data: Poore & Nemecek 2018, Science 360:987-992)",
+            "url": "https://ourworldindata.org/grapher/ghg-per-kg-poore",
+            "accessed": "2026-11-17",
+            "quote": "Poore and Nemecek (2018) - processed by Our World in Data. CSV row: \"Berries & Grapes,2010,1.53\""
+          }
+        ],
+        "notes": "Category covers berries and grapes together."
+      },
+      "home_vs_shop": {
+        "verdict": "about-the-same",
+        "healthier_pct": null,
+        "nutrient": "vitamin C",
+        "explanation": "Raspberries did lose some vitamin C in storage but no percentage was given, and their antioxidant phenolics actually rose slightly, so we don't claim a number.",
+        "sources": [
+          {
+            "title": "Antioxidant capacity, vitamin C, phenolics, and anthocyanins after fresh storage of small fruits (Kalt, Forney, Martin & Prior, J Agric Food Chem 47:4638-4644, 1999)",
+            "publisher": "Aprifel scientific summary",
+            "url": "https://www.aprifel.com/fr/resume-scientifique/antioxidant-capacity-vitamin-c-phenolics-and-anthocyanins/",
+            "accessed": "2026-11-17",
+            "quote": "but there were losses in the other two fruit species."
+          },
+          {
+            "title": "Nutritional comparison of fresh, frozen and canned fruits and vegetables. Part 1. Vitamins C and B and phenolic compounds (Rickman, Barrett & Bruhn, J Sci Food Agric 87:930-944, 2007)",
+            "publisher": "Society of Chemical Industry / Wiley (copy hosted by UC ANR)",
+            "url": "https://ucanr.edu/sites/default/files/2010-06/19187.pdf",
+            "accessed": "2026-11-17",
+            "quote": "The levels of TPs increased slightly but signiﬁcantly during the 3 days of storage and the additional 24 h period."
+          }
+        ]
+      },
+      "kid_fact": "A raspberry is made of lots of tiny bead-like fruits called drupelets, each with its own seed.",
+      "kid_fact_source": null
+    },
+    "apple": {
+      "kcal_per_100g": 52.0,
+      "nutrients": {
+        "vitamin_c_mg": 4.6,
+        "fibre_g": 2.4,
+        "potassium_mg": 107.0
+      },
+      "fdc": {
+        "id": "171688",
+        "description": "Apples, raw, with skin",
+        "url": "https://fdc.nal.usda.gov/food-details/171688/nutrients"
+      },
+      "carbon": {
+        "kg_co2e_per_kg": 0.43,
+        "category": "Apples",
+        "greenhouse_heated_kg": null,
+        "air_freight_kg": null,
+        "sources": [
+          {
+            "title": "Greenhouse gas emissions per kilogram of food product",
+            "publisher": "Our World in Data (data: Poore & Nemecek 2018, Science 360:987-992)",
+            "url": "https://ourworldindata.org/grapher/ghg-per-kg-poore",
+            "accessed": "2026-11-17",
+            "quote": "Poore and Nemecek (2018) - processed by Our World in Data. CSV row: \"Apples,2010,0.43\""
+          }
+        ]
+      },
+      "home_vs_shop": {
+        "verdict": "about-the-same",
+        "healthier_pct": null,
+        "nutrient": "vitamin C",
+        "explanation": "No peer-reviewed source found giving a crop-specific number for home-grown versus shop apples; vitamin C generally falls with storage time and warmth, so eat it soon after picking.",
+        "sources": [
+          {
+            "title": "Preharvest and postharvest factors influencing vitamin C content of horticultural crops (Lee & Kader, Postharvest Biol Technol 20:207-220, 2000)",
+            "publisher": "Aprifel scientific summary",
+            "url": "https://www.aprifel.com/fr/resume-scientifique/preharvest-and-postharvest-factors-influencing-vitamin-c/",
+            "accessed": "2026-11-17",
+            "quote": "losses are accelerated at higher temperatures and with longer storage durations"
+          }
+        ]
+      },
+      "kid_fact": "Plant an apple seed and the tree won't match its parent, so growers graft branches to copy a variety.",
+      "kid_fact_source": null
+    },
+    "lemon": {
+      "kcal_per_100g": 29.0,
+      "nutrients": {
+        "vitamin_c_mg": 53.0,
+        "fibre_g": 2.8,
+        "folate_ug": 11.0
+      },
+      "fdc": {
+        "id": "167746",
+        "description": "Lemons, raw, without peel",
+        "url": "https://fdc.nal.usda.gov/food-details/167746/nutrients"
+      },
+      "carbon": {
+        "kg_co2e_per_kg": 0.39,
+        "category": "Citrus Fruit",
+        "greenhouse_heated_kg": null,
+        "air_freight_kg": null,
+        "sources": [
+          {
+            "title": "Greenhouse gas emissions per kilogram of food product",
+            "publisher": "Our World in Data (data: Poore & Nemecek 2018, Science 360:987-992)",
+            "url": "https://ourworldindata.org/grapher/ghg-per-kg-poore",
+            "accessed": "2026-11-17",
+            "quote": "Poore and Nemecek (2018) - processed by Our World in Data. CSV row: \"Citrus Fruit,2010,0.39\""
+          }
+        ]
+      },
+      "home_vs_shop": {
+        "verdict": "about-the-same",
+        "healthier_pct": null,
+        "nutrient": "vitamin C",
+        "explanation": "No peer-reviewed source found giving a crop-specific number for home-grown versus shop lemons; vitamin C generally falls with storage time and warmth, so eat it soon after picking.",
+        "sources": [
+          {
+            "title": "Preharvest and postharvest factors influencing vitamin C content of horticultural crops (Lee & Kader, Postharvest Biol Technol 20:207-220, 2000)",
+            "publisher": "Aprifel scientific summary",
+            "url": "https://www.aprifel.com/fr/resume-scientifique/preharvest-and-postharvest-factors-influencing-vitamin-c/",
+            "accessed": "2026-11-17",
+            "quote": "losses are accelerated at higher temperatures and with longer storage durations"
+          }
+        ]
+      },
+      "kid_fact": "A lemon tree can have flowers and fruit on it at the same time.",
+      "kid_fact_source": null
+    }
+  }
+}

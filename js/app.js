@@ -26,9 +26,9 @@ const nf = (n) => Number(n).toLocaleString('en-IE');
 export function renderStats() {
   const n = overallStreak(), r = rewards(), lv = level(), snapped = photoDays().has(today());
   const html = (where) => `
-    <button class="st3 st-sun${snapped ? '' : ' dim'}" type="button" data-sheet="streak" aria-label="${n} day streak${snapped ? '' : ', no photo yet today'}">${art('streak-sun', { size: 30 })}<b>${n}</b></button>
-    <button class="st3 st-seed" type="button" data-sheet="seeds" aria-label="${nf(r.seeds)} seeds">${art('seed-gem', { size: 28 })}<b>${nf(r.seeds)}</b></button>
-    <button class="st3 st-lvl" type="button" data-sheet="level" aria-label="Level ${lv.n}, ${esc(lv.title)}">${ringSvg(lv)}${where === 'side' ? `<b>${esc(lv.title)}</b>` : ''}</button>`;
+    <button class="tbs st-sun${snapped ? '' : ' dim'}" type="button" data-sheet="streak" aria-label="${n} day streak${snapped ? '' : ', no photo yet today'}">${art('streak-sun', { size: 30 })}<b>${n}</b></button>
+    <button class="tbs st-seed" type="button" data-sheet="seeds" aria-label="${nf(r.seeds)} seeds">${art('seed-gem', { size: 28 })}<b>${nf(r.seeds)}</b></button>
+    <button class="tbs st-lvl" type="button" data-sheet="level" aria-label="Level ${lv.n}, ${esc(lv.title)}">${ringSvg(lv)}${where === 'side' ? `<b>${esc(lv.title)}</b>` : ''}</button>`;
   const top = $('#top-stats'), side = $('#side-stats');
   if (top) top.innerHTML = html('top');
   if (side) side.innerHTML = html('side');

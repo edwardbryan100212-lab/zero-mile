@@ -420,7 +420,7 @@ p.tree-co2 b { font-size: 1.3rem; display: block; }
   .shake { animation: none; }
   .bar3.shine > i::before { animation: none; display: none; }
   .busy p::before { animation-duration: 2s; }
-  .chip3, .st3, .tabbar a, .tabbar button, .tabbar .snap-btn { transition: none; }
+  .chip3, .tbs, .tabbar a, .tabbar button, .tabbar .snap-btn { transition: none; }
 }
 .bar3 > i { overflow: hidden; }
 .mpath .mp-chest > .art:first-child { width: clamp(34px, 9.4vw, 56px); height: auto; }

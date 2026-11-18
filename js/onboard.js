@@ -7,6 +7,7 @@
 // - Welcome back: after 2 or more days away, Pip says hello once.
 import { $, $$, esc, data, state, save, today, dayDiff, addToGarden, plantById, overallStreak, photoDays, bestTrees, toast } from './core.js?v=9';
 import { EASE, reduced, pip, haptic } from './fun.js?v=9';
+import { produceIcon } from './produce.js?v=9';
 
 // ---------- streak at risk (used by the Today hero in js/garden.js) ----------
 export const RISK_HOUR = 18;
@@ -160,7 +161,7 @@ export async function onboard() {
       return `<div class="ob-done">
         ${pics[pick.grow] ? `<img class="ob-pic" src="${esc(pics[pick.grow])}" alt="" width="220" height="165">` : ''}
         <h1 id="ob-t" tabindex="-1">Planted!</h1>
-        <p class="ob-lead">${esc(p?.name || 'Your plant')} is in your garden.</p>
+        <p class="ob-lead">${p ? `<span class="ob-sym" style="display:inline-flex;vertical-align:-6px;margin-right:6px">${produceIcon(p.id, { size: 28, group: p.group })}</span>` : ''}${esc(p?.name || 'Your plant')} is in your garden.</p>
         <div class="lcd ob-lcd ob-xp" aria-label="Plus ${p?.group === 'tree' ? 20 : 5} XP"><span class="px">+${p?.group === 'tree' ? 20 : 5} XP</span></div>
         <div class="ob-rem">${reminderBlock('ob-rem')}</div>
       </div>

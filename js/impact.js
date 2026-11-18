@@ -3,6 +3,7 @@
 import { esc, fmt, data, plantById, trip, state, thumb, isTree, treeAge, treeCO2, lastHeight, today, dayDiff } from './core.js?v=9';
 import { countAll, helpBtn, bindHelp } from './fun.js?v=9';
 import { icon } from './find.js?v=9';
+import { produceIcon } from './produce.js?v=9';
 
 // round goals that move on as you pass them
 const goalFor = (v, steps) => steps.find((s) => s > v) ?? Math.ceil((v + 1) / steps.at(-1)) * steps.at(-1);
@@ -45,7 +46,7 @@ function plantList(rows, real) {
   const head = `<div class="h3row"><h2 id="gm-t">Your plants</h2><span class="muted3">${mine.length}</span></div>`;
   if (!mine.length) return `<section class="c3 gm3" aria-labelledby="gm-t">${head}<p class="gm3-none">Nothing growing yet.</p><a class="b3 b3-white" href="#/find">Find a plant</a></section>`;
   return `<section class="c3 gm3" aria-labelledby="gm-t">${head}
-    <ul class="pl3">${mine.map(({ e, p, r }) => { const h = isTree(p) ? lastHeight(e) : null; const sub = isTree(p) ? esc(treeAge(e)) + (h ? `, ${fmt(h.cm)} cm` : '') : `Day ${Math.max(0, dayDiff(e.planted, today()))}`; return `<li><a href="#/plant/${p.id}"><img class="${real[p.id] ? 'ph' : ''}" src="${real[p.id] || thumb(p.id)}" alt="" width="48" height="48" loading="lazy" decoding="async"><span class="pl3-n"><b>${esc(p.name)}</b><small>${sub}</small></span><span class="pl3-v">${r?.picks ? `<b>${fmt(r.kg, 2)} kg</b><small>${fmt(r.miles)} mi skipped</small>` : '<small>No pick yet</small>'}</span></a></li>`; }).join('')}</ul>
+    <ul class="pl3">${mine.map(({ e, p, r }) => { const h = isTree(p) ? lastHeight(e) : null; const sub = isTree(p) ? esc(treeAge(e)) + (h ? `, ${fmt(h.cm)} cm` : '') : `Day ${Math.max(0, dayDiff(e.planted, today()))}`; return `<li><a href="#/plant/${p.id}">${produceIcon(p.id, { size: 48, cls: 'pl3-sym', group: p.group })}<span class="pl3-n"><b>${esc(p.name)}</b><small>${sub}</small></span><span class="pl3-v">${r?.picks ? `<b>${fmt(r.kg, 2)} kg</b><small>${fmt(r.miles)} mi skipped</small>` : '<small>No pick yet</small>'}</span></a></li>`; }).join('')}</ul>
   </section>`;
 }
 
@@ -94,7 +95,7 @@ export default async function impact(main) {
     ${picked.length ? '' : `<section class="c3 by3" aria-labelledby="by-t">
       <div class="h3row"><h2 id="by-t">How far shop food travels</h2><span class="muted3">to ${esc(city)}</span></div>
       <ul class="pl3 pl3-grid">${examples.map((x) => `
-        <li><a href="#/plant/${x.p.id}"><img class="${real[x.p.id] ? 'ph' : ''}" src="${real[x.p.id] || thumb(x.p.id)}" alt="" width="48" height="48" loading="lazy" decoding="async"><span class="pl3-n"><b>${esc(x.p.name)}</b><small>from ${esc(x.tr.o.origin_country)}${viaAir(x.tr) ? ', by plane' : ''}</small></span><span class="pl3-v"><b>${fmt(x.tr.crowMi)} mi</b></span></a></li>`).join('')}</ul>
+        <li><a href="#/plant/${x.p.id}">${produceIcon(x.p.id, { size: 48, cls: 'pl3-sym', group: x.p.group })}<span class="pl3-n"><b>${esc(x.p.name)}</b><small>from ${esc(x.tr.o.origin_country)}${viaAir(x.tr) ? ', by plane' : ''}</small></span><span class="pl3-v"><b>${fmt(x.tr.crowMi)} mi</b></span></a></li>`).join('')}</ul>
     </section>`}
     <section class="i3-more" aria-label="Good to know">
       <button class="b3 b3-white" type="button" data-help="facts">${icon('info')}${facts.length} quick facts</button>

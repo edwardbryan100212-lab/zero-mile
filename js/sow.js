@@ -6,6 +6,7 @@
 //   default view  the full page at #/sow
 import { state, esc, data, thumb, isTree, treeMonths, MONTH_NAMES } from './core.js?v=9';
 import { glyph } from './weather.js?v=9';
+import { produceIcon } from './produce.js?v=9';
 
 const SOUTH = () => state.region === 'AU';
 export function sowList(month) {
@@ -21,7 +22,7 @@ export function sowList(month) {
   const by = (a, b) => a.name.localeCompare(b.name);
   return { sow: sow.sort(by), plant: plant.sort(by), trees: trees.sort(by) };
 }
-const chip = (p) => `<li><a class="sow-chip" href="#/plant/${esc(p.id)}"><img src="${thumb(p.id)}" alt="" width="56" height="56" loading="lazy"><span>${esc(p.name)}</span></a></li>`;
+const chip = (p) => `<li><a class="sow-chip" href="#/plant/${esc(p.id)}">${produceIcon(p.id, { size: 48, group: p.group })}<span>${esc(p.name)}</span></a></li>`;
 const group = (title, list, icon, h = 'h3') => (list.length ? `<div class="sow-g"><${h} class="sow-gh">${glyph(icon, 18)}${title} <span class="sow-n lcd-num">${list.length}</span></${h}><ul class="sow-chips">${list.map(chip).join('')}</ul></div>` : '');
 
 export async function mountSow(el, { full = false } = {}) {

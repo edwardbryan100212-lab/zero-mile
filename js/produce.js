@@ -540,7 +540,7 @@ export function produceIcon(id, { size = 40, cls = '', label, group } = {}) {
   const name = label === true ? nameOf(id) : (typeof label === 'string' && label ? label : '');
   const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
   const a11y = name ? `role="img" aria-label="${esc(name)}"` : 'aria-hidden="true"';
-  return `<svg class="produce ${cls}" width="${size}" height="${size}" viewBox="0 0 48 48" ${a11y} focusable="false" data-produce="${esc(id)}" style="flex:none">${inner}</svg>`;
+  return `<svg class="produce ${cls}" width="${size}" height="${size}" viewBox="0 0 48 48" ${a11y} focusable="false" data-produce="${esc(id)}" style="flex:none;stroke:none">${inner}</svg>`;
 }
 
 /** True when the id has its own drawing (not a fallback). */

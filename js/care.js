@@ -11,6 +11,7 @@
 import { state, save, esc, today, dayDiff, plantById, data, thumb, toggleWatered, wateredToday, isTree, treePhotoDue, stageName } from './core.js?v=9';
 import { glyph, forecast, conditions, stripHtml, placeHtml, useMyLocation, forgetLocation, WX_SOURCE, WX_RULES } from './weather.js?v=9';
 import { mountTimelapse, photoCount } from './timelapse.js?v=9';
+import { produceIcon } from './produce.js?v=9';
 
 // ---------- the rules ----------
 const WATER_WORD = { high: 'a lot of', med: 'a medium amount of', low: 'little' };
@@ -172,7 +173,7 @@ function rowHtml(j, { pic = true } = {}) {
     : j.act === 'snap' ? `<a class="care-tick care-go" href="#/snap/${esc(j.key.split(':')[0])}" data-snap="${esc(j.key.split(':')[0])}" aria-label="${esc(j.title)}: take the photo">${glyph('camera', 18)}</a>`
       : `<span class="care-tick care-info" aria-hidden="true">${glyph(j.icon, 18)}</span>`;
   const plantId = j.key.split(':')[0];
-  const img = j.key.startsWith('wx:') || (!pic && !tick && j.act !== 'snap') ? '' : pic ? `<img class="care-pic" src="${thumb(plantId)}" alt="" width="36" height="36">` : `<span class="care-gl">${glyph(j.icon, 22)}</span>`;
+  const img = j.key.startsWith('wx:') || (!pic && !tick && j.act !== 'snap') ? '' : pic ? produceIcon(plantId, { size: 36, cls: 'care-sym', group: plantById(plantId)?.group }) : `<span class="care-gl">${glyph(j.icon, 22)}</span>`;
   return `<li class="care-row${j.done ? ' done' : ''}${j.wx ? ' wx' : ''}" data-key="${esc(j.key)}">
     ${lead}
     <button class="care-main" type="button" aria-expanded="false" aria-controls="${id}">${img}<span class="care-t">${esc(j.title)}${j.note ? ` <span class="care-note lcd-num">${esc(j.note)}</span>` : ''}</span>${glyph('chev', 18)}</button>

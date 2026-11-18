@@ -8,6 +8,7 @@ import { EASE, reduced, countUp, countAll, fillAll, confetti, haptic, helpBtn, b
 import { art, icon } from './art.js?v=9';
 import { award, dailyQuests, rewards, level, onReward, saversHeld, SAVER_MAX } from './rewards.js?v=9';
 import * as Face from './face.js?v=9';
+import { produceIcon } from './produce.js?v=9';
 import { streakRisk, riskLine } from './onboard.js?v=9';
 const WORDS = { thriving: 'Thriving', happy: 'Happy', okay: 'Doing okay', thirsty: 'A bit droopy', poorly: 'Needs help', sleepy: 'Waiting for a photo', new: 'Just planted' };
 const moodWord = (m) => Face.moodWord?.(m) || WORDS[m] || WORDS.okay;
@@ -51,9 +52,8 @@ const snappedToday = (e) => e.log.some((l) => l.date === today());
 let PHOTO = {}; // id → real photo (js/photos.js), so Today's tiles match Find
 const tile = (p) => `<a class="tile c3" href="#/plant/${p.id}"><div class="tile-art${PHOTO[p.id] ? ' photo' : ''}"><img src="${PHOTO[p.id] || thumb(p.id)}" alt="" width="132" height="132" loading="lazy"></div><b>${esc(p.name)}</b></a>`;
 const picOf = (id) => PHOTO[id] || thumb(id);
-// a plant's small picture on Today: its flat produce symbol (js/produce.js) when that module is there, else its photo
-let PRODUCE = null;
-const media = (id) => (PRODUCE ? `<span class="pc-sym">${PRODUCE(id, { size: 56 })}</span>` : `<img src="${picOf(id)}" alt="" width="144" height="144" loading="lazy">`);
+// a plant's small picture on Today: its flat produce symbol (js/produce.js); 3D stays on the plant page
+const media = (id) => `<span class="pc-sym">${produceIcon(id, { size: 56, group: plantById(id)?.group })}</span>`;
 
 // ---------- a few pixel sparkles: the small celebration when something is logged ----------
 export function burst(x, y) { confetti(x, y, { count: 16, spread: .6 }); }

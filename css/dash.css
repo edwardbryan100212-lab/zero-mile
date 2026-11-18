@@ -199,7 +199,7 @@ p.tree-co2 b { font-size: 1.3rem; display: block; }
 @media (min-width: 640px) { .pcards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (min-width: 1000px) { .pcards { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; } }
 .pcard { display: grid; grid-template-columns: 72px minmax(0, 1fr); grid-template-rows: auto 1fr; gap: 16px; padding: 16px; align-items: start; }
-.pc-media { display: grid; place-items: center; width: 72px; height: 72px; border-radius: 16px; background: var(--paper-2); overflow: hidden; }
+.pc-media { display: grid; place-items: center; width: 72px; height: 72px; border-radius: 16px; background: none; overflow: hidden; }
 .pc-media img { width: 100%; height: 100%; object-fit: cover; }
 .pc-sym { display: grid; place-items: center; }
 .pc-sym svg { width: 56px; height: 56px; flex: none; }

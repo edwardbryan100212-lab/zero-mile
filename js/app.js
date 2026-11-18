@@ -3,6 +3,7 @@
 import { $, $$, esc, data, rise, ROOT, state, plantById, overallStreak, today, thumb, useSaverIfNeeded, toast, photoDays, isTree } from './core.js?v=9';
 import { initPress, enter, sheet, pop, floatGain, celebration } from './fun.js?v=9';
 import { art, icon } from './art.js?v=9';
+import { produceIcon } from './produce.js?v=9';
 import { rewards, level, award, check, onReward } from './rewards.js?v=9';
 import { needsOnboarding, onboard, welcomeBack, todayNudge, settingsRow, photoTimeNudge } from './onboard.js?v=9';
 
@@ -59,7 +60,7 @@ export function renderSide() {
     const p = plantById(e.id); if (!p) return '';
     const done = e.log.some((l) => l.date === today());
     const cur = here === `plant/${e.id}`;
-    return `<li><a href="#/plant/${e.id}"${cur ? ' aria-current="page"' : ''}><img src="${thumb(e.id)}" alt="" width="28" height="28"><span>${esc(p.name)}</span>${done ? '<i class="tick" aria-label="photo taken today"></i>' : ''}</a></li>`;
+    return `<li><a href="#/plant/${e.id}"${cur ? ' aria-current="page"' : ''}>${produceIcon(e.id, { size: 28, group: p.group })}<span>${esc(p.name)}</span>${done ? '<i class="tick" aria-label="photo taken today"></i>' : ''}</a></li>`;
   }).join('') || '<li class="side-none">Nothing growing yet</li>';
 }
 

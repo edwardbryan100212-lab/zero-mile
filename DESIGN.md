@@ -68,6 +68,29 @@ Pip is a terracotta pot with a sprout and the black LCD face with green pixels. 
 - Paper UI uses simple line icons (1.75px stroke, one family) only where they help a label: the tab bar, settings rows and chips.
 - **Badges:** pixel icons on small LCD tiles. When locked they show dim unlit pixels; when unlocked the pixels light up green, and amber for the big ones.
 
+## Owner's notes, round 3 (2026-11-18)
+
+- **"Keep it nice and simple while being complex."** Each screen looks simple at a glance: one clear focus, generous space, few words. The depth sits one tap away, in sheets, scrubbers, expanding rows and detail views. Hide the complexity; don't remove it.
+- **"More interactive and genuinely useful features":**
+  - real care help (what to do today for each plant)
+  - local weather advice
+  - a photo time-lapse
+  - what to sow this month
+  - a plant journal
+  The `features` work owns these (`js/care.js`, `js/weather.js`, `js/timelapse.js`, `css/features.css`).
+- **"Add ombre backgrounds":**
+  - Soft, slow-drifting ombre fields behind pages: two or three large radial colour fields blended on the paper, never a hard banner.
+  - Palette fields: mint `#dff0e4`, sage `#e8efe0`, peach `#f8e3d6`, butter `#fbf1d4`, sky `#e2eef5`. Each section or screen gets its own pair: Today mint→peach, Find sage→butter, Impact sky→mint, Rewards butter→peach.
+  - They drift very slowly, or not at all with reduced motion. Text contrast stays ≥ 4.5:1.
+  - LCD panels sit on top as dark objects.
+  - The class is `.ombre` with `data-tone` in `css/tokens.css`.
+- **"Take inspo from thenounproject for icons":**
+  - In the spirit of the best Noun Project sets: simple, geometric, filled-glyph icons with one consistent visual weight, rounded joins, recognisable at 20px and drawn as one family.
+  - Draw our own; don't copy specific Noun Project icons.
+  - On paper, `icon(name)` (in `js/art.js`) returns these glyphs with `currentColor`. On LCD, `art()` stays pixel icons.
+  - Icons sit at 20–24px in the tab bar, settings rows, chips and fact rows. They never sit in tinted squares.
+- **Nothing squished.** Every icon and image keeps its aspect ratio: set `width` and `height` from the viewBox, use `flex: none`, and `object-fit` for photos.
+
 ## Rewards (`js/rewards.js`, state in `state.rewards`)
 
 - **XP:**

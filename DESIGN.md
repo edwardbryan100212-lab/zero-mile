@@ -91,6 +91,22 @@ Pip is a terracotta pot with a sprout and the black LCD face with green pixels. 
   - Icons sit at 20–24px in the tab bar, settings rows, chips and fact rows. They never sit in tinted squares.
 - **Nothing squished.** Every icon and image keeps its aspect ratio: set `width` and `height` from the viewBox, use `flex: none`, and `object-fit` for photos.
 
+## Owner's notes, round 4 (2026-11-18)
+
+- **"Format the page better."** Today, the home page, gets a clearer structure:
+  1. greeting
+  2. LCD streak hero
+  3. "Care today" (the jobs and weather)
+  4. your plants
+  5. quests
+  6. small links (sow this month, impact)
+  Use consistent card widths, aligned edges and an even 16/24px rhythm. On Mac it is a real dashboard grid, not a stack of mismatched cards.
+- **"Use coloured icons for the homepage."** On Today (and the sidebar), icons are coloured: the same simple glyph family, filled in the palette (leaf, terracotta, butter `#e8b23a`, sky `#3a8fc4`, berry `#8a4fb8`), at most two colours per icon. `icon(name, { color: true })` returns the coloured version. Other screens stay single-colour.
+- **"Symbols of fruits and vegetables, but a 3D model when it's needed."** Every plant and tree gets a flat coloured **produce symbol**: a simple, recognisable fruit or vegetable drawing in the same family (a tomato with its green calyx, a carrot, a strawberry, a leaf for herbs, a tree shape for trees).
+  - Module: `js/produce.js`, `produceIcon(id, { size })` returns an inline SVG string, with a group fallback for any id without its own drawing.
+  - **Where symbols go:** lists and small spots, such as Today's plant tiles, quests, care jobs, the sidebar, onboarding choices, Impact rows and sow-this-month chips.
+  - **Where 3D stays:** where seeing the plant matters, which is the plant page model, the pot on a plant's own view, and growth stages. Real photos stay on Find cards and the plant page photo strip.
+
 ## Rewards (`js/rewards.js`, state in `state.rewards`)
 
 - **XP:**

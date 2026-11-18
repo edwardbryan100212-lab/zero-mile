@@ -4,6 +4,7 @@ import { $, $$, esc, data, rise, ROOT, state, plantById, overallStreak, today, t
 import { initPress, enter, hop, sheet, pop, floatGain, celebration } from './fun.js?v=9';
 import { art } from './art.js?v=9';
 import { rewards, level, award, check, onReward } from './rewards.js?v=9';
+import { needsOnboarding, onboard, welcomeBack, todayNudge, settingsRow, photoTimeNudge } from './onboard.js?v=9';
 
 const routes = {
   '': () => import('./garden.js?v=9'),
@@ -74,6 +75,8 @@ async function route() {
     // the streak saver: if yesterday was missed, a watering can covers it
     if (useSaverIfNeeded()) setTimeout(() => toast('Your watering can saved your streak!'), 900);
     check();
+    // first run: Pip's onboarding over Today; otherwise a "welcome back" after 2+ days away, and photo time
+    if (!needsOnboarding()) { welcomeBack(); photoTimeNudge(); }
   }
   const mod = await routes[key]();
   if (my !== seq) return; // a newer navigation won
@@ -88,6 +91,8 @@ async function route() {
     else a.removeAttribute('aria-current');
   });
   current = await mod[VIEW[key] || 'default'](main, decodeURIComponent(arg || ''));
+  if (!key || key === 'garden') { if (needsOnboarding()) onboard(); else todayNudge(main); } // first run, or the reminder card (js/onboard.js)
+  if (key === 'sources') settingsRow(main); // the reminder row in Settings
   enter(main.firstElementChild);
   window.scrollTo({ top: 0, behavior: 'instant' });
   document.title = (main.querySelector('h1')?.textContent || 'Today') + ' · Zero Mile';

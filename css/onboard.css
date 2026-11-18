@@ -1,0 +1,121 @@
+/* Zero Mile: first-run onboarding, the daily reminder, the streak-at-risk evening hero and Pip's welcome back
+   (js/onboard.js). Uses the tokens and chunky .b3 / .c3 / .bar3 pieces from tokens.css. */
+
+/* ---------- onboarding: full-screen steps ---------- */
+html.ob-on { overflow: hidden; }
+html.ob-on .tabbar { visibility: hidden; }
+.ob { position: fixed; inset: 0; z-index: 85; background: #fff; display: grid; grid-template-rows: auto 1fr;
+  padding: env(safe-area-inset-top, 0px) 0 env(safe-area-inset-bottom, 0px); overflow: hidden; }
+.ob-top { display: grid; grid-template-columns: 48px 1fr auto; align-items: center; gap: 12px; width: min(100%, 680px); margin: 0 auto; padding: 14px 16px 6px; }
+.ob-top [hidden] { display: inline-flex !important; visibility: hidden; }
+.ob-back svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 3.2; stroke-linecap: round; stroke-linejoin: round; }
+.ob-bar { height: 18px; }
+.ob-bar > i { --c: var(--leaf); }
+.ob-skip { color: var(--muted3); }
+.ob-stage { position: relative; overflow: hidden; }
+.ob-step { position: absolute; inset: 0; display: flex; flex-direction: column; gap: 18px; width: min(100%, 680px); margin: 0 auto;
+  padding: 10px 16px 18px; overflow-y: auto; overscroll-behavior: contain; }
+.ob-step h1 { outline: none; text-align: center; }
+.ob-foot { margin-top: auto; padding-top: 6px; position: sticky; bottom: 0; background: linear-gradient(rgba(255,255,255,0), #fff 30%); }
+.ob-foot .b3 { min-height: 60px; font-size: 1.125rem; }
+
+/* step 1: Pip says hi */
+.ob-hi, .ob-done { flex: 1; display: grid; place-content: center; justify-items: center; gap: 12px; text-align: center; }
+.ob-pip .pipw svg { width: clamp(160px, 46vw, 240px); height: auto; }
+.ob-done .ob-pip .pipw svg { width: clamp(130px, 36vw, 190px); }
+.ob-say { font-size: 1.6rem; }
+.ob-say .bubble { display: inline-block; font-size: 1.5rem; padding: 12px 20px; border-radius: 18px; border: 2px solid var(--line); border-bottom-width: 5px; }
+.ob-say .bubble::after { display: none; }
+.ob-lead { font: 800 1.25rem/1.3 var(--font3); color: var(--muted3); }
+
+/* the small Pip heading on the choice steps */
+.ob-head { display: flex; align-items: center; justify-content: center; gap: 10px; }
+.ob-head .pipw svg { width: 76px; height: auto; }
+.ob-head h1 { font-size: clamp(1.6rem, 1.3rem + 1.4vw, 2.2rem); text-align: left; }
+
+/* step 2: what to grow, big photo cards */
+.ob-cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+@media (min-width: 640px) { .ob-cards { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 900px) { .ob-s-grow { width: min(100%, 1000px); } .ob-cards { grid-template-columns: repeat(5, 1fr); } .ob-s-grow .ob-foot { width: min(100%, 648px); margin-left: auto; margin-right: auto; } }
+.ob-card, .ob-goal, .ob-reg { font: inherit; color: var(--ink); cursor: pointer; text-align: left; touch-action: manipulation;
+  transition: transform 90ms var(--ease), border-bottom-width 90ms var(--ease), border-color 120ms var(--ease), background-color 120ms var(--ease); }
+.ob-card:active, .ob-goal:active, .ob-reg:active { transform: translateY(2px); border-bottom-width: 2px; }
+.ob-card { display: grid; gap: 8px; padding: 8px 8px 10px; justify-items: center; }
+.ob-card:last-child:nth-child(odd) { grid-column: 1 / -1; }
+@media (min-width: 640px) { .ob-card:last-child:nth-child(odd) { grid-column: auto; } }
+.ob-ph { width: 100%; aspect-ratio: 4 / 3; border-radius: 14px; overflow: hidden; background: #eef5ea; display: grid; place-items: center; }
+.ob-card:last-child:nth-child(odd) .ob-ph { aspect-ratio: 16 / 7; }
+@media (min-width: 640px) { .ob-card:last-child:nth-child(odd) .ob-ph { aspect-ratio: 4 / 3; } }
+.ob-ph img { width: 100%; height: 100%; object-fit: cover; }
+.ob-card b { font: 900 1.125rem/1.1 var(--font3); }
+.ob .on { border-color: var(--leaf); border-bottom-color: var(--leaf-d); background: #effbea; }
+.ob-card.on .ob-ph { box-shadow: 0 0 0 3px var(--leaf); }
+
+/* step 3: daily goal */
+.ob-goals, .ob-regs { display: grid; gap: 12px; }
+.ob-goal { display: flex; align-items: center; gap: 14px; padding: 14px 16px; min-height: 84px; }
+.ob-goal span { display: grid; gap: 2px; }
+.ob-goal b { font: 900 1.25rem/1.1 var(--font3); }
+.ob-goal small { font: 800 1rem/1.2 var(--font3); color: var(--muted3); }
+.ob-goal.on[data-tone="sun"] { border-color: var(--sun); border-bottom-color: var(--sun-d); background: #fff7dc; }
+.ob-goal.on[data-tone="sky"] { border-color: var(--sky); border-bottom-color: var(--sky-d); background: #e8f6fe; }
+
+/* step 4: where you live */
+@media (min-width: 640px) { .ob-regs { grid-template-columns: repeat(2, 1fr); } }
+.ob-reg { display: flex; align-items: center; gap: 12px; min-height: 64px; padding: 10px 14px; }
+.ob-reg b { font: 900 1.125rem/1.15 var(--font3); }
+
+/* step 5: planted */
+.ob-done h1 { font-size: clamp(2.4rem, 2rem + 2vw, 3.2rem); color: var(--leaf-d); }
+.ob-xp { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px 6px 8px; border-radius: 999px; background: #fff7dc; border: 2px solid var(--sun); color: #6b4a00; font: 900 1.125rem/1 var(--font3); }
+.ob-rem { width: min(100%, 420px); text-align: left; margin-top: 6px; }
+
+/* ---------- the reminder block (onboarding, Today nudge, Settings) ---------- */
+.rem3 { display: grid; gap: 10px; min-width: 0; flex: 1; }
+.rem3-t { display: flex; align-items: center; gap: 10px; font: 900 1.0625rem/1.2 var(--font3); color: var(--ink); }
+.rem3-t .art { flex: none; }
+.rem3-row { display: flex; gap: 10px; align-items: stretch; max-width: 420px; }
+.rem3-sel { position: relative; flex: 1; display: flex; align-items: center; background: #fff; border: 2px solid var(--line-d); border-bottom-width: 4px; border-radius: 14px; min-height: 52px; }
+.rem3-sel::after { content: ''; position: absolute; right: 16px; top: 50%; width: 9px; height: 9px; border: solid var(--leaf-d); border-width: 0 3px 3px 0; transform: translateY(-70%) rotate(45deg); pointer-events: none; }
+.rem3-sel select { appearance: none; -webkit-appearance: none; width: 100%; border: 0; background: transparent; font: 900 1.125rem/1.2 var(--font3); color: var(--ink); min-height: 48px; padding: 0 40px 0 14px; cursor: pointer; border-radius: 12px; }
+.rem3-row .b3 { min-height: 52px; }
+.rem3.done [data-rem-go] { --c: var(--leaf); --d: var(--leaf-d); background: #278030; border-color: #1c6324; }
+
+/* Today: the nudge card under the hero */
+.nudge3 { position: relative; display: flex; align-items: center; gap: 12px; padding-right: 48px; grid-column: 1 / -1; }
+.nudge3 > .pipw svg { width: 64px; height: auto; }
+.nudge3-x { position: absolute; top: 6px; right: 6px; width: 44px; height: 44px; display: grid; place-items: center; border: 0; background: none; border-radius: 12px; color: var(--muted3); cursor: pointer; }
+.nudge3-x svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; }
+@media (max-width: 420px) { .nudge3 > .pipw { display: none; } }
+
+/* Settings: the same block as a row */
+.rem3-set { display: block; }
+
+/* ---------- the evening hero: streak at risk ---------- */
+.d-hero.at-risk { background: linear-gradient(170deg, #1d2a6b 0%, #3b2f86 52%, #b4507a 100%); }
+.d-hero.at-risk .fluted { display: none; }
+.d-hero.at-risk::before { content: ''; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(circle at calc(100% - 26px) 24px, #ffe9a8 0 12px, rgba(255,233,168,.22) 13px 20px, transparent 21px),
+    radial-gradient(1.5px 1.5px at 12% 20%, #fff 99%, transparent), radial-gradient(1.5px 1.5px at 30% 10%, #fff 99%, transparent),
+    radial-gradient(2px 2px at 48% 26%, #fff 99%, transparent), radial-gradient(1.5px 1.5px at 64% 8%, #fff 99%, transparent),
+    radial-gradient(1.5px 1.5px at 72% 36%, #fff 99%, transparent), radial-gradient(2px 2px at 22% 42%, #fff 99%, transparent); }
+.d-hero.at-risk .bubble { white-space: normal; max-width: 150px; text-align: center; line-height: 1.2; background: #fff7dc; }
+.d-hero.at-risk .bubble::after { background: #fff7dc; }
+.pulse3 { animation: pulse3 1.6s var(--ease) infinite; }
+@keyframes pulse3 { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+.pulse3:active { animation: none; }
+@media (prefers-reduced-motion: reduce) { .pulse3 { animation: none; } }
+
+/* ---------- welcome back ---------- */
+.wb { position: fixed; left: 50%; bottom: calc(var(--tabs, 70px) + 18px + env(safe-area-inset-bottom, 0px)); translate: -50% 0; z-index: 75; width: min(calc(100% - 32px), 380px); }
+@media (min-width: 900px) { .wb { bottom: 28px; left: auto; right: 28px; translate: none; } }
+.wb-in { width: 100%; display: flex; align-items: center; gap: 12px; font: inherit; color: var(--ink); text-align: left; cursor: pointer; padding: 10px 16px 10px 10px; border-color: var(--sun); border-bottom-color: var(--sun-d); background: #fffaf0; }
+.wb-in .pipw svg { width: 84px; height: auto; }
+.wb-in span { display: grid; gap: 2px; }
+.wb-in b { font: 900 1.375rem/1.1 var(--font3); }
+.wb-in small { font: 800 1rem/1.2 var(--font3); color: var(--muted3); }
+
+/* the planted photo, tucked next to Pip on the last step */
+.ob-done .ob-pip { position: relative; }
+.ob-pic { position: absolute; right: -58px; bottom: 0; width: 80px; height: 80px; object-fit: cover; border-radius: 50%; border: 4px solid #fff; box-shadow: 0 0 0 3px var(--leaf); }

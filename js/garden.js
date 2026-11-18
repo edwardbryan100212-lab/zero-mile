@@ -8,6 +8,7 @@ import { EASE, reduced, countUp, countAll, fillAll, confetti, haptic, helpBtn, b
 import { art } from './art.js?v=9';
 import { award, dailyQuests, rewards, level, onReward, saversHeld, SAVER_MAX } from './rewards.js?v=9';
 import * as Face from './face.js?v=9';
+import { streakRisk, riskLine } from './onboard.js?v=9';
 const WORDS = { thriving: 'Thriving', happy: 'Happy', okay: 'Doing okay', thirsty: 'A bit droopy', poorly: 'Needs help', sleepy: 'Waiting for a photo', new: 'Just planted' };
 const moodWord = (m) => Face.moodWord?.(m) || WORDS[m] || WORDS.okay;
 const RV = () => import('./rewards-view.js?v=9');
@@ -196,15 +197,17 @@ export default async function garden(main) {
   }
 
   // Pip's mood: waving to a new grower, sleepy before today's photo, cheering after it, sad when the streak is at risk
-  const pose = fresh ? 'wave' : anyToday ? 'cheer' : n > 0 && hour >= 18 ? 'sad' : !daily.length ? 'proud' : 'sleepy';
-  const say = fresh ? 'Hi! I’m Pip' : anyToday ? (allDone ? 'All done!' : 'Yay!') : n > 0 && hour >= 18 ? 'Don’t lose it!' : !daily.length ? 'Trees grow slowly' : 'Snap me!';
+  // after 6pm with a streak and no photo today, the hero turns into an evening sky (js/onboard.js)
+  const risk = !fresh && !anyToday && daily.length > 0 && streakRisk();
+  const pose = fresh ? 'wave' : anyToday ? 'cheer' : risk ? 'sad' : !daily.length ? 'proud' : 'sleepy';
+  const say = fresh ? 'Hi! I’m Pip' : anyToday ? (allDone ? 'All done!' : 'Yay!') : risk ? riskLine(n) : !daily.length ? 'Trees grow slowly' : 'Snap me!';
   const cta = fresh ? `<a class="b3 b3-sun b3-wide" href="#/find">${art('quest-learn', { size: 26 })}Pick a plant</a>`
     : !daily.length ? (treesDue ? `<a class="b3 b3-sun b3-wide" href="#/snap">${ICON.photo}Seasonal photo</a>` : `<a class="b3 b3-white b3-wide" href="#/find">${ICON.plus}Add a plant</a>`)
-    : allDone ? `<span class="done-pill">${ICON.check}Done today</span>` : `<a class="b3 b3-sun b3-wide" href="#/snap">${ICON.photo}Take photo</a>`;
+    : allDone ? `<span class="done-pill">${ICON.check}Done today</span>` : `<a class="b3 b3-sun b3-wide${risk ? ' pulse3' : ''}" href="#/snap">${ICON.photo}Take photo</a>`;
   const cans = saversHeld();
 
   const hero = `
-    <section class="d-hero" id="hero" aria-labelledby="streak-t">
+    <section class="d-hero${risk ? ' at-risk' : ''}" id="hero" aria-labelledby="streak-t">
       <div class="hero-pip"><span class="bubble">${say}</span>${pip(pose, { size: 168, mood: pose === 'sad' ? 'sad' : 'happy' })}</div>
       <div class="hero-main">
         <h1 id="streak-t" class="hero-num">${art('streak-sun', { size: 76, cls: anyToday ? 'lit' : 'dim' })}<span><b data-count="${n}">${n}</b><em>day streak</em></span></h1>
@@ -281,7 +284,7 @@ export default async function garden(main) {
   pop($('.hero-pip .pipw', main), { delay: 120 });
   // green fluted glass behind the streak hero (the only place it stays)
   const { fluted } = await import('./fluted.js?v=9');
-  const bg = fluted($('#hero'));
+  const bg = risk ? { dispose() {} } : fluted($('#hero')); // the evening sky has no glass
 
   // chests: today's (in the quest card) and the streak ones (on the path)
   const bindChests = (root) => $$('[data-chest]', root).forEach((b) => b.addEventListener('click', async () => {

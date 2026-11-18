@@ -1,5 +1,5 @@
-// A terracotta pot with a little rounded screen on the front. The screen shows a friendly face
-// (drawn by js/face.js) that blinks, looks around and changes with the plant's mood.
+// A terracotta pot with a little LCD module on the front: a dark bevelled bezel around a black screen
+// showing Pip's green pixel face (drawn by js/face.js), which blinks, wiggles and changes with the mood.
 import * as THREE from 'three';
 import { drawFace } from './face.js';
 import { soilTexture } from './textures.js';
@@ -8,11 +8,6 @@ const reduce = matchMedia('(prefers-reduced-motion: reduce)');
 // better moods hop, worse ones droop
 const RANK = { poorly: 0, thirsty: 1, sleepy: 2, okay: 2, new: 2, happy: 3, thriving: 4 };
 const LIGHT = { thriving: '#7dff9e', happy: '#7dff9e', okay: '#5fe08a', new: '#4fd67e', sleepy: '#9fb8ff', thirsty: '#ffd25e', poorly: '#ff8a6b' };
-
-function roundRect(x, X, Y, w, h, r) {
-  x.beginPath(); x.moveTo(X + r, Y); x.arcTo(X + w, Y, X + w, Y + h, r); x.arcTo(X + w, Y + h, X, Y + h, r);
-  x.arcTo(X, Y + h, X, Y, r); x.arcTo(X, Y, X + w, Y, r); x.closePath();
-}
 
 export function makePot(radius = .14) {
   const R = radius, H = R * 1.25;
@@ -25,33 +20,35 @@ export function makePot(radius = .14) {
   const soil = new THREE.Mesh(new THREE.CircleGeometry(R * .98, 48), new THREE.MeshStandardMaterial({ map: soilTexture(), roughness: 1 }));
   soil.rotation.x = -Math.PI / 2; soil.position.y = soilY; g.add(soil);
 
-  // radius of the pot wall at height y, so the screen hugs the slope
+  // radius of the pot wall at height y, so the screen module sits snug on the slope
   const y0 = -H + .01, y1 = -H * .12;
   const wall = (y) => R * .78 + (y - y0) / (y1 - y0) * R * .18;
-  // a curved strip on the pot wall, centred on the front (+Z)
-  const strip = (h, theta, lift) => {
-    const top = -H * .5 + h / 2, bot = -H * .5 - h / 2;
-    return new THREE.CylinderGeometry(wall(top) + lift, wall(bot) + lift, h, 40, 1, true, -theta / 2, theta).translate(0, -H * .5, 0);
-  };
+  const midY = -H * .41, tilt = Math.atan2(R * .18, y1 - y0);
 
-  // soft cream bezel: a rounded frame with a gentle bevel, drawn once
-  const bc = document.createElement('canvas'); bc.width = 512; bc.height = 248;
-  {
-    const x = bc.getContext('2d');
-    const gr = x.createLinearGradient(0, 0, 0, bc.height);
-    gr.addColorStop(0, '#fbf7ee'); gr.addColorStop(1, '#ddd3c1');
-    x.fillStyle = gr; roundRect(x, 2, 2, bc.width - 4, bc.height - 4, 64); x.fill();
-    x.fillStyle = '#c9bea9'; roundRect(x, 20, 20, bc.width - 40, bc.height - 40, 50); x.fill(); // inner lip in shade
-  }
-  const bezTex = new THREE.CanvasTexture(bc); bezTex.colorSpace = THREE.SRGBColorSpace; bezTex.anisotropy = 4;
-  const bez = new THREE.Mesh(strip(H * .64, Math.PI * .6, R * .008), new THREE.MeshStandardMaterial({ map: bezTex, alphaTest: .5, roughness: .5 }));
-  g.add(bez);
+  // the LCD module: a chunky dark bezel (rounded, bevelled box) with a flat black screen in it
+  const BW = R * 1.0, BH = R * .64, BD = R * .16, BV = R * .03;
+  const shape = new THREE.Shape();
+  { const x = -BW / 2, y = -BH / 2, r = R * .2;
+    shape.moveTo(x + r, y); shape.lineTo(x + BW - r, y); shape.quadraticCurveTo(x + BW, y, x + BW, y + r);
+    shape.lineTo(x + BW, y + BH - r); shape.quadraticCurveTo(x + BW, y + BH, x + BW - r, y + BH);
+    shape.lineTo(x + r, y + BH); shape.quadraticCurveTo(x, y + BH, x, y + BH - r);
+    shape.lineTo(x, y + r); shape.quadraticCurveTo(x, y, x + r, y); }
+  const bezGeo = new THREE.ExtrudeGeometry(shape, { depth: BD, bevelEnabled: true, bevelThickness: BV, bevelSize: BV, bevelSegments: 5, curveSegments: 12 });
+  const bez = new THREE.Mesh(bezGeo, new THREE.MeshStandardMaterial({ color: '#1b211d', roughness: .42, metalness: .05 }));
+  bez.castShadow = true;
+  const mod = new THREE.Group();
+  const zb = Math.sqrt(Math.max(0, wall(midY) ** 2 - (BW / 2) ** 2)) - R * .03; // back corners tuck into the wall
+  bez.position.z = zb; mod.add(bez);
 
-  // the screen itself: the face canvas, clipped to a rounded rectangle, glowing a little
-  const c = document.createElement('canvas'); c.width = 512; c.height = 232;
-  const tex = new THREE.CanvasTexture(c); tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 4;
-  const scr = new THREE.Mesh(strip(H * .53, Math.PI * .53, R * .016), new THREE.MeshStandardMaterial({ map: tex, emissive: '#ffffff', emissiveMap: tex, emissiveIntensity: .6, roughness: .28, alphaTest: .5 }));
-  g.add(scr);
+  // the screen: the face canvas, crisp pixels (nearest filter), unlit so the green reads as light
+  const c = document.createElement('canvas'); c.width = 512; c.height = 288;
+  const tex = new THREE.CanvasTexture(c); tex.colorSpace = THREE.SRGBColorSpace;
+  tex.magFilter = THREE.NearestFilter; tex.minFilter = THREE.NearestFilter; tex.generateMipmaps = false;
+  const SW = R * .86, SH = SW * c.height / c.width;
+  const scr = new THREE.Mesh(new THREE.PlaneGeometry(SW, SH), new THREE.MeshBasicMaterial({ map: tex, transparent: true, alphaTest: .5, toneMapped: false }));
+  scr.position.z = zb + BD + BV + R * .004; mod.add(scr);
+  mod.position.y = midY; mod.rotation.x = tilt;
+  g.add(mod);
 
   // a little antenna on the rim with a light that shows the mood
   const ant = new THREE.Group();
@@ -74,11 +71,7 @@ export function makePot(radius = .14) {
   function draw() {
     const x = c.getContext('2d');
     x.clearRect(0, 0, c.width, c.height);
-    x.save(); roundRect(x, 0, 0, c.width, c.height, 46); x.clip();
-    drawFace(x, c.width, c.height, mood, t);
-    // a thin inner shadow so the glass sits inside the bezel
-    x.lineWidth = 10; x.strokeStyle = 'rgba(0,0,0,.28)'; roundRect(x, 0, 0, c.width, c.height, 46); x.stroke();
-    x.restore();
+    drawFace(x, c.width, c.height, mood, t, { bg: false });
     tex.needsUpdate = true;
   }
   draw();

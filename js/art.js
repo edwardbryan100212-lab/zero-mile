@@ -1,10 +1,13 @@
 // Illustration kit and the mascot Pip (see DESIGN.md). Chunky, sticker-like layered SVG in the app palette:
 // every shape sits on a darker "lip" (the same 3D language as the .b3 buttons), with soft highlights.
-// API (fixed, used by the screens): art(name, { size, cls }) and mascot(pose, { size, mood, cls }) return
-// inline SVG strings and never throw; unknown names give a neutral placeholder.
+// API (fixed, used by the screens): art(name, { size, cls, raster }) and mascot(pose, { size, mood, cls, raster })
+// return HTML strings and never throw; unknown names give a neutral placeholder.
+// Some names also have a richer AI-made raster (Comfy Cloud, img/game/*.webp). At size >= RASTER_MIN those come
+// back as an <img class="art ..." alt="" loading="lazy"> with the same class/size/data attributes as the SVG;
+// small sizes, { raster: false }, and Pip with a mood other than the pose's own keep the inline SVG.
 import { facePixels, LCD } from './face.js';
 
-export const ART_NAMES = ['streak-sun', 'seed-gem', 'xp-bolt', 'chest', 'chest-open', 'can-freeze', 'quest-photo', 'quest-water', 'quest-learn', 'quest-harvest', 'trophy', 'heart', 'basket', 'lorry', 'plane', 'ship', 'tree', 'cloud-co2', 'camera', 'map-pin', 'calendar', 'lock', 'gift', 'star', 'scene-garden', 'scene-night', 'scene-harvest', 'scene-forest'];
+export const ART_NAMES = ['celebrate-level', 'celebrate-chest', 'celebrate-streak', 'streak-sun', 'seed-gem', 'xp-bolt', 'chest', 'chest-open', 'can-freeze', 'quest-photo', 'quest-water', 'quest-learn', 'quest-harvest', 'trophy', 'heart', 'basket', 'lorry', 'plane', 'ship', 'tree', 'cloud-co2', 'camera', 'map-pin', 'calendar', 'lock', 'gift', 'star', 'scene-garden', 'scene-night', 'scene-harvest', 'scene-forest'];
 export const POSES = ['wave', 'cheer', 'proud', 'sad', 'sleepy', 'point', 'water', 'think', 'party', 'wow'];
 export const BADGES = ['first-photo', 'streak-7', 'streak-30', 'streak-100', 'first-harvest', 'five-plants', 'first-tree', 'ten-trees', 'miles-100', 'miles-1000', 'herb-garden', 'fruit-bowl', 'night-owl', 'early-bird', 'level-5', 'level-10'];
 
@@ -291,6 +294,27 @@ const SCENES = {
   },
 };
 
+// ---------- celebration backdrops (9:16, 180 x 320): a radial burst; the raster versions are richer ----------
+const burst = (c1, c2, c3, bits) => {
+  const g = uid('cb');
+  const rays = Array.from({ length: 16 }, (_, i) => { const a = i * 22.5 * Math.PI / 180, b = a + .2; return `<path d="M90 150L${(90 + Math.cos(a) * 400).toFixed(0)} ${(150 + Math.sin(a) * 400).toFixed(0)}L${(90 + Math.cos(b) * 400).toFixed(0)} ${(150 + Math.sin(b) * 400).toFixed(0)}Z"/>`; }).join('');
+  return `<defs><radialGradient id="${g}" cx=".5" cy=".47" r=".7"><stop offset="0" stop-color="${c3}"/><stop offset=".45" stop-color="${c1}"/><stop offset="1" stop-color="${c2}"/></radialGradient></defs><rect width="180" height="320" fill="url(#${g})"/><g fill="#fff" opacity=".12">${rays}</g><circle cx="90" cy="150" r="60" fill="#fff" opacity=".18"/>` + bits;
+};
+const confetti = (cols) => [[18, 30, 20], [150, 44, -30], [30, 250, 40], [160, 270, 10], [140, 200, -50], [20, 120, 70], [70, 20, 15], [120, 300, -20]].map(([x, y, r], i) => `<rect x="${x}" y="${y}" width="10" height="6" rx="2" fill="${cols[i % cols.length]}" transform="rotate(${r} ${x + 5} ${y + 3})"/>`).join('');
+Object.assign(SCENES, {
+  'celebrate-level': () => burst(K.ber, K.berD, '#d9b8fa', confetti([K.sun, K.sky, K.tom, '#fff']) + [[30, 60], [150, 90], [40, 200], [148, 240]].map(([x, y]) => `<polygon points="${starPts(x, y, 9, 4)}" fill="${K.sun}"/>`).join('')),
+  'celebrate-chest': () => burst(K.sun, K.sunO, '#fff3c4', [[24, 40], [156, 60], [30, 270], [150, 250], [160, 160]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="9" fill="${K.sunD}"/><circle cx="${x}" cy="${y - 1}" r="9" fill="${K.sunL}"/>`).join('') + `<path d="M20 180l6-8 6 8-6 10z" fill="${K.ber}"/><path d="M146 110l6-8 6 8-6 10z" fill="${K.ber}"/>`),
+  'celebrate-streak': () => burst(K.sunO, '#f07a12', K.sunL, confetti([K.leaf, K.tom, '#fff']) + `<path d="M0 290C50 270 130 270 180 290V320H0Z" fill="${K.leaf}"/>`),
+});
+const VB = { scene: '0 0 360 160', celebrate: '0 0 180 320' };
+
+// AI-made raster versions (Comfy Cloud, Flux.2 pro), next to the SVG fallbacks
+export const RASTER_MIN = 96;
+const RASTER = new Set(['chest', 'chest-open', 'seed-gem', 'streak-sun', 'trophy', 'scene-garden', 'scene-night', 'scene-harvest', 'scene-forest', 'celebrate-level', 'celebrate-chest', 'celebrate-streak']);
+const PIP_RASTER = new Set(['cheer', 'sad', 'sleepy', 'party']);
+const rasterUrl = (file) => new URL(`../img/game/${file}.webp`, import.meta.url).href;
+const img = (file, name, w, h, cls, base = 'art') => `<img class="${base} ${cls}" src="${rasterUrl(file)}" alt="" width="${w}" height="${h}" loading="lazy" decoding="async" draggable="false" data-art="${name}">`;
+
 const wrap = (inner, name, size, cls, vb = '0 0 64 64') => {
   const [, , vw, vh] = vb.split(' ').map(Number);
   const h = Math.round(size * vh / vw);
@@ -298,10 +322,15 @@ const wrap = (inner, name, size, cls, vb = '0 0 64 64') => {
 };
 const placeholder = (name, size, cls) => wrap(`${shadow(32, 58, 18)}${lip('<circle cx="32" cy="32" r="22"/>', K.paperD, '#b9c6b4')}<circle cx="32" cy="32" r="13" fill="#eef3eb"/>${shine('M18 26A15 15 0 0 1 26 15', 3.5, .7)}`, String(name), size, cls);
 
-export function art(name, { size = 48, cls = '' } = {}) {
+export function art(name, { size = 48, cls = '', raster = true } = {}) {
   try {
     name = String(name || '');
-    if (SCENES[name]) return wrap(SCENES[name](), name, size, cls, '0 0 360 160');
+    if (SCENES[name]) {
+      const vb = name.startsWith('celebrate-') ? VB.celebrate : VB.scene, [, , vw, vh] = vb.split(' ').map(Number);
+      if (raster && size >= RASTER_MIN && RASTER.has(name)) return img(name, name, size, Math.round(size * vh / vw), cls);
+      return wrap(SCENES[name](), name, size, cls, vb);
+    }
+    if (raster && size >= RASTER_MIN && RASTER.has(name)) return img(name, name, size, size, cls);
     if (ICONS[name]) return wrap(ICONS[name](), name, size, cls);
     if (name.startsWith('badge-')) return wrap(badgeArt(name.slice(6)), name, size, cls);
     return placeholder(name, size, cls);
@@ -399,11 +428,12 @@ const EXTRA = {
   wow: () => `<g stroke="${K.sun}" stroke-width="3" stroke-linecap="round"><path d="M34 18L38 26M60 8V16M86 18L82 26"/></g>` + `<g class="pip-twinkle">${sparkle(14, 40, .7, K.sun)}</g><g class="pip-twinkle d2">${sparkle(106, 40, .7, K.sun)}</g>`,
 };
 
-export function mascot(pose = 'wave', { size = 120, mood, cls = '' } = {}) {
+export function mascot(pose = 'wave', { size = 120, mood, cls = '', raster = true } = {}) {
   try {
-    injectCss();
     const p = POSES.includes(pose) ? pose : 'wave';
     const m = mood && POSE_MOOD[p] !== undefined && typeof mood === 'string' ? mood : POSE_MOOD[p];
+    if (raster && size >= RASTER_MIN && PIP_RASTER.has(p) && m === POSE_MOOD[p]) return img(`pip-${p}`, `pip-${p}`, size, size, cls, 'pip').replace('<img ', `<img data-pose="${p}" data-mood="${m}" `);
+    injectCss();
     const droop = p === 'sad' || p === 'sleepy';
     const [aL, aR] = ARMS[p] || ARMS.rest;
     const body = `<path d="M31 55H89L83 104C82.5 108 80 110 76 110H44C40 110 37.5 108 37 104Z"/>`;

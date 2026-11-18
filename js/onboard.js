@@ -6,8 +6,7 @@
 // - Streak at risk: after 6pm, with a streak and no photo yet today, Today's hero turns into an evening sky.
 // - Welcome back: after 2 or more days away, Pip says hello once.
 import { $, $$, esc, data, state, save, today, dayDiff, addToGarden, plantById, overallStreak, photoDays, bestTrees, toast } from './core.js?v=9';
-import { EASE, reduced, pip, confetti, haptic } from './fun.js?v=9';
-import { art } from './art.js?v=9';
+import { EASE, reduced, pip, haptic } from './fun.js?v=9';
 
 // ---------- streak at risk (used by the Today hero in js/garden.js) ----------
 export const RISK_HOUR = 18;
@@ -17,11 +16,19 @@ export function streakRisk(now = new Date()) {
 }
 export const riskLine = (n) => `Your ${n}-day streak needs a photo!`;
 
+// simple line icons for the paper UI (1.75px stroke, DESIGN.md v2)
+const LINE = {
+  cal: '<svg class="li" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>',
+  back: '<svg class="li" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>',
+  check: '<svg class="li" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+  x: '<svg class="li" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>',
+};
+
 // ---------- goals ----------
 export const GOALS = [
-  { id: 'casual', label: 'Casual', sub: 'Photo most days', art: 'quest-photo', tone: 'leaf' },
-  { id: 'regular', label: 'Regular', sub: 'Photo every day', art: 'streak-sun', tone: 'sun' },
-  { id: 'super', label: 'Super grower', sub: 'Photo + water daily', art: 'quest-water', tone: 'sky' },
+  { id: 'casual', label: 'Casual', sub: 'Photo most days', lcd: '5 PHOTOS/WK' },
+  { id: 'regular', label: 'Regular', sub: 'Photo every day', lcd: '1 PHOTO/DAY' },
+  { id: 'super', label: 'Super grower', sub: 'Photo + water daily', lcd: 'PHOTO+WATER' },
 ];
 
 // ---------- the reminder: a daily calendar event ----------
@@ -65,15 +72,15 @@ const timeOpts = (sel) => Array.from({ length: 15 }, (_, i) => `${pad(i + 7)}:00
 export function reminderBlock(id = 'rem') {
   const t = state.reminder || '18:00';
   return `<div class="rem3" data-rem>
-    <label class="rem3-t" for="${id}-time">${art('calendar', { size: 40 })}<span>Remind me every day</span></label>
-    <div class="rem3-row"><span class="sel3 rem3-sel"><select id="${id}-time" aria-label="Time">${timeOpts(t)}</select></span>
-    <button class="b3 b3-berry" type="button" data-rem-go>${state.reminder ? 'Update' : 'Add'}</button></div>
+    <label class="rem3-t" for="${id}-time">${LINE.cal}<span>Remind me every day</span></label>
+    <div class="rem3-row"><span class="rem3-sel"><select id="${id}-time" aria-label="Time">${timeOpts(t)}</select></span>
+    <button class="obtn" type="button" data-rem-go>${state.reminder ? 'Update' : 'Add to calendar'}</button></div>
   </div>`;
 }
 export function bindReminder(root) {
   $$('[data-rem]', root).forEach((box) => $('[data-rem-go]', box).addEventListener('click', () => {
     downloadReminder($('select', box).value);
-    $('[data-rem-go]', box).textContent = 'Added';
+    $('[data-rem-go]', box).innerHTML = `${LINE.check}Added`;
     box.classList.add('done');
   }));
 }
@@ -109,9 +116,9 @@ export async function onboard() {
   const ob = document.createElement('div');
   ob.className = 'ob'; ob.setAttribute('role', 'dialog'); ob.setAttribute('aria-modal', 'true'); ob.setAttribute('aria-labelledby', 'ob-t');
   ob.innerHTML = `<div class="ob-top">
-      <button class="ob-back b3 b3-white b3-sm b3-sq" type="button" aria-label="Back"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <button class="ob-back obtn-2 obtn-sq" type="button" aria-label="Back">${LINE.back}</button>
       <div class="bar3 ob-bar" role="progressbar" aria-label="Steps" aria-valuemin="1" aria-valuemax="${STEPS.length}"><i></i></div>
-      <button class="ob-skip b3 b3-white b3-sm" type="button">Skip</button>
+      <button class="ob-skip obtn-q" type="button">Skip</button>
     </div>
     <div class="ob-stage"></div>`;
   document.body.appendChild(ob);
@@ -123,39 +130,41 @@ export async function onboard() {
   open = new Promise((r) => { done = r; });
 
   const card = (c) => `<button class="ob-card c3${pick.grow === c.key ? ' on' : ''}" type="button" data-grow="${c.key}" aria-pressed="${pick.grow === c.key}">
-      <span class="ob-ph">${pics[c.key] ? `<img src="${esc(pics[c.key])}" alt="" loading="eager" decoding="async">` : art('tree', { size: 80 })}</span><b>${c.label}</b></button>`;
-  const goalCard = (g) => `<button class="ob-goal c3${pick.goal === g.id ? ' on' : ''}" type="button" data-goal="${g.id}" data-tone="${g.tone}" aria-pressed="${pick.goal === g.id}">
-      ${art(g.art, { size: 56 })}<span><b>${g.label}</b><small>${g.sub}</small></span></button>`;
-  const regionBtn = ([k, r]) => `<button class="ob-reg c3${pick.region === k ? ' on' : ''}" type="button" data-region="${k}" aria-pressed="${pick.region === k}">${art('map-pin', { size: 36 })}<b>${esc(r.name)}</b></button>`;
+      <span class="ob-ph">${pics[c.key] ? `<img src="${esc(pics[c.key])}" alt="" loading="eager" decoding="async">` : ''}</span><b>${c.label}</b><i class="ob-tick">${LINE.check}</i></button>`;
+  const goalCard = (g) => `<button class="ob-goal c3${pick.goal === g.id ? ' on' : ''}" type="button" data-goal="${g.id}" aria-pressed="${pick.goal === g.id}">
+      <i class="ob-radio" aria-hidden="true"></i><span><b>${g.label}</b><small>${g.sub}</small></span></button>`;
+  const regionBtn = ([k, r]) => `<button class="ob-reg c3${pick.region === k ? ' on' : ''}" type="button" data-region="${k}" aria-pressed="${pick.region === k}"><i class="ob-radio" aria-hidden="true"></i><b>${esc(r.name)}</b></button>`;
   const chosen = () => CHOICES.find((c) => c.key === pick.grow);
   const plantId = () => chosen()?.id || treeId(pick.region);
 
   const view = {
     hi: () => `<div class="ob-hi">
-        <div class="ob-pip">${pip('wave', { size: 220 })}</div>
-        <h1 id="ob-t" tabindex="-1" class="ob-say"><span class="bubble">Hi! I’m Pip.</span></h1>
-        <p class="ob-lead">Let’s grow food together!</p>
+        <div class="ob-pip">${pip('wave', { size: 200 })}</div>
+        <div class="lcd ob-lcd" aria-hidden="true"><span class="px">HI! I'M PIP</span></div>
+        <h1 id="ob-t" tabindex="-1">Let’s grow food together</h1>
+        <p class="ob-lead">A photo a day keeps your plant growing.</p>
       </div>
-      <div class="ob-foot"><button class="b3 b3-xl b3-wide" type="button" data-next>Let’s go!</button></div>`,
-    grow: () => `<div class="ob-head">${pip('point', { size: 76 })}<h1 id="ob-t" tabindex="-1">What will you grow?</h1></div>
+      <div class="ob-foot"><button class="obtn obtn-xl" type="button" data-next>Let’s go</button></div>`,
+    grow: () => `<div class="ob-head"><h1 id="ob-t" tabindex="-1">What will you grow?</h1></div>
       <div class="ob-cards">${CHOICES.map(card).join('')}</div>
-      <div class="ob-foot"><button class="b3 b3-xl b3-wide" type="button" data-next${pick.grow ? '' : ' aria-disabled="true"'}>Next</button></div>`,
-    goal: () => `<div class="ob-head">${pip('think', { size: 76 })}<h1 id="ob-t" tabindex="-1">Your daily goal</h1></div>
+      <div class="ob-foot"><button class="obtn obtn-xl" type="button" data-next${pick.grow ? '' : ' aria-disabled="true"'}>Next</button></div>`,
+    goal: () => `<div class="ob-head"><h1 id="ob-t" tabindex="-1">Your daily goal</h1></div>
+      <div class="lcd ob-lcd ob-goal-lcd" aria-hidden="true"><span class="px" id="ob-goal-px">${esc(GOALS.find((g) => g.id === pick.goal)?.lcd || 'PICK ONE')}</span></div>
       <div class="ob-goals">${GOALS.map(goalCard).join('')}</div>
-      <div class="ob-foot"><button class="b3 b3-xl b3-wide" type="button" data-next${pick.goal ? '' : ' aria-disabled="true"'}>Next</button></div>`,
-    where: () => `<div class="ob-head">${pip('wow', { size: 76 })}<h1 id="ob-t" tabindex="-1">Where do you live?</h1></div>
+      <div class="ob-foot"><button class="obtn obtn-xl" type="button" data-next${pick.goal ? '' : ' aria-disabled="true"'}>Next</button></div>`,
+    where: () => `<div class="ob-head"><h1 id="ob-t" tabindex="-1">Where do you live?</h1></div>
       <div class="ob-regs">${Object.entries(D.regions).map(regionBtn).join('')}</div>
-      <div class="ob-foot"><button class="b3 b3-sun b3-xl b3-wide" type="button" data-plant>${art('quest-harvest', { size: 28 })}Plant it!</button></div>`,
+      <div class="ob-foot"><button class="obtn obtn-xl" type="button" data-plant>Plant it!</button></div>`,
     done: () => {
       const p = plantById(plantId());
       return `<div class="ob-done">
-        <div class="ob-pip">${pip('party', { size: 180 })}${pics[pick.grow] ? `<img class="ob-pic" src="${esc(pics[pick.grow])}" alt="" width="88" height="88">` : ''}</div>
+        ${pics[pick.grow] ? `<img class="ob-pic" src="${esc(pics[pick.grow])}" alt="" width="220" height="165">` : ''}
         <h1 id="ob-t" tabindex="-1">Planted!</h1>
         <p class="ob-lead">${esc(p?.name || 'Your plant')} is in your garden.</p>
-        <div class="ob-xp">${art('xp-bolt', { size: 32 })}<b>+${p?.group === 'tree' ? 20 : 5} XP</b></div>
-        <div class="c3 ob-rem">${reminderBlock('ob-rem')}</div>
+        <div class="lcd ob-lcd ob-xp" aria-label="Plus ${p?.group === 'tree' ? 20 : 5} XP"><span class="px">+${p?.group === 'tree' ? 20 : 5} XP</span></div>
+        <div class="ob-rem">${reminderBlock('ob-rem')}</div>
       </div>
-      <div class="ob-foot"><button class="b3 b3-xl b3-wide" type="button" data-finish>Go to my garden</button></div>`;
+      <div class="ob-foot"><button class="obtn obtn-xl obtn-2" type="button" data-finish>Go to my garden</button></div>`;
     },
   };
 
@@ -185,7 +194,10 @@ export async function onboard() {
       haptic(8); go(1);
     });
     $$('[data-grow]', el).forEach((b) => b.addEventListener('click', () => { pick.grow = b.dataset.grow; select(el, '[data-grow]', b); haptic(8); }));
-    $$('[data-goal]', el).forEach((b) => b.addEventListener('click', () => { pick.goal = b.dataset.goal; select(el, '[data-goal]', b); haptic(8); }));
+    $$('[data-goal]', el).forEach((b) => b.addEventListener('click', () => {
+      pick.goal = b.dataset.goal; select(el, '[data-goal]', b); haptic(8);
+      const px = $('#ob-goal-px', el); if (px) px.textContent = GOALS.find((g) => g.id === pick.goal).lcd;
+    }));
     $$('[data-region]', el).forEach((b) => b.addEventListener('click', () => { pick.region = b.dataset.region; select(el, '[data-region]', b); haptic(8); }));
     $('[data-plant]', el)?.addEventListener('click', plant);
     $('[data-finish]', el)?.addEventListener('click', () => close(true));
@@ -194,7 +206,7 @@ export async function onboard() {
   function select(el, sel, b) {
     $$(sel, el).forEach((x) => { const on = x === b; x.classList.toggle('on', on); x.setAttribute('aria-pressed', on); });
     $('[data-next]', el)?.removeAttribute('aria-disabled');
-    if (!reduced()) b.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.05)', offset: .4 }, { transform: 'scale(1)' }], { duration: 260, easing: 'cubic-bezier(.34,1.56,.64,1)' });
+    if (!reduced()) b.animate([{ transform: 'scale(1)' }, { transform: 'scale(.98)', offset: .4 }, { transform: 'scale(1)' }], { duration: 200, easing: EASE });
   }
   function nudge(b) {
     if (reduced()) return;
@@ -207,7 +219,6 @@ export async function onboard() {
     dispatchEvent(new Event('zm:garden'));
     haptic([10, 40, 14]);
     go(1);
-    if (!reduced()) setTimeout(() => confetti(innerWidth / 2, innerHeight / 3), 120);
   }
   function close(planted) {
     removeEventListener('keydown', onKey);
@@ -246,7 +257,7 @@ export function welcomeBack() {
   const away = dayDiff(last, now);
   const el = document.createElement('div');
   el.className = 'wb'; el.setAttribute('role', 'status');
-  el.innerHTML = `<button class="wb-in c3" type="button" aria-label="Welcome back! Close">${pip('wave', { size: 84 })}
+  el.innerHTML = `<button class="wb-in" type="button" aria-label="Welcome back! Close">${pip('wave', { size: 64 })}
     <span><b>Welcome back!</b><small>${away > 6 ? 'I missed you!' : 'Your plants missed you!'}</small></span></button>`;
   document.body.appendChild(el);
   const bye = () => {
@@ -254,7 +265,7 @@ export function welcomeBack() {
     if (reduced()) return el.remove();
     el.animate([{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'translateY(24px)' }], { duration: 220, easing: EASE, fill: 'forwards' }).onfinish = () => el.remove();
   };
-  if (!reduced()) el.animate([{ opacity: 0, transform: 'translateY(40px) scale(.9)' }, { opacity: 1, transform: 'none' }], { duration: 420, easing: 'cubic-bezier(.34,1.56,.64,1)' });
+  if (!reduced()) el.animate([{ opacity: 0, transform: 'translateY(24px)' }, { opacity: 1, transform: 'none' }], { duration: 360, easing: EASE });
   $('.wb-in', el).addEventListener('click', bye);
   setTimeout(bye, 6000);
   return true;
@@ -265,9 +276,9 @@ export function todayNudge(main) {
   if (!state.garden.length || state.reminder || state.remNudgeOff === today() || state.remNudgeOff === 'never') return;
   const hero = $('#hero', main); if (!hero || $('.nudge3', main)) return;
   const box = document.createElement('section');
-  box.className = 'c3 nudge3'; box.setAttribute('aria-label', 'Daily reminder');
-  box.innerHTML = `${pip('point', { size: 64 })}${reminderBlock('nudge')}
-    <button class="nudge3-x" type="button" aria-label="Not now"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>`;
+  box.className = 'nudge3'; box.setAttribute('aria-label', 'Daily reminder');
+  box.innerHTML = `${reminderBlock('nudge')}
+    <button class="nudge3-x" type="button" aria-label="Not now">${LINE.x}</button>`;
   hero.after(box);
   bindReminder(box);
   $('[data-rem-go]', box).addEventListener('click', () => setTimeout(() => box.remove(), 1400));
@@ -280,7 +291,7 @@ export function todayNudge(main) {
 export function settingsRow(main) {
   const set = $('.ab3-set', main); if (!set || $('[data-rem]', set)) return;
   const row = document.createElement('div');
-  row.className = 'row3 c3 rem3-set';
+  row.className = 'row3 rem3-set';
   row.innerHTML = reminderBlock('set');
   const anchor = $$('.row3', set)[1] || $('h2', set);
   anchor.after(row);

@@ -1,5 +1,5 @@
 // Offline support for the ad site (/) and the app (/app/): files are cached on first visit so Zero Mile works without a connection.
-const V = 'zeromile-v9';
+const V = 'zeromile-v10';
 const SHELL = [
   // ad site (built in the main session)
   './', 'index.html', 'css/site.css?v=5', 'js/site.js?v=5',
@@ -29,7 +29,9 @@ self.addEventListener('fetch', (e) => {
   const offline = () => caches.match(e.request).then((hit) => hit || caches.match(u.pathname.includes('/app/') ? 'app/index.html' : 'index.html'));
   // pages, code, styles and data: always try the network first so a new version shows up at once; the cache is for offline
   const fresh = e.request.mode === 'navigate' || /\.(html|js|css|json|webmanifest)$/.test(u.pathname) || u.pathname.endsWith('/');
-  if (fresh) { e.respondWith(fetch(e.request).then(keep).catch(offline)); return; }
+  // always revalidate code and pages with the server (the host lets browsers reuse files for 10 minutes otherwise),
+  // so a new version shows on the next load; an unchanged file costs only a 304
+  if (fresh) { e.respondWith((u.origin === location.origin ? fetch(e.request.url, { cache: 'no-cache', credentials: 'same-origin' }) : fetch(e.request)).then(keep).catch(offline)); return; }
   // pictures, models, fonts: cache first, they rarely change and are versioned
   e.respondWith(caches.match(e.request).then((hit) => hit || fetch(e.request).then(keep)).catch(offline));
 });

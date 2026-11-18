@@ -16,6 +16,8 @@ const routes = {
   impact: () => import('./impact.js?v=9'),
   sources: () => import('./sources.js?v=9'),
   admin: () => import('./admin.js?v=9'),
+  sow: () => import('./sow.js?v=9'),
+  timelapse: () => import('./timelapse.js?v=9'),
 };
 const VIEW = { snap: 'snapView', find: 'findView', plant: 'plantView' };
 const MORE = ['impact', 'sources', 'admin'];
@@ -93,6 +95,7 @@ async function route() {
   current = await mod[VIEW[key] || 'default'](main, decodeURIComponent(arg || ''));
   if (!key || key === 'garden') { if (needsOnboarding()) onboard(); else todayNudge(main); } // first run, or the reminder card (js/onboard.js)
   if (key === 'sources') settingsRow(main); // the reminder row in Settings
+  import('./care.js?v=9').then((c) => { if (my === seq) c.autoMount(main, key, decodeURIComponent(arg || '')); }).catch(() => {}); // care today, plant care (js/care.js)
   enter(main.firstElementChild);
   window.scrollTo({ top: 0, behavior: 'instant' });
   document.title = (main.querySelector('h1')?.textContent || 'Today') + ' · Zero Mile';

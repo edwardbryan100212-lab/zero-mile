@@ -417,6 +417,12 @@ export async function snapView(main, id) {
           <label class="toggle"><input type="checkbox" id="smart"${state.smartAI ? ' checked' : ''}><span>Smart check (90 MB)</span></label>
         </section>
         <section class="c3"><div class="card-head"><h2>Timeline</h2><span class="tag" id="count"></span></div><div class="timeline" id="timeline" tabindex="0" role="region" aria-label="Photo timeline"></div></section>
+        <section class="c3 snap-tips" aria-labelledby="tips-t"><h2 id="tips-t">Good photos</h2>
+          <ul class="tips3">
+            <li>${icon('sun', { size: 24, color: true })}<span><b>Daylight, no flash.</b> Colours read true.</span></li>
+            <li>${icon('leaf', { size: 24, color: true })}<span><b>Leaves fill the frame.</b> Less pot, more plant.</span></li>
+            <li>${icon('pin', { size: 24, color: true })}<span><b>Same spot each time.</b> The ghost of your last photo helps you line up.</span></li>
+          </ul></section>
       </div>
     </div>
   </div>`;

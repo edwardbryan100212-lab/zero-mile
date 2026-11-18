@@ -14,7 +14,7 @@
   /* Pip's LCD */
   --lcd: #0c110d; --lcd-2: #121a14; --bezel: #1f2620; --bezel-d: #141915;
   --px: #62f27e; --px-dim: #1f5a2b; --px-faint: rgba(98, 242, 126, .07); --px-amber: #ffcf4a;
-  --px-glow: 0 0 6px rgba(98, 242, 126, .55);
+  --px-glow: none; --px-lo: #3d964e; /* dim green that still reads (4.5:1 on the LCD) */
   /* ombre fields (round 3): two soft fields per screen, drawn on the paper */
   --o-mint: #dff0e4; --o-sage: #e8efe0; --o-peach: #f8e3d6; --o-butter: #fbf1d4; --o-sky: #e2eef5;
   /* type */
@@ -24,7 +24,7 @@
   --font3: var(--f-ui);
   /* shape and motion */
   --r-btn: 14px; --r-card: 18px; --r-lcd: 16px;
-  --sh-card: 0 1px 0 var(--line);
+  --sh-card: none;
   --ease: cubic-bezier(.22, 1, .36, 1); --pop: cubic-bezier(.22, 1, .36, 1);
   --muted3: var(--ink-2);
   /* v1 accent names, mapped onto the v2 palette so older markup keeps a sane colour */
@@ -41,11 +41,11 @@
   display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 0 20px;
   font: 800 1rem/1.1 var(--f-ui); letter-spacing: 0; text-transform: none; color: var(--t);
   background: var(--c); border: 1px solid var(--b); border-radius: var(--r-btn);
-  box-shadow: inset 0 -2px 0 var(--d);
+  border-bottom: 2px solid var(--d);
   cursor: pointer; text-decoration: none; white-space: nowrap;
   transition: transform 140ms var(--ease), box-shadow 140ms var(--ease), background-color 160ms ease;
   touch-action: manipulation; user-select: none; -webkit-user-select: none; }
-.b3:active { transform: translateY(1px) scale(.98); box-shadow: inset 0 0 0 var(--d); }
+.b3:active { transform: translateY(1px) scale(.98); border-bottom-color: var(--b); }
 @media (hover: hover) and (pointer: fine) { .b3:hover { background: color-mix(in srgb, var(--c) 92%, #000); } }
 /* secondary: paper with an ink border */
 .b3-white, .b3-sky, .b3-ghost { --c: var(--card); --b: var(--ink); --d: var(--line); --t: var(--ink); }
@@ -57,7 +57,7 @@
 .b3-wide { width: 100%; }
 /* on LCD: a green-outlined pixel button */
 .b3-px, .lcd .b3 { --c: transparent; --b: var(--px); --d: transparent; --t: var(--px);
-  font-family: var(--f-px); font-weight: 400; font-size: 1.0625rem; letter-spacing: .02em; border-width: 2px; border-radius: 6px; box-shadow: none; }
+  font-family: var(--f-px); font-weight: 400; font-size: 1.0625rem; letter-spacing: .02em; border-width: 2px; border-bottom-width: 2px; border-radius: 6px; }
 .lcd .b3:active, .b3-px:active { background: var(--px); color: var(--lcd); }
 @media (hover: hover) and (pointer: fine) { .lcd .b3:hover, .b3-px:hover { background: rgba(98, 242, 126, .12); } }
 .lcd .b3-solid { --c: var(--px); --t: var(--lcd); }
@@ -72,8 +72,8 @@
 .lcd .bar3 > i { border-radius: 0; background: repeating-linear-gradient(90deg, var(--px) 0 6px, transparent 6px 8px); box-shadow: none; transition: width .6s steps(12, end); }
 
 /* ---------- Pip's LCD panel ---------- */
-.lcd { position: relative; color: var(--px); background: var(--lcd); border-radius: var(--r-lcd);
-  border: 6px solid var(--bezel); box-shadow: inset 0 0 0 1px #000, inset 0 0 28px rgba(98, 242, 126, .06), 0 1px 0 var(--bezel-d);
+.lcd { position: relative; color: var(--px); font-variant-numeric: tabular-nums; background: var(--lcd); border-radius: var(--r-lcd);
+  border: 6px solid var(--bezel); box-shadow: inset 0 0 0 1px #000, inset 0 0 28px rgba(98, 242, 126, .06);
   font-family: var(--f-px); isolation: isolate; }
 /* the faint pixel grid of unlit cells */
 .lcd::before { content: ''; position: absolute; inset: 0; z-index: -1; border-radius: calc(var(--r-lcd) - 6px); pointer-events: none;

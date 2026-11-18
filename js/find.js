@@ -1,14 +1,10 @@
 // Find a plant (search + filters) and the plant page (3D model, the harvest up close, sowing months, miles, kcal, goodness, sources).
 import { $, $$, esc, fmt, data, plantById, trip, state, save, addToGarden, toast, ROOT, thumb, isTree, treeMonths, treeFit, FIT_WORD, fitsSmall, bestTrees, treeSeason, treeCO2, MONTH_NAMES, treeLine, treeMonthsGeneral } from './core.js?v=9';
-import { art, mascot } from './art.js?v=9';
 import { award } from './rewards.js?v=9';
 
 const GROUPS = [['all', 'All'], ['veg', 'Veg'], ['fruit', 'Fruit'], ['herb', 'Herbs'], ['tree', 'Trees'], ['easy', 'Easy'], ['pot', 'In a pot'], ['now', 'Sow now']];
-// each category pill: its own colour and picture (a real 3D plant render, or an illustration)
-const PILL = { all: ['leaf', { art: 'scene-garden' }], veg: ['tomato', { img: 'carrot' }], fruit: ['berry', { img: 'strawberry' }], herb: ['leaf', { img: 'basil' }], tree: ['leaf', { img: 'oak' }], easy: ['sun', { art: 'star' }], pot: ['pot', { img: 'tomato' }], now: ['sky', { art: 'calendar' }] };
-const pillPic = (k) => { const x = PILL[k][1]; return x.img ? `<img src="${thumb(x.img)}" alt="" width="40" height="40" loading="lazy" decoding="async">` : art(x.art, { size: 40 }); };
-// the one coloured chip on a plant card
-const cardChip = (p, mine) => mine ? '<span class="fc-chip berry">Growing</span>' : p.grow?.difficulty === 'easy' ? '<span class="fc-chip leaf">Easy</span>' : p.grow?.days_to_harvest ? `<span class="fc-chip sky">${p.grow.days_to_harvest[0]}–${p.grow.days_to_harvest[1]} d</span>` : isTree(p) && p.tree?.years_to_fruit ? `<span class="fc-chip sun">${range(p.tree.years_to_fruit)} yrs</span>` : isTree(p) ? '<span class="fc-chip leaf">Tree</span>' : '';
+// the one quiet chip on a plant card
+const cardChip = (p, mine) => mine ? '<span class="fc-chip on">Growing</span>' : p.grow?.difficulty === 'easy' ? '<span class="fc-chip">Easy</span>' : p.grow?.days_to_harvest ? `<span class="fc-chip">${p.grow.days_to_harvest[0]}–${p.grow.days_to_harvest[1]} days</span>` : isTree(p) && p.tree?.years_to_fruit ? `<span class="fc-chip">Fruit in ${range(p.tree.years_to_fruit)} yrs</span>` : isTree(p) ? '<span class="fc-chip">Tree</span>' : '';
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const daysText = (p) => { const d = p.grow?.days_to_harvest; return d ? `${d[0]}–${d[1]} days` : isTree(p) ? treeLine(p) : 'Next season'; };
 const TSUB = [['all', 'All trees'], ['best', 'Best where you live'], ['small', 'Fits a small garden'], ['fruit', 'Fruit trees'], ['native', 'Native trees']];
@@ -22,22 +18,22 @@ export async function findView(main, q0 = '') {
   const nTrees = D.plants.filter(isTree).length;
   let group = q0 === 'trees' ? 'tree' : 'all', tsub = 'all';
   if (q0 === 'trees') q0 = '';
+  const treePic = real.oak || real.beech || real['apple-tree'] || '';
   main.innerHTML = `
   <div class="page s3 find3">
-    <header class="f3-head">
-      <div class="f3-pip">${mascot('think', { size: 96 })}</div>
-      <div class="f3-hl"><h1>Find a plant</h1><p>${N} to grow</p></div>
+    <header class="s3-head">
+      <h1>Find a plant</h1><p>${N} plants and trees to grow</p>
     </header>
     <label class="f3-search"><span class="vh">Search plants</span>
-      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6"/><path d="M15.5 15.5l4.5 4.5"/></svg>
+      ${icon('search')}
       <input id="q" type="search" placeholder="Tomato, berries, oak…" value="${esc(q0)}" enterkeyhint="search" autocomplete="off">
     </label>
-    <div class="f3-pills" role="group" aria-label="Filter plants">${GROUPS.map(([k, t]) => `<button class="f3-pill ${PILL[k][0]}" data-g="${k}" aria-pressed="${k === group}">${pillPic(k)}<span>${t}</span></button>`).join('')}</div>
-    <div class="f3-sub" role="group" aria-label="Filter trees" id="tsub"${group === 'tree' ? '' : ' hidden'}>${TSUB.map(([k, t]) => `<button class="f3-subp" data-t="${k}" aria-pressed="${k === 'all'}">${k === 'best' ? `Best for ${esc(D.regions[state.region]?.name || 'you')}` : t}</button>`).join('')}</div>
-    <section class="f3-tree" id="tree-band" aria-labelledby="tb-t"${group === 'all' && !q0 ? '' : ' hidden'}>
-      <div class="f3-tree-art">${art('scene-forest', { size: 320, cls: 'f3-forest' })}</div>
-      <div class="f3-tree-t"><h2 id="tb-t">Plant a tree</h2><p>${nTrees} trees · +20 XP</p></div>
-      <button class="b3 b3-white" data-g="tree" data-band>See trees</button>
+    <div class="f3-pills" role="group" aria-label="Filter plants">${GROUPS.map(([k, t]) => `<button class="f3-pill" data-g="${k}" aria-pressed="${k === group}">${t}</button>`).join('')}</div>
+    <div class="f3-sub" role="group" aria-label="Filter trees" id="tsub"${group === 'tree' ? '' : ' hidden'}>${TSUB.map(([k, t]) => `<button class="f3-pill f3-subp" data-t="${k}" aria-pressed="${k === 'all'}">${k === 'best' ? `Best for ${esc(D.regions[state.region]?.name || 'you')}` : t}</button>`).join('')}</div>
+    <section class="c3 f3-tree" id="tree-band" aria-labelledby="tb-t"${group === 'all' && !q0 ? '' : ' hidden'}>
+      ${treePic ? `<img class="f3-tree-pic" src="${treePic}" alt="" width="480" height="320" loading="lazy" decoding="async">` : ''}
+      <div class="f3-tree-t"><h2 id="tb-t">Plant a tree</h2><p>${nTrees} trees, with what grows well in ${esc(D.regions[state.region]?.name || 'your country')}. <span class="lcdc">+20 XP</span></p>
+      <button class="b3 b3-white" data-g="tree" data-band>See trees</button></div>
     </section>
     <p class="vh" role="status" id="count"></p>
     <div class="f3-grid" id="list"></div>
@@ -66,7 +62,7 @@ export async function findView(main, q0 = '') {
     if (!hits.length) {
       const treeMiss = group === 'tree' && tsub !== 'all';
       const msg = treeMiss ? 'No trees match here' : `No “${esc($('#q').value) || 'plants'}” yet`;
-      list.innerHTML = `<div class="f3-none">${mascot('sad', { size: 120 })}<p>${msg}</p><button class="b3 b3-sky" type="button" id="reset">Show all</button></div>`;
+      list.innerHTML = `<div class="f3-none"><p>${msg}</p><button class="b3 b3-white" type="button" id="reset">Show all plants</button></div>`;
       $('#reset').addEventListener('click', () => {
         $('#q').value = ''; tsub = 'all';
         $$('[data-t]').forEach((x) => x.setAttribute('aria-pressed', String(x.dataset.t === 'all')));
@@ -79,7 +75,7 @@ export async function findView(main, q0 = '') {
     list.innerHTML = hits.map((p, i) => `
       <a class="fc pp-pk${real[p.id] ? ' has-photo' : ''}" href="#/plant/${p.id}" style="--i:${Math.min(i, 14)}">
         <div class="pk-art"><img class="pp-3d" src="${thumb(p.id)}" alt="" width="200" height="200" loading="lazy" decoding="async">${real[p.id] ? `<img class="pp-real" src="${real[p.id]}" alt="" width="200" height="200" loading="lazy" decoding="async"><span class="pp-badge" aria-hidden="true">3D</span>` : ''}</div>
-        <b class="fc-name">${esc(p.name)}</b>${cardChip(p, mine.has(p.id))}
+        <span class="fc-body"><b class="fc-name">${esc(p.name)}</b>${cardChip(p, mine.has(p.id))}</span>
       </a>`).join('');
   }
   $('#q').addEventListener('input', render);
@@ -166,9 +162,19 @@ const I = {
   close: '<path d="M6 6l12 12M18 6L6 18"/>',
   prev: '<path d="M15 6l-6 6 6 6"/>', next: '<path d="M9 6l6 6-6 6"/>',
   info: '<circle cx="12" cy="12" r="8.5"/><path d="M12 11v5M12 8h.01"/>',
+  search: '<circle cx="10.5" cy="10.5" r="6"/><path d="M15.5 15.5l4.5 4.5"/>',
+  pin: '<path d="M12 21s-6.5-6.2-6.5-11a6.5 6.5 0 0 1 13 0c0 4.8-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/>',
+  speaker: '<path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11"/>',
+  vibrate: '<rect x="8" y="4" width="8" height="16" rx="2"/><path d="M4.5 9v6M19.5 9v6"/>',
+  sprout: '<path d="M12 20v-8"/><path d="M12 12c0-3.3 2.7-6 6-6 0 3.3-2.7 6-6 6zM12 14c0-2.8-2.2-5-5-5 0 2.8 2.2 5 5 5z"/><path d="M7 20h10"/>',
+  download: '<path d="M12 4v11M7.5 10.5L12 15l4.5-4.5"/><path d="M5 19h14"/>',
+  globe: '<circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.4 2.4 3.6 5.2 3.6 8.5s-1.2 6.1-3.6 8.5c-2.4-2.4-3.6-5.2-3.6-8.5s1.2-6.1 3.6-8.5z"/>',
+  tool: '<path d="M14.5 5.5a4 4 0 0 0-5 5L4 16v4h4l5.5-5.5a4 4 0 0 0 5-5l-2.5 2.5-2.5-.5-.5-2.5z"/>',
+  book: '<path d="M5 4.5h9a3 3 0 0 1 3 3V20H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h9"/>',
+  arrow: '<path d="M5 12h14M13 6l6 6-6 6"/>',
 };
 export const icon = (k, cls = '') => `<svg class="ic ${cls}" viewBox="0 0 24 24" aria-hidden="true">${I[k] || ''}</svg>`;
-const chip = (name, value, label, tone = 'leaf') => (value ? `<li class="pt ${tone}">${art(name, { size: 44, cls: 'pt-art' })}<b>${value}</b><span>${label}</span></li>` : '');
+const fact2 = (ic, label, value) => (value ? `<div><dt>${icon(ic)}${label}</dt><dd>${value}</dd></div>` : '');
 // the part of each plant you eat, for the hotspots and their one-line cards
 const ROOTS = new Set(['potato', 'carrot', 'beetroot', 'radish', 'parsnip', 'turnip', 'sweet-potato']);
 const BULBS = new Set(['onion', 'garlic']);
@@ -189,32 +195,18 @@ const MODE_ICON = { road: 'lorry', 'road+ferry': 'lorry', sea: 'ship', 'sea+road
 const MODE_WORD = { road: 'by lorry', 'road+ferry': 'by lorry and ferry', sea: 'by ship', 'sea+road': 'by ship and lorry', air: 'by plane', 'rail+road': 'by train and lorry' };
 
 const reduceMotion = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
-// a small "+3 XP" pop at the top of the plant page
+// a small "+3 XP" note at the top of the plant page, on Pip's LCD
 function xpPop(r) {
   const el = $('#xp-pop'); if (!el) return;
-  const bits = [r.xp ? `${art('xp-bolt', { size: 28 })}<b>+${r.xp} XP</b>` : '', r.unlocked?.length ? `${art('trophy', { size: 28 })}<b>New badge!</b>` : '', r.quests?.length ? `${art('star', { size: 28 })}<b>Quest done!</b>` : ''].filter(Boolean);
+  const bits = [r.xp ? `+${r.xp} XP` : '', r.unlocked?.length ? 'New badge' : '', r.quests?.length ? 'Quest done' : ''].filter(Boolean);
   if (!bits.length) return;
-  el.innerHTML = `<span>${bits.join('</span><span>')}</span>`;
+  el.innerHTML = bits.map((b) => `<span class="lcdc">${b}</span>`).join('');
   el.classList.remove('on'); void el.offsetWidth; el.classList.add('on');
   setTimeout(() => el.classList.remove('on'), 2600);
 }
-// GROW THIS: a confetti burst from the button and Pip cheering
+// "Grow this": the button settles into a done state with the XP on its LCD chip
 function celebrate(btn, xp) {
-  btn.classList.add('done'); btn.innerHTML = `${art('xp-bolt', { size: 28 })}+${xp} XP`;
-  const host = document.createElement('div'); host.className = 'cel3'; host.setAttribute('aria-hidden', 'true');
-  host.innerHTML = `<div class="cel3-pip">${mascot('cheer', { size: 140 })}</div>`;
-  if (!reduceMotion()) {
-    const cols = ['#3fae49', '#ffc531', '#ff5a4e', '#36b4f0', '#a560e8', '#e8865b'];
-    for (let i = 0; i < 28; i++) {
-      const c = document.createElement('i'), a = (i / 28) * Math.PI * 2, d = 90 + (i % 5) * 34;
-      c.style.cssText = `--x:${Math.round(Math.cos(a) * d)}px;--y:${Math.round(Math.sin(a) * d - 60)}px;--r:${(i * 47) % 360}deg;background:${cols[i % cols.length]};animation-delay:${(i % 4) * 18}ms`;
-      host.appendChild(c);
-    }
-  }
-  const r = btn.getBoundingClientRect();
-  host.style.left = `${r.left + r.width / 2}px`; host.style.top = `${r.top + r.height / 2}px`;
-  document.body.appendChild(host);
-  setTimeout(() => host.remove(), 1400);
+  btn.classList.add('done'); btn.innerHTML = `${icon('sprout')}Planted <span class="lcdc">+${xp} XP</span>`;
 }
 
 export async function plantView(main, id) {
@@ -236,24 +228,24 @@ export async function plantView(main, id) {
   const photos = await import('./photos.js?v=9').then((m) => m.photosFor(id)).catch(() => []);
   const t = p.tree || {};
 
-  // the chips: one picture and a few words each
-  const sunW = g.sun === 'full' ? 'Full sun' : g.sun === 'partial' ? 'Sun or shade' : g.sun === 'shade' ? 'Shade' : '';
+  // the facts: a neat definition grid with small line icons
+  const sunW = g.sun === 'full' ? 'Full sun' : g.sun === 'partial' ? 'Sun or part shade' : g.sun === 'shade' ? 'Shade' : '';
   const waterN = ({ low: 1, med: 2, medium: 2, high: 3 })[g.water] || 0;
   let chips = '';
   if (isTree) {
-    chips += chip('tree', t.size?.height_m ? `${range(t.size.height_m)} m` : t.height_m ? `${esc(String(t.height_m))} m` : '', 'tall', 'leaf');
-    chips += chip('map-pin', t.spacing_m ? `${range(t.spacing_m)} m` : '', 'apart', 'sky');
-    chips += chip('basket', t.years_to_fruit ? `${range(t.years_to_fruit)} yrs` : '', 'to fruit', 'tomato');
+    chips += fact2('ruler', 'Height', t.size?.height_m ? `${range(t.size.height_m)} m` : t.height_m ? `${esc(String(t.height_m))} m` : '');
+    chips += fact2('space', 'Spacing', t.spacing_m ? `${range(t.spacing_m)} m apart` : '');
+    chips += fact2('apple', 'First fruit', t.years_to_fruit ? `${range(t.years_to_fruit)} years` : '');
     const c = treeCO2(p);
-    chips += chip('cloud-co2', c ? `${c[0] === c[1] ? fmt(c[0]) : `${fmt(c[0])}–${fmt(c[1])}`} kg` : '', 'CO2 a year', 'sky');
-    chips += chip('gift', t.pot_ok ? 'Pot OK' : '', 'small rootstock', 'pot');
+    chips += fact2('co2', 'CO2 a year', c ? `${c[0] === c[1] ? fmt(c[0]) : `${fmt(c[0])}–${fmt(c[1])}`} kg, once grown` : '');
+    chips += fact2('pot', 'In a pot', t.pot_ok != null ? (t.pot_ok ? 'Yes, small rootstock' : 'No, in the ground') : '');
   } else {
-    chips += chip('streak-sun', sunW, 'light', 'sun');
-    chips += chip('quest-water', ({ 1: 'A little', 2: 'Regular', 3: 'Lots' })[waterN] || '', 'water', 'sky');
-    chips += chip('calendar', g.days_to_harvest ? `${g.days_to_harvest[0]}–${g.days_to_harvest[1]}` : '', 'days', 'berry');
-    chips += chip(g.container_ok ? 'quest-harvest' : 'map-pin', g.container_ok == null ? '' : g.container_ok ? (g.min_pot_l ? `${fmt(g.min_pot_l)} L pot` : 'Pot OK') : 'Ground', g.container_ok ? 'or bigger' : 'best', 'pot');
-    chips += chip('xp-bolt', p.kcal_per_100g != null ? `${fmt(p.kcal_per_100g)} kcal` : '', 'in 100 g', 'tomato');
-    chips += chip('star', g.difficulty ? esc(g.difficulty[0].toUpperCase() + g.difficulty.slice(1)) : '', 'to grow', 'leaf');
+    chips += fact2('sun', 'Light', sunW);
+    chips += fact2('drop', 'Water', ({ 1: 'A little', 2: 'Regular', 3: 'Lots' })[waterN] || '');
+    chips += fact2('clock', 'Harvest', g.days_to_harvest ? `${g.days_to_harvest[0]}–${g.days_to_harvest[1]} days` : '');
+    chips += fact2('pot', 'Pot', g.container_ok == null ? '' : g.container_ok ? (g.min_pot_l ? `${fmt(g.min_pot_l)} L or bigger` : 'Fine in a pot') : 'Best in the ground');
+    chips += fact2('flame', 'Energy', p.kcal_per_100g != null ? `${fmt(p.kcal_per_100g)} kcal per 100 g` : '');
+    chips += fact2('star', 'Difficulty', g.difficulty ? esc(g.difficulty[0].toUpperCase() + g.difficulty.slice(1)) : '');
   }
   const line = p.kid_fact || (isTree ? treeLine(p) : '');
 
@@ -286,20 +278,20 @@ export async function plantView(main, id) {
       <div class="pp-info">
         <header class="pp-head">
           <h1>${esc(p.name)}</h1>
-          <p class="sci">${esc(g.scientific || '')}</p>
+          ${g.scientific ? `<p class="sci">${esc(g.scientific)}</p>` : ''}
           ${line ? `<p class="kid">${esc(line)}</p>` : ''}
         </header>
-        <ul class="pt-grid" aria-label="Growing at a glance">${chips}</ul>
         <div class="acts">
-          <button class="b3 b3-wide grow3" id="grow">${inGarden() ? 'Open my garden' : isTree ? `Plant this tree` : 'Grow this'}${inGarden() ? '' : `<small>+${isTree ? 20 : 5} XP</small>`}</button>
-          ${hasRegion ? `<label class="sel3"><span class="vh">Where you live</span>${art('map-pin', { size: 28 })}<select id="region">${Object.entries(D.regions).map(([k, r]) => `<option value="${k}"${k === state.region ? ' selected' : ''}>${esc(r.name)}</option>`).join('')}</select></label>` : ''}
+          <button class="b3 b3-wide grow3" id="grow">${inGarden() ? 'Open my garden' : isTree ? 'Plant this tree' : 'Grow this'}${inGarden() ? '' : ` <span class="lcdc">+${isTree ? 20 : 5} XP</span>`}</button>
+          ${hasRegion ? `<label class="sel3"><span class="vh">Where you live</span>${icon('pin')}<select id="region">${Object.entries(D.regions).map(([k, r]) => `<option value="${k}"${k === state.region ? ' selected' : ''}>${esc(r.name)}</option>`).join('')}</select></label>` : ''}
         </div>
+        ${chips ? `<section class="c3 dg3" aria-labelledby="dg-t"><h2 id="dg-t">${isTree ? 'The tree' : 'Growing'} at a glance</h2><dl class="dg">${chips}</dl></section>` : ''}
+        ${sow.length ? `<section class="c3 sow3" aria-labelledby="sow-t"><div class="h3row"><h2 id="sow-t">${isTree ? 'When to plant' : g.sow_months_north || south ? 'When to sow' : 'When to plant'}</h2><span class="muted3">${south ? 'Southern' : 'Northern'} hemisphere</span></div>
+          <div class="cal3" role="img" aria-label="${isTree ? 'Plant' : 'Sow'} in: ${sow.map((m) => MONTH_NAMES[m - 1]).join(', ')}">${MONTHS.map((m, i) => `<i class="${sow.includes(i + 1) ? 'on' : ''}${i + 1 === now ? ' now' : ''}" style="--i:${i}" aria-hidden="true"><span class="m3">${m}</span><span class="m1">${m[0]}</span></i>`).join('')}</div>
+          <p class="cal3-key">${sow.includes(now) ? `<b>${isTree ? 'Plant' : 'Sow'} it this month.</b> ` : ''}<span><i class="k-on"></i>${isTree ? 'Plant' : 'Sow'}</span><span><i class="k-now"></i>This month</span></p></section>` : ''}
         <div id="route"></div>
-        ${sow.length ? `<section class="c3 sow3" aria-labelledby="sow-t"><div class="h3row">${art('calendar', { size: 40 })}<h2 id="sow-t">${isTree ? 'When to plant' : g.sow_months_north || south ? 'When to sow' : 'When to plant'}</h2><span class="tag3">${south ? 'South' : 'North'}</span></div>
-          <div class="cal3" role="img" aria-label="${isTree ? 'Plant' : 'Sow'} in: ${sow.map((m) => MONTH_NAMES[m - 1]).join(', ')}">${MONTHS.map((m, i) => `<i class="${sow.includes(i + 1) ? 'on' : ''}${i + 1 === now ? ' now' : ''}" style="--i:${i}" aria-hidden="true">${m}</i>`).join('')}</div>
-          ${sow.includes(now) ? `<p class="now3">${art('star', { size: 28 })}${isTree ? 'Plant' : 'Sow'} it now!</p>` : ''}</section>` : ''}
-        <details class="c3 pp-more more3">
-          <summary>${art('quest-learn', { size: 40 })}<b>${isTree ? 'Tree guide' : 'Grow guide'}</b><span class="tag3">Facts · sources</span></summary>
+        <details class="c3 more3">
+          <summary>${icon('book')}<b>${isTree ? 'Tree guide' : 'Grow guide'}</b><span class="muted3">Tips and sources</span></summary>
           <div class="pp-more-in">
             ${isTree && p.tree?.regions ? '<div id="guide" class="pp-guide"></div>' : `<dl class="facts">
               ${fact('Time to harvest', g.days_to_harvest ? `${g.days_to_harvest[0]}–${g.days_to_harvest[1]} days${g.days_basis ? ` <span class="muted small">${esc(g.days_basis)}</span>` : ''}` : g.days_basis ? esc(g.days_basis) : isTree ? 'Years' : null)}
@@ -416,7 +408,7 @@ export async function plantView(main, id) {
     if (openHot === i) { closePop(); return; }
     openHot = i;
     $$('.pp-hot', hostEl).forEach((x) => x.setAttribute('aria-expanded', String(x === el)));
-    pop.innerHTML = `${h.photo ? `<img src="${esc(h.photo.src)}" alt="" width="96" height="96">` : `<span class="pp-pop-ic">${art(h.k === 'roots' ? 'quest-harvest' : h.k === 'fruit' ? 'basket' : h.k === 'flower' ? 'streak-sun' : 'tree', { size: 56 })}</span>`}<div><b id="pop-t">${esc(h.label)}</b><p>${esc(h.line)}</p></div><button class="pp-pop-x" aria-label="Close">${icon('close')}</button>`;
+    pop.innerHTML = `${h.photo ? `<img src="${esc(h.photo.src)}" alt="" width="96" height="96">` : `<span class="pp-pop-ic">${icon(h.k === 'fruit' ? 'apple' : h.k === 'flower' ? 'sun' : 'leaf')}</span>`}<div><b id="pop-t">${esc(h.label)}</b><p>${esc(h.line)}</p></div><button class="pp-pop-x" aria-label="Close">${icon('close')}</button>`;
     const r = el.getBoundingClientRect(), box = $('#stage-box').getBoundingClientRect();
     pop.style.setProperty('--ox', `${Math.round(r.left + r.width / 2 - box.left)}px`);
     pop.hidden = false; requestAnimationFrame(() => pop.classList.add('open'));
@@ -461,15 +453,16 @@ export async function plantView(main, id) {
     if (tr) {
       const mode = tr.o.transport_mode || 'road', from = tr.o.origin_place || tr.o.origin_country;
       const co2 = (p.carbon?.kg_co2e_per_kg ?? 0) + tr.co2Transport;
-      const veh = /air/.test(mode) ? 'plane' : /sea/.test(mode) ? 'ship' : 'lorry';
+      const word = MODE_WORD[mode] || '';
       r = `<section class="c3 route3" aria-labelledby="rt-t">
-        <div class="h3row">${art(veh, { size: 40 })}<h2 id="rt-t">Shop trip</h2><span class="tag3 big">${fmt(tr.crowMi)} mi</span></div>
-        <div class="road3" role="img" aria-label="From ${esc(from)} to ${esc(tr.reg.dest.name)}, ${fmt(tr.crowMi)} miles ${esc(MODE_WORD[mode] || '')}. Yours travels 0 miles.">
-          <span class="r3-end">${art('map-pin', { size: 44 })}<small>${esc(from)}</small></span>
-          <span class="r3-line"><i class="r3-veh">${art(veh, { size: 56 })}</i></span>
-          <span class="r3-end">${art('map-pin', { size: 44, cls: 'r3-home' })}<small>${esc(tr.reg.dest.name)}</small></span>
+        <div class="h3row"><h2 id="rt-t">Food miles</h2><span class="muted3">${esc(tr.reg.dest.name)}</span></div>
+        <p class="rt-big"><b>${fmt(tr.crowMi)}</b> miles <span>for a shop ${esc(p.name.toLowerCase())}, ${esc(word)}</span></p>
+        <div class="rt-map" role="img" aria-label="From ${esc(from)} to ${esc(tr.reg.dest.name)}, ${fmt(tr.crowMi)} miles ${esc(word)}. Yours travels 0 miles.">
+          <div class="rt-row"><span class="rt-dot"></span><span class="rt-line"><i>${icon(MODE_ICON[mode] || 'lorry')}</i></span><span class="rt-dot end"></span></div>
+          <div class="rt-row rt-names"><small>${esc(from)}</small><small>${esc(tr.reg.dest.name)}</small></div>
+          <div class="rt-row rt-yours"><span class="rt-dot home"></span><span class="rt-zero">${icon('house')}Yours: 0 miles, from your garden</span></div>
         </div>
-        <div class="r3-yours">${mascot('proud', { size: 64 })}<p><b>Yours: 0 miles</b><span>${fmt(co2, 2)} kg CO2e per shop kilo</span></p></div>
+        <p class="rt-co2">${fmt(co2, 2)} kg CO2e per shop kilo: ${fmt(p.carbon?.kg_co2e_per_kg ?? 0, 2)} farming + ${fmt(tr.co2Transport, 2)} travel.</p>
       </section>`;
       h += `<div class="st3 sky"><b>${fmt(co2, 2)} kg CO2e</b><span>for a shop kilo: ${fmt(p.carbon?.kg_co2e_per_kg ?? 0, 2)} farming + ${fmt(tr.co2Transport, 2)} travel, from ${esc(from)}${tr.o.origin_place ? ', ' + esc(tr.o.origin_country) : ''}${tr.o.source_type === 'domestic' ? ' (grown in the country)' : ''}.</span></div>`;
     } else if (hasRegion || p.carbon) {

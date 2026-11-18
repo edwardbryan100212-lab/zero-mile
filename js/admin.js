@@ -1,7 +1,7 @@
 // Admin and demo tools (#/admin): set how many days a plant has been growing and add your own photos
 // on chosen days, for screenshots and adverts. Everything stays on this device, like the rest of the app.
 import { $, $$, esc, data, plantById, state, save, today, dayDiff, addToGarden, logPhoto, getPhoto, delPhoto, toast, stageName, overallStreak, logHarvest } from './core.js?v=9';
-import { art, mascot } from './art.js?v=9';
+import { icon } from './find.js?v=9';
 import { award } from './rewards.js?v=9';
 
 const isoMinus = (n, from = today()) => { const d = new Date(from + 'T12:00'); d.setDate(d.getDate() - n); return today(d); };
@@ -15,38 +15,41 @@ export default async function admin(main, arg) {
 
   main.innerHTML = `
   <div class="page s3 ad3">
-    <header class="ab3-head">
-      <div class="ab3-pip">${mascot('wow', { size: 96 })}</div>
-      <div><h1>Admin</h1><p>Demo tools · this device only</p></div>
+    <header class="s3-head">
+      <h1>Admin</h1><p>Demo tools for screenshots. Everything stays on this device.</p>
     </header>
     <div class="ad3-grid">
       <section class="c3 ad3-card" aria-labelledby="ad-p-t">
-        <div class="h3row">${art('calendar', { size: 40 })}<h2 id="ad-p-t">Days grown</h2></div>
-        <label class="sel3 sel3-wide"><span class="vh">Plant</span><select id="ad-plant">${plants.map((p) => `<option value="${p.id}"${p.id === id ? ' selected' : ''}>${esc(p.name)}${state.garden.some((g) => g.id === p.id) ? ' ✓' : ''}</option>`).join('')}</select></label>
-        <div class="ad3-days">
-          <input type="range" id="ad-range" class="rng3" min="0" step="1" aria-label="Days grown">
-          <input type="number" id="ad-num" class="num3" min="0" step="1" inputmode="numeric" aria-label="Days grown, as a number">
+        <h2 id="ad-p-t">Days grown</h2>
+        <label class="fld3"><span>Plant</span><span class="sel3 sel3-wide"><select id="ad-plant">${plants.map((p) => `<option value="${p.id}"${p.id === id ? ' selected' : ''}>${esc(p.name)}${state.garden.some((g) => g.id === p.id) ? ' (growing)' : ''}</option>`).join('')}</select></span></label>
+        <div class="fld3"><span id="ad-d-l">Days since planting</span>
+          <div class="ad3-days">
+            <input type="range" id="ad-range" class="rng3" min="0" step="1" aria-labelledby="ad-d-l">
+            <input type="number" id="ad-num" class="num3" min="0" step="1" inputmode="numeric" aria-label="Days grown, as a number">
+          </div>
         </div>
-        <p class="tag3 ad3-stage" id="ad-stage"></p>
+        <p class="ad3-stage" id="ad-stage"></p>
         <button class="b3 b3-wide" id="ad-apply">Set days</button>
       </section>
       <section class="c3 ad3-card" aria-labelledby="ad-ph-t">
-        <div class="h3row">${art('camera', { size: 40 })}<h2 id="ad-ph-t">Add photos</h2></div>
-        <div class="seg3" role="radiogroup" aria-label="Dates for the photos">
-          <label><input type="radio" name="ad-mode" value="streak" checked><span>One a day to</span></label>
-          <label><input type="radio" name="ad-mode" value="same"><span>All on</span></label>
+        <h2 id="ad-ph-t">Add photos</h2>
+        <div class="fld3"><span id="ad-m-l">Dates</span>
+          <div class="seg3" role="radiogroup" aria-labelledby="ad-m-l">
+            <label><input type="radio" name="ad-mode" value="streak" checked><span>One a day, ending</span></label>
+            <label><input type="radio" name="ad-mode" value="same"><span>All on one day</span></label>
+          </div>
         </div>
-        <input type="date" id="ad-date" class="num3 ad3-date" aria-label="Date">
-        <label class="b3 b3-sky b3-wide ad-pick">Choose photos<input type="file" id="ad-files" accept="image/*" multiple class="vh"></label>
+        <label class="fld3"><span>Date</span><input type="date" id="ad-date" class="num3 ad3-date"></label>
+        <label class="b3 b3-white b3-wide ad-pick">${icon('camera')}Choose photos<input type="file" id="ad-files" accept="image/*" multiple class="vh"></label>
         <p class="ad3-busy" id="ad-busy" aria-live="polite"></p>
       </section>
       <section class="c3 ad3-card" aria-labelledby="ad-h-t">
-        <div class="h3row">${art('basket', { size: 40 })}<h2 id="ad-h-t">Harvest</h2></div>
-        <div class="ad3-days"><input type="number" id="ad-grams" class="num3" min="1" step="10" value="250" inputmode="numeric" aria-label="Grams picked"><span class="ad3-unit">g</span></div>
-        <button class="b3 b3-tomato b3-wide" id="ad-harvest">Log today</button>
+        <h2 id="ad-h-t">Harvest</h2>
+        <label class="fld3"><span>Grams picked</span><span class="ad3-days"><input type="number" id="ad-grams" class="num3" min="1" step="10" value="250" inputmode="numeric"><span class="ad3-unit">g</span></span></label>
+        <button class="b3 b3-wide" id="ad-harvest">Log today</button>
       </section>
       <section class="c3 ad3-card ad-photos" aria-labelledby="ad-l-t">
-        <div class="h3row">${art('quest-photo', { size: 40 })}<h2 id="ad-l-t">Photos</h2><button class="b3 b3-white ad3-clear" id="ad-clear">Remove all</button></div>
+        <div class="h3row"><h2 id="ad-l-t">Photos</h2><button class="b3 b3-white ad3-clear" id="ad-clear">Remove all</button></div>
         <ul class="ad3-list" id="ad-list"></ul>
       </section>
     </div>
@@ -73,8 +76,8 @@ export default async function admin(main, arg) {
     urls.forEach(URL.revokeObjectURL); urls = [];
     const e = entry(), ul = $('#ad-list');
     const log = [...(e?.log || [])].sort((a, b) => (a.date < b.date ? 1 : -1));
-    if (!log.length) { ul.innerHTML = `<li class="empty3">${mascot('point', { size: 80 })}<p>No photos yet</p></li>`; return; }
-    ul.innerHTML = log.map((l) => `<li data-date="${l.date}"><img alt="" width="88" height="88"><b>${esc(l.date)}<small>${esc(l.mood || '')}</small></b><button class="b3 b3-white ad3-x" data-del="${l.date}" aria-label="Remove photo from ${l.date}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></li>`).join('');
+    if (!log.length) { ul.innerHTML = '<li class="ad3-none">No photos of this plant yet.</li>'; return; }
+    ul.innerHTML = log.map((l) => `<li data-date="${l.date}"><img alt="" width="88" height="88"><b>${esc(l.date)}<small>${esc(l.mood || '')}</small></b><button class="ad3-x" data-del="${l.date}" aria-label="Remove photo from ${l.date}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></li>`).join('');
     for (const li of $$('li[data-date]', ul)) {
       const l = log.find((x) => x.date === li.dataset.date);
       const b = l?.key && await getPhoto(l.key);

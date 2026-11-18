@@ -1,20 +1,10 @@
 // About: settings, how the numbers are worked out, and every citation.
 import { $, esc, fmt, data, ROOT, state, save, toast } from './core.js?v=9';
-import { art, mascot } from './art.js?v=9';
 import { setSound, setHaptics, play } from './sound.js?v=9';
+import { icon } from './find.js?v=9';
 
-// chunky little pictures for the Sounds and Vibration switches, drawn like the rest of the art (fill, darker lip, shine)
-const ico = (inner) => `<svg class="art" width="44" height="44" viewBox="0 0 64 64" aria-hidden="true" focusable="false">${inner}</svg>`;
-const SPEAKER = ico('<ellipse cx="32" cy="58" rx="20" ry="3.5" fill="#1d3b24" opacity=".12"/>'
-  + '<path d="M10 26h9l14-11v34L19 38h-9a3 3 0 0 1-3-3v-6a3 3 0 0 1 3-3z" fill="#e0a200"/><path d="M10 24h9l14-11v34L19 36h-9a3 3 0 0 1-3-3v-6a3 3 0 0 1 3-3z" fill="#ffc531"/>'
-  + '<path d="M11 28v4" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".7"/>'
-  + '<path d="M41 22a12 12 0 0 1 0 18M47 16a20 20 0 0 1 0 30" fill="none" stroke="#36b4f0" stroke-width="5" stroke-linecap="round"/>');
-const PHONE = ico('<ellipse cx="32" cy="58" rx="16" ry="3.5" fill="#1d3b24" opacity=".12"/>'
-  + '<rect x="20" y="10" width="24" height="44" rx="6" fill="#1a8fcc"/><rect x="20" y="8" width="24" height="44" rx="6" fill="#36b4f0"/>'
-  + '<rect x="24" y="14" width="16" height="28" rx="3" fill="#e6f6ff"/><circle cx="32" cy="47" r="2.5" fill="#e6f6ff"/>'
-  + '<path d="M12 20l-4 4 4 4-4 4 4 4M52 20l4 4-4 4 4 4-4 4" fill="none" stroke="#a560e8" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>');
-
-const SRC_ART = { 'Where food comes from': 'map-pin', 'Food, energy and carbon': 'cloud-co2', 'Trees and planting': 'tree', 'Growing, trees and transport': 'lorry' };
+// what the pictures are (check img/game/ before changing: AI game art must be credited if it comes back)
+const ART_NOTE = 'Plant photos in the app are real, open-licence pictures from Wikimedia Commons and Openverse, credited below. Pip, the icons and the drawings are made in code.';
 
 export default async function sources(main) {
   const D = await data();
@@ -40,33 +30,40 @@ export default async function sources(main) {
   const ef = D.emission;
   const total = [...Object.values(groups)].reduce((s, m) => s + m.size, 0);
 
+  const srcList = (m) => `<ol>${[...m.values()].map((s) => `<li><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.title)}</a><small>${esc(s.publisher || '')}${s.accessed ? `, accessed ${esc(s.accessed)}` : ''}</small></li>`).join('')}</ol>`;
+  const tog = (id, ic, label, sub, on) => `<label class="row3 tog3">${icon(ic)}<span>${label}<small>${sub}</small></span><input type="checkbox" role="switch" id="${id}"${on ? ' checked' : ''}><i aria-hidden="true"></i></label>`;
   main.innerHTML = `
   <div class="page s3 ab3">
-    <header class="ab3-head">
-      <div class="ab3-pip">${mascot('wave', { size: 96 })}</div>
-      <div><h1>About</h1><p>Free · private · for all ages</p></div>
+    <header class="s3-head">
+      <h1>About</h1><p>Free, private and for all ages. Nothing you add leaves this device.</p>
     </header>
-    <ul class="ab3-nums" aria-label="Zero Mile in numbers">
-      <li class="leaf">${art('tree', { size: 48 })}<b>${D.plants.length}</b><span>plants</span></li>
-      <li class="sky">${art('quest-learn', { size: 48 })}<b>${total}</b><span>sources</span></li>
-      <li class="berry">${art('lock', { size: 48 })}<b>0</b><span>uploads</span></li>
+    <ul class="c3 ab3-nums" aria-label="Zero Mile in numbers">
+      <li><span>Plants and trees</span><b>${D.plants.length}</b></li>
+      <li><span>Cited sources</span><b>${total}</b></li>
+      <li><span>Uploads</span><b>0</b></li>
     </ul>
     <div class="ab3-grid">
       <section class="ab3-set" aria-labelledby="set-t">
         <h2 id="set-t">Settings</h2>
-        <div class="row3 c3">${art('map-pin', { size: 44 })}<label for="region">Where you live</label><span class="sel3"><select id="region">${Object.entries(D.regions).map(([k, r]) => `<option value="${k}"${k === state.region ? ' selected' : ''}>${esc(r.name)}</option>`).join('')}</select></span></div>
-        <label class="row3 c3 tog3">${art('camera', { size: 44 })}<span>Smart photo check<small>90 MB, on this device</small></span><input type="checkbox" role="switch" id="smart"${state.smartAI ? ' checked' : ''}><i aria-hidden="true"></i></label>
-        <label class="row3 c3 tog3">${SPEAKER}<span>Sounds<small>Chimes and pops</small></span><input type="checkbox" role="switch" id="snd"${state.sound !== false ? ' checked' : ''}><i aria-hidden="true"></i></label>
-        <label class="row3 c3 tog3">${PHONE}<span>Vibration<small>${matchMedia('(prefers-reduced-motion: reduce)').matches ? 'Off: reduce motion is on' : 'Phones that buzz'}</small></span><input type="checkbox" role="switch" id="hap"${state.haptics !== false ? ' checked' : ''}><i aria-hidden="true"></i></label>
-        <div class="row3 c3">${art('scene-garden', { size: 44 })}<span>My plants</span><b class="row3-n">${state.garden.length}</b></div>
+        <div class="c3 rows3">
+          <div class="row3">${icon('pin')}<label for="region">Where you live<small>Sets food miles and planting months</small></label><span class="sel3"><select id="region">${Object.entries(D.regions).map(([k, r]) => `<option value="${k}"${k === state.region ? ' selected' : ''}>${esc(r.name)}</option>`).join('')}</select></span></div>
+          ${tog('smart', 'camera', 'Smart photo check', '90 MB, runs on this device', state.smartAI)}
+          ${tog('snd', 'speaker', 'Sounds', 'Chimes and pops', state.sound !== false)}
+          ${tog('hap', 'vibrate', 'Vibration', matchMedia('(prefers-reduced-motion: reduce)').matches ? 'Off while reduce motion is on' : 'On phones that buzz', state.haptics !== false)}
+          <div class="row3">${icon('sprout')}<span>My plants</span><b class="row3-n">${state.garden.length}</b></div>
+        </div>
         <h2>App</h2>
-        <details class="row3 c3 det3"><summary>${art('gift', { size: 44 })}<span>Install the app</span></summary><p>iPhone: Share, then “Add to Home Screen”. Mac or PC: “Install” in the address bar.</p></details>
-        <a class="row3 c3 go3" href="${new URL('./', ROOT).href}">${art('star', { size: 44 })}<span>Zero Mile website</span></a>
-        <a class="row3 c3 go3" href="#/admin">${art('chest', { size: 44 })}<span>Admin and demo tools</span></a>
+        <div class="c3 rows3">
+          <details class="row3 det3"><summary>${icon('download')}<span>Install the app</span></summary><p>iPhone: Share, then “Add to Home Screen”. Mac or PC: “Install” in the address bar.</p></details>
+          <a class="row3 go3" href="${new URL('./', ROOT).href}">${icon('globe')}<span>Zero Mile website</span></a>
+          <a class="row3 go3" href="#/admin">${icon('tool')}<span>Admin and demo tools</span></a>
+        </div>
       </section>
       <section class="ab3-src" aria-labelledby="src-t">
         <h2 id="src-t">How we know</h2>
-          <details class="src3 c3"><summary>${art('quest-learn', { size: 40 })}<span>How we count</span></summary>
+        <div class="c3 rows3">
+          <details class="src3"><summary><span>How we count</span></summary>
+          <div class="src3-in">
           <p><b>Where it comes from.</b> For each plant and country we use the single biggest source of what shops sell: home-grown if the country grows the most, otherwise the top import partner by weight in recent trade data. Some are marked low confidence; herbs have no trade codes of their own.</p>
           <p><b>Air miles</b> are the straight line from the growing area to ${esc(D.regions.IE.dest.name)}, ${esc(D.regions.UK.dest.name)}, ${esc(D.regions.US.dest.name)}, ${esc(D.regions.DE.dest.name)}, ${esc(D.regions.HK.dest.name)} or ${esc(D.regions.AU.dest.name)}. Real routes are longer, so for carbon we multiply by ${D.circuity}, a common road detour factor.</p>
           <p><b>Travel carbon</b> uses UK government freight factors per tonne-kilometre: lorry ${fmt(ef.hgv.value, 3)}, ship ${fmt(ef.ship.value, 3)}, ferry ${fmt(ef.ferry.value, 3)}, rail ${fmt(ef.rail.value, 3)}, long-haul air ${fmt(ef.air_long.value, 3)} kg CO2e.</p>
@@ -74,12 +71,16 @@ export default async function sources(main) {
           <p><b>Trees.</b> Planting months, sizes, spacing, first fruit and care in the first three years come from the RHS, the Woodland Trust, university extension guides and government agencies. “Grows well here” ratings cite a reason, such as native range, winter cold or frost. The CO2 figure is an estimate: the European Commission and the European Environment Agency give about 22 kg of CO2 a year for a mature tree, on average. Real trees vary with species, size and site, and young trees take up less.</p>
           <p><b>Goodness.</b> Where studies measured nutrients lost in storage (like vitamin C in spinach after a week in the fridge), we quote that number. Otherwise we say “about the same”.</p>
           <p><b>Photo check.</b> Your photos never leave your device. It counts green, yellowing and brown leaf colours. It’s a friendly guess, not a plant doctor.</p>
-          <p><b>Pictures and 3D.</b> Plant photos in the app are real, open-licence pictures from Wikimedia Commons and Openverse, credited below. Close-up pictures on the website are AI illustrations made with Comfy, and some game pictures in the app (Pip’s poses, scenes and celebrations) are AI-made with Flux.2 on Comfy Cloud. The other drawings are made in code. Some 3D models are drawn in code${credits.length ? '; others are free models credited below' : ''}.</p>
-          </details>
-          <details class="src3 c3"><summary>${art('star', { size: 40 })}<span>Quick facts</span><b class="tag3">${facts.length}</b></summary><ol>${facts.map((f) => `<li>${esc(f.text)} <small>${(f.sources || []).map((s) => `<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.publisher || s.title)}</a>`).join(', ')}</small></li>`).join('')}</ol></details>
-          ${Object.entries(groups).map(([g, m]) => `<details class="src3 c3"><summary>${art(SRC_ART[g] || 'quest-learn', { size: 40 })}<span>${g}</span><b class="tag3">${m.size}</b></summary><ol>${[...m.values()].map((s) => `<li><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.title)}</a><small>${esc(s.publisher || '')}${s.accessed ? `, accessed ${esc(s.accessed)}` : ''}</small></li>`).join('')}</ol></details>`).join('')}
-          ${photos.length ? `<details class="src3 c3"><summary>${art('camera', { size: 40 })}<span>Plant photos</span><b class="tag3">${photos.length}</b></summary><ol>${photos.map((c) => `<li>${c.url ? `<a href="${esc(c.url)}" target="_blank" rel="noopener">${esc(c.title || c.id)}</a>` : esc(c.title || c.id)}<small>${esc([c.author, c.license].filter(Boolean).join(', '))}</small></li>`).join('')}</ol></details>` : ''}
-          ${credits.length ? `<details class="src3 c3"><summary>${art('gift', { size: 40 })}<span>3D models</span><b class="tag3">${credits.length}</b></summary><ol>${credits.map((c) => `<li>${typeof c === 'string' ? esc(c) : `${c.url ? `<a href="${esc(c.url)}" target="_blank" rel="noopener">${esc(c.title || c.name || c.url)}</a>` : esc(c.title || c.name || '')}<small>${esc([c.author, c.license].filter(Boolean).join(', '))}</small>`}</li>`).join('')}</ol></details>` : ''}
+          <p><b>Pictures and 3D.</b> ${ART_NOTE}${credits.length ? ' Some 3D models are drawn in code; others are free models credited below.' : ' The 3D models are drawn in code.'}</p>
+          </div></details>
+          <details class="src3"><summary><span>Quick facts</span><b class="n3">${facts.length}</b></summary><ol>${facts.map((f) => `<li>${esc(f.text)} <small>${(f.sources || []).map((s) => `<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.publisher || s.title)}</a>`).join(', ')}</small></li>`).join('')}</ol></details>
+          ${Object.entries(groups).map(([g, m]) => `<details class="src3"><summary><span>${g}</span><b class="n3">${m.size}</b></summary>${srcList(m)}</details>`).join('')}
+        </div>
+        <h2>Credits</h2>
+        <div class="c3 rows3">
+          ${photos.length ? `<details class="src3"><summary><span>Plant photos</span><b class="n3">${photos.length}</b></summary><ol>${photos.map((c) => `<li>${c.url ? `<a href="${esc(c.url)}" target="_blank" rel="noopener">${esc(c.title || c.id)}</a>` : esc(c.title || c.id)}<small>${esc([c.author, c.license].filter(Boolean).join(', '))}</small></li>`).join('')}</ol></details>` : ''}
+          ${credits.length ? `<details class="src3"><summary><span>3D models</span><b class="n3">${credits.length}</b></summary><ol>${credits.map((c) => `<li>${typeof c === 'string' ? esc(c) : `${c.url ? `<a href="${esc(c.url)}" target="_blank" rel="noopener">${esc(c.title || c.name || c.url)}</a>` : esc(c.title || c.name || '')}<small>${esc([c.author, c.license].filter(Boolean).join(', '))}</small>`}</li>`).join('')}</ol></details>` : ''}
+        </div>
       </section>
     </div>
   </div>`;

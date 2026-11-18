@@ -267,3 +267,21 @@ p.tree-co2 b { font-size: 1.3rem; display: block; }
 .trees-card .tiles { grid-auto-flow: row; grid-auto-columns: auto; grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); overflow: visible; margin: 0; padding: 0; }
 .impact .about-grid { grid-template-columns: minmax(0, 1fr); }
 .d-tree .st-kicker { color: var(--green-deep); }
+
+/* Admin and demo tools (#/admin) */
+.admin-grid { display: grid; gap: 16px; }
+@media (min-width: 1000px) { .admin-grid { grid-template-columns: 1fr 1fr; } .admin-grid .ad-photos { grid-column: 1 / -1; } }
+.admin h2 { font-size: 1.1rem; margin-bottom: 8px; }
+.ad-days { display: flex; gap: 12px; align-items: center; }
+.ad-days input[type=range] { flex: 1; accent-color: #2f7d32; min-height: 44px; }
+.ad-days input[type=number], .ad-date { width: 7.5em; min-width: 0; font-size: 16px; padding: 10px 12px; border: 1px solid rgba(29, 74, 43, .18); border-radius: 12px; background: #fff; font-family: inherit; }
+.ad-acts { margin-top: 12px; }
+.ad-mode { display: flex; flex-wrap: wrap; gap: 8px 16px; margin: 10px 0; }
+.ad-mode label { display: inline-flex; gap: 6px; align-items: center; min-height: 44px; }
+.ad-mode input { accent-color: #2f7d32; }
+.ad-date { width: 11em; }
+.ad-pick { margin-top: 12px; cursor: pointer; }
+.ad-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+.ad-list li { display: flex; gap: 12px; align-items: center; }
+.ad-list img { width: 88px; height: 88px; object-fit: cover; border-radius: 14px; background: #e8efe4; }
+.ad-list span { flex: 1; }

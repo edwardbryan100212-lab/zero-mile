@@ -45,7 +45,7 @@ export default async function sources(main) {
         <section class="card">
           <h2 style="margin-bottom:6px">Install the app</h2>
           <p class="muted small">iPhone: Share, then “Add to Home Screen”. Mac or PC: “Install” in the address bar.</p>
-          <p style="margin-top:12px"><a class="btn btn-sm btn-soft" href="${new URL('./', ROOT).href}">Visit the Zero Mile website</a></p>
+          <p style="margin-top:12px"><a class="btn btn-sm btn-soft" href="${new URL('./', ROOT).href}">Visit the Zero Mile website</a> <a class="btn btn-sm btn-plain" href="#/admin">Admin and demo tools</a></p>
         </section>
       </div>
       <div style="display:grid;gap:16px">

@@ -11,6 +11,7 @@ const routes = {
   plant: () => import('./find.js?v=9'),
   impact: () => import('./impact.js?v=9'),
   sources: () => import('./sources.js?v=9'),
+  admin: () => import('./admin.js?v=9'),
 };
 const VIEW = { snap: 'snapView', find: 'findView', plant: 'plantView' };
 let current = null, routed = false, seq = 0;

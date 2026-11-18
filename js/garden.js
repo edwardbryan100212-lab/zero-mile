@@ -4,8 +4,8 @@ import {
   overallStreak, lastDays, photoDays, wateredToday, toggleWatered, logHarvest, harvestKg, logPhoto, stageName, thumb,
   isTree, isFruitTree, treeAge, treePhotoDue, logHeight, treeSeason, bestTrees, dailyPlants, MONTH_NAMES,
   savedDays, earnSaver } from './core.js?v=9';
-import { EASE, reduced, countUp, countAll, fillAll, confetti, haptic, helpBtn, bindHelp, pip, pop, floatGain, celebration, play } from './fun.js?v=9';
-import { art } from './art.js?v=9';
+import { EASE, reduced, countUp, countAll, fillAll, confetti, haptic, helpBtn, bindHelp, pip, pop, floatGain, celebration, play, faceCanvas, runFaces } from './fun.js?v=9';
+import { art, icon } from './art.js?v=9';
 import { award, dailyQuests, rewards, level, onReward, saversHeld, SAVER_MAX } from './rewards.js?v=9';
 import * as Face from './face.js?v=9';
 import { streakRisk, riskLine } from './onboard.js?v=9';
@@ -19,13 +19,13 @@ const freeURLs = () => { urls.splice(0).forEach((u) => URL.revokeObjectURL(u)); 
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 const changed = () => dispatchEvent(new Event('zm:garden'));
 
-// small control glyphs, filled and chunky (pictures come from art())
+// small control glyphs for paper UI: the filled glyph family from js/art.js
 const ICON = {
-  photo: '<svg class="gi" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8a2 2 0 0 1 2-2h2l1.6-2.4h6.8L17 6h2a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><circle cx="12" cy="12.6" r="3.8" fill="var(--cut, #fff)"/></svg>',
-  water: '<svg class="gi" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5s7 7.6 7 12.2a7 7 0 0 1-14 0c0-4.6 7-12.2 7-12.2z"/></svg>',
-  check: '<svg class="gi gi-line" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
-  plus: '<svg class="gi gi-line" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>',
-  more: '<svg class="gi" viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="2.2"/><circle cx="12" cy="12" r="2.2"/><circle cx="19" cy="12" r="2.2"/></svg>',
+  photo: icon('camera', { size: 20, cls: 'gi' }),
+  water: icon('water', { size: 20, cls: 'gi' }),
+  check: icon('check', { size: 20, cls: 'gi' }),
+  plus: icon('plus', { size: 20, cls: 'gi' }),
+  more: icon('more', { size: 20, cls: 'gi' }),
 };
 
 // the season word for a month where you live (seasons are flipped south of the equator)
@@ -50,27 +50,30 @@ function moodOf(e) {
 const snappedToday = (e) => e.log.some((l) => l.date === today());
 let PHOTO = {}; // id → real photo (js/photos.js), so Today's tiles match Find
 const tile = (p) => `<a class="tile c3" href="#/plant/${p.id}"><div class="tile-art${PHOTO[p.id] ? ' photo' : ''}"><img src="${PHOTO[p.id] || thumb(p.id)}" alt="" width="132" height="132" loading="lazy"></div><b>${esc(p.name)}</b></a>`;
+const picOf = (id) => PHOTO[id] || thumb(id);
 
-// ---------- a small burst of leaves: the celebration when something is logged ----------
-export function burst(x, y) { confetti(x, y, { count: 16, spread: .8 }); }
+// ---------- a few pixel sparkles: the small celebration when something is logged ----------
+export function burst(x, y) { confetti(x, y, { count: 16, spread: .6 }); }
 
 // ---------- share card for streak milestones ----------
 function shareCard(n, plant, photoBlob) {
   return new Promise((resolve) => {
     const W = 1080, H = 1350, c = document.createElement('canvas'); c.width = W; c.height = H;
     const x = c.getContext('2d');
-    x.fillStyle = '#3fae49'; x.fillRect(0, 0, W, H);
-    x.fillStyle = '#2b8a34'; x.fillRect(0, H - 200, W, 200);
-    x.fillStyle = '#ffc531'; x.beginPath(); x.arc(220, 300, 130, 0, Math.PI * 2); x.fill();
-    x.fillStyle = '#fff'; x.font = '900 300px Nunito, ui-rounded, sans-serif'; x.fillText(String(n), 400, 400);
-    x.font = '900 84px Nunito, ui-rounded, sans-serif'; x.fillText('day streak', 80, 560);
-    x.font = '800 52px Nunito, ui-rounded, sans-serif'; x.fillText(`Growing ${plant.name.toLowerCase()}`, 80, 640);
-    x.font = '900 64px Nunito, ui-rounded, sans-serif'; x.fillText('Zero Mile', 80, H - 76);
+    // Pip's LCD: black screen, a faint pixel grid, green pixel type
+    x.fillStyle = '#0c110d'; x.fillRect(0, 0, W, H);
+    x.fillStyle = 'rgba(98,242,126,.06)'; for (let gy = 0; gy < H; gy += 12) for (let gx = 0; gx < W; gx += 12) x.fillRect(gx, gy, 10, 10);
+    x.fillStyle = '#62f27e'; x.shadowColor = 'rgba(98,242,126,.6)'; x.shadowBlur = 18;
+    x.font = '300px Tiny5, "Pixelify Sans", ui-monospace, monospace'; x.fillText(String(n), 80, 400);
+    x.font = '84px Tiny5, "Pixelify Sans", ui-monospace, monospace'; x.fillText('day streak', 80, 520);
+    x.shadowBlur = 0; x.fillStyle = '#f6f3ea';
+    x.font = '700 52px Nunito, ui-rounded, sans-serif'; x.fillText(`Growing ${plant.name.toLowerCase()}`, 80, 620);
+    x.font = '700 64px "Bricolage Grotesque", Nunito, sans-serif'; x.fillText('Zero Mile', 80, H - 76);
     const done = () => c.toBlob((b) => resolve({ canvas: c, blob: b }), 'image/png');
     if (!photoBlob) return done();
     const img = new Image();
     img.onload = () => { const s = 520, k = Math.max(s / img.width, s / img.height), w = img.width * k, h = img.height * k;
-      x.save(); x.beginPath(); x.roundRect(W - s - 80, 700, s, s * .72, 40); x.clip(); x.drawImage(img, W - s - 80 + (s - w) / 2, 700 + (s * .72 - h) / 2, w, h); x.restore(); done(); };
+      x.save(); x.beginPath(); x.roundRect(W - s - 80, 700, s, s * .72, 16); x.clip(); x.drawImage(img, W - s - 80 + (s - w) / 2, 700 + (s * .72 - h) / 2, w, h); x.restore(); done(); };
     img.onerror = done; img.src = URL.createObjectURL(photoBlob);
   });
 }
@@ -97,7 +100,7 @@ async function analyseAndLog(entry, file, date, onBusy) {
   await logPhoto(entry, date, blob, res);
   const after = overallStreak();
   const earned = after > before ? earnSaver() : false;
-  // XP, quests, chests and badges; a retaken photo of the same day earns nothing twice
+  // XP, quests, milestones and badges; a retaken photo of the same day earns nothing twice
   const lv0 = level();
   const out = award('photo', { date, id: entry.id });
   changed();
@@ -106,41 +109,34 @@ async function analyseAndLog(entry, file, date, onBusy) {
 
 // Friendly headline for the photo: never lead with bad news; the tips on the result screen say what to do
 const SNAP_LINE = { thriving: 'Looking amazing!', happy: 'Looking good!', okay: 'Growing along!', thirsty: 'Needs a drink?', poorly: 'Let\u2019s help it!', new: 'First photo!', sleepy: 'Growing along!' };
-// ---------- the photo celebration: Pip cheers, XP counts up, the sun grows, then quests, chests, badges, level ----------
+// ---------- the photo celebration on Pip's LCD: your photo once, the XP ticking up, the streak, then the rest ----------
 async function photoParty({ res, blob, before, after, out, earned, lv0 }, plant) {
   const V = await RV();
   const qxp = (out.quests || []).reduce((a, q) => a + q.xp, 0), xp = out.xp - qxp;
-  const big = after > before || xp > 0 || out.quests.length || out.unlocked.length || out.levelUp || out.chest || out.milestones.length;
+  const big = after > before || xp > 0 || out.quests.length || out.unlocked.length || out.levelUp || out.bonus || out.milestones.length;
   if (!big) return false;
   const url = objURL(blob);
   const lv1 = level(lv0.xp + xp);
   const S = [{
-    tone: 'leaf', sound: 'done', title: 'Great snap!', big: esc(SNAP_LINE[res.mood] || 'Growing along!'),
-    art: `<div class="snap-pol"><img src="${url}" alt="Your photo of ${esc(plant.name)}"></div><div class="cele-pip">${pip('cheer', { size: 120 })}</div>`,
-  }];
-  if (xp > 0) S.push({
-    tone: 'sky', sound: 'xp', title: 'XP earned', art: art('xp-bolt', { size: 140 }), big: `<b id="cx-n">+0</b> XP`,
-    extra: `<div class="cele-extra"><div class="cele-lvl"><span>Level ${lv1.n}</span>${`<div class="bar3" style="--c:var(--sun)"><i style="width:${(lv0.n === lv1.n ? lv0.p : 0) * 100}%"></i></div>`}</div></div>`,
+    tone: 'leaf', sound: 'done', face: res.mood === 'poorly' || res.mood === 'thirsty' ? 'okay' : 'thriving',
+    photo: url, photoAlt: `Your photo of ${esc(plant.name)}`, title: 'Photo saved', big: esc(SNAP_LINE[res.mood] || 'Growing along!'),
+    sub: xp > 0 ? `+${xp} XP` : '',
+    extra: xp > 0 ? `<div class="cele-extra"><div class="cele-lvl"><span>LV ${lv1.n}</span><div class="bar3"><i style="width:${(lv0.n === lv1.n ? lv0.p : 0) * 100}%"></i></div></div></div>` : '',
     onShow(el) {
-      countUp(el.querySelector('#cx-n'), xp, { dur: 800, suffix: '' }); setTimeout(() => { const b = el.querySelector('#cx-n'); if (b) b.textContent = `+${xp}`; }, reduced() ? 0 : 820);
-      const bar = el.querySelector('.cele-lvl .bar3'), fill = bar.firstElementChild;
-      requestAnimationFrame(() => requestAnimationFrame(() => { fill.style.width = `${lv1.p * 100}%`; if (!reduced()) setTimeout(() => bar.classList.add('shine'), 500); }));
+      const fill = el.querySelector('.cele-lvl .bar3 > i'); if (!fill) return;
+      setTimeout(() => { fill.style.width = `${lv1.p * 100}%`; }, reduced() ? 0 : 420);
     },
-  });
+  }];
   if (after > before) {
     const share = [7, 30, 50, 100, 365].includes(after);
     S.push({
-      tone: 'night', sound: 'streak', title: after === 1 ? 'Streak started!' : 'Streak up!', art: `<div class="sun-grow">${art('streak-sun', { size: 170 })}</div>`, big: `<b id="cs-n">${before}</b>`, sub: 'day streak',
-      extra: share ? `<div class="cele-extra"><button class="b3 b3-sun" type="button" id="share-streak">Share my streak</button></div>` : '',
-      onShow(el) {
-        const sun = el.querySelector('.sun-grow');
-        if (!reduced()) sun.animate([{ transform: 'scale(.7)' }, { transform: 'scale(1.12)', offset: .6 }, { transform: 'scale(1)' }], { duration: 760, delay: 200, easing: 'cubic-bezier(.34,1.56,.64,1)', fill: 'backwards' });
-        setTimeout(() => countUp(el.querySelector('#cs-n'), after, { from: before, dur: 600 }), reduced() ? 0 : 380);
-        el.querySelector('#share-streak')?.addEventListener('click', () => shareStreak(after, plant, blob));
-      },
+      tone: 'night', sound: 'streak', art: art('streak-sun', { size: 96 }), title: after === 1 ? 'Streak started' : 'Streak up',
+      big: `<b class="cele-num">${before}</b>`, count: { from: before, to: after }, sub: 'day streak',
+      extra: share ? `<div class="cele-extra"><button class="b3 b3-px" type="button" id="share-streak">${icon('share', { size: 18 })}Share</button></div>` : '',
+      onShow(el) { el.querySelector('#share-streak')?.addEventListener('click', () => shareStreak(after, plant, blob)); },
     });
   }
-  if (earned) S.push({ tone: 'sky', sound: 'quest', title: 'Streak saver!', art: art('can-freeze', { size: 150 }), big: `${saversHeld()}/${SAVER_MAX}`, sub: 'cans held' });
+  if (earned) S.push({ tone: 'sky', sound: 'quest', art: art('can-freeze', { size: 96 }), title: 'Watering can', big: `${saversHeld()} of ${SAVER_MAX}`, sub: 'it saves a missed day' });
   S.push(...V.rewardScreens(out));
   await celebration(S);
   return true;
@@ -168,12 +164,12 @@ function faceLoop(canvases) {
 const shortDay = (d) => new Date(d + 'T12:00').toLocaleDateString('en-IE', { weekday: 'short' });
 
 const HELP = {
-  streak: () => ({ title: 'How it works', body: `<ul class="help-rows">
-    <li>${art('camera', { size: 48 })}<span><b>One photo a day</b> keeps your streak.</span></li>
-    <li>${art('quest-photo', { size: 48 })}<span><b>3 quests</b> a day. Finish all 3 for a chest.</span></li>
-    <li>${art('chest', { size: 48 })}<span><b>Streak chests</b> at 3, 7, 14, 30, 50, 100 and 365 days.</span></li>
-    <li>${art('can-freeze', { size: 48 })}<span><b>Watering can</b> saves a missed day. Earn one each 7 days, or buy one for 50 seeds.</span></li>
-    <li>${art('tree', { size: 48 })}<span><b>Trees</b> need a photo each season.</span></li></ul>` }),
+  streak: () => ({ title: 'How streaks work', body: `<ul class="help-rows">
+    <li>${icon('camera')}<span><b>One photo a day</b> keeps your streak.</span></li>
+    <li>${icon('check')}<span><b>3 quests a day.</b> Finish all 3 for bonus seeds.</span></li>
+    <li>${icon('sun')}<span><b>Milestones</b> at 3, 7, 14, 30, 50, 100 and 365 days give a badge and seeds.</span></li>
+    <li>${icon('water')}<span><b>A watering can</b> saves a missed day. Earn one every 7 days, or buy one for 50 seeds.</span></li>
+    <li>${icon('tree')}<span><b>Trees</b> need a photo each season.</span></li></ul>` }),
 };
 
 export default async function garden(main) {
@@ -186,8 +182,7 @@ export default async function garden(main) {
   const daily = dailyPlants(), trees = state.garden.filter(treeOf);
   const done = daily.filter(snappedToday).length, allDone = daily.length > 0 && done === daily.length, anyToday = done > 0;
   const treesDue = trees.filter((e) => treePhotoDue(e).due).length;
-  const easy = D.plants.filter((p) => p.grow?.difficulty === 'easy' && p.grow?.container_ok).slice(0, 8);
-  const hour = new Date().getHours();
+  const easy = D.plants.filter((p) => p.grow?.difficulty === 'easy' && p.grow?.container_ok).slice(0, 6);
 
   // impact so far (same sums as the Impact screen)
   let miles = 0, co2g = 0, kg = 0;
@@ -196,138 +191,81 @@ export default async function garden(main) {
     kg += k; if (t) { miles += Math.round(t.crowMi * (e.harvests || []).length); co2g += Math.round(t.co2Transport * k * 1000); }
   }
 
-  // Pip's mood: waving to a new grower, sleepy before today's photo, cheering after it, sad when the streak is at risk
-  // after 6pm with a streak and no photo today, the hero turns into an evening sky (js/onboard.js)
+  // Pip's face says how today is going: hello to a new grower, sleepy before today's photo, thriving after it, and
+  // worried in the evening when the streak is at risk (streakRisk() and riskLine() come from js/onboard.js)
   const risk = !fresh && !anyToday && daily.length > 0 && streakRisk();
-  const pose = fresh ? 'wave' : anyToday ? 'cheer' : risk ? 'sad' : !daily.length ? 'proud' : 'sleepy';
-  const say = fresh ? 'Hi! I’m Pip' : anyToday ? (allDone ? 'All done!' : 'Yay!') : risk ? riskLine(n) : !daily.length ? 'Trees grow slowly' : 'Snap me!';
-  const cta = fresh ? `<a class="b3 b3-sun b3-wide" href="#/find">${art('quest-learn', { size: 26 })}Pick a plant</a>`
-    : !daily.length ? (treesDue ? `<a class="b3 b3-sun b3-wide" href="#/snap">${ICON.photo}Seasonal photo</a>` : `<a class="b3 b3-white b3-wide" href="#/find">${ICON.plus}Add a plant</a>`)
-    : allDone ? `<span class="done-pill">${ICON.check}Done today</span>` : `<a class="b3 b3-sun b3-wide${risk ? ' pulse3' : ''}" href="#/snap">${ICON.photo}Take photo</a>`;
+  const mood = fresh ? 'new' : anyToday ? 'thriving' : risk ? 'poorly' : !daily.length ? 'happy' : 'sleepy';
+  const say = fresh ? 'Hi! I’m Pip' : anyToday ? (allDone ? 'All done today' : 'Nice one') : risk ? riskLine(n) : !daily.length ? 'Trees grow slowly' : 'Snap me today';
+  const cta = fresh ? `<a class="b3 b3-solid" href="#/find">Pick a plant</a>`
+    : !daily.length ? (treesDue ? `<a class="b3 b3-solid" href="#/snap">${ICON.photo}Seasonal photo</a>` : `<a class="b3" href="#/find">${ICON.plus}Add a plant</a>`)
+    : allDone ? `<a class="b3" href="#/snap">${ICON.photo}Snap another</a>` : `<a class="b3 b3-solid${risk ? ' pulse3' : ''}" href="#/snap">${ICON.photo}Take today’s photo</a>`;
   const cans = saversHeld();
 
   const hero = `
-    <section class="d-hero${risk ? ' at-risk' : ''}" id="hero" aria-labelledby="streak-t">
-      <div class="hero-pip"><span class="bubble">${say}</span>${pip(pose, { size: 168, mood: pose === 'sad' ? 'sad' : 'happy' })}</div>
-      <div class="hero-main">
-        <h1 id="streak-t" class="hero-num">${art('streak-sun', { size: 76, cls: anyToday ? 'lit' : 'dim' })}<span><b data-count="${n}">${n}</b><em>day streak</em></span></h1>
-        ${fresh ? '' : `<div class="dots" role="group" aria-label="This week" id="dots"></div>`}
-        <div class="hero-row">${cta}${fresh ? '' : `<button class="cans" type="button" data-help="streak" aria-label="Watering cans: ${cans} of ${SAVER_MAX}. How it works">${[0, 1].map((k) => `<span class="${k < cans ? 'on' : ''}">${art('can-freeze', { size: 30 })}</span>`).join('')}</button>`}</div>
+    <section class="t-hero lcd${risk ? ' at-risk' : ''}" id="hero" aria-labelledby="streak-t">
+      <div class="th-face">${faceCanvas(mood, 'th-pxface')}<p class="th-say">${esc(say)}</p></div>
+      <div class="th-main">
+        <h1 id="streak-t" class="th-num"><b data-count="${n}">${n}</b><span>day streak</span></h1>
+        ${fresh ? '<p class="th-lead">One photo a day grows your streak.</p>' : '<div class="pxweek" role="group" aria-label="This week" id="dots"></div>'}
+        <div class="th-row">${cta}${fresh ? '' : `<button class="th-cans" type="button" data-help="streak" aria-label="Watering cans: ${cans} of ${SAVER_MAX}. How streaks work">${[0, 1].map((k) => `<span class="${k < cans ? 'on' : ''}">${art('can-freeze', { size: 16 })}</span>`).join('')}</button>`}</div>
       </div>
     </section>`;
 
   const questCard = () => {
     const qs = dailyQuests(), d = rewards().days[today()] || {}, nDone = qs.filter((q) => q.done).length;
-    const chest = d.chest === 'ready' ? `<button class="q-chest shake" type="button" data-chest="day:${today()}" aria-label="Open your daily chest">${art('chest', { size: 56 })}</button>`
-      : d.chest === 'open' ? `<span class="q-chest" role="img" aria-label="Daily chest opened">${art('chest-open', { size: 56 })}</span>`
-        : `<span class="q-chest locked" role="img" aria-label="Daily chest: ${nDone} of 3 quests done">${art('chest', { size: 56, cls: 'locked' })}<i>${nDone}/3</i></span>`;
-    return `<div class="card-head"><h2 id="quest-t">Daily quests</h2>${chest}</div>
-      <ul class="quests">${qs.map((q) => `<li class="quest${q.done ? ' done' : ''}">
-        <span class="q-art">${art(q.art, { size: 48 })}</span>
-        <div class="q-body"><p class="q-top"><b>${esc(q.label)}</b><span class="q-n" aria-hidden="true">${q.have}/${q.need}</span></p><div class="bar3" style="--c:var(${q.done ? '--leaf' : '--sun'})" role="progressbar" aria-label="${esc(q.label)}" aria-valuemin="0" aria-valuemax="${q.need}" aria-valuenow="${q.have}"><i data-fill="${(q.have / q.need).toFixed(3)}"></i></div></div>
-        <span class="q-pay">${q.done ? `<span class="q-tick">${ICON.check}</span>` : `${art('xp-bolt', { size: 22 })}<b>${q.xp}</b>`}</span></li>`).join('')}</ul>`;
+    return `<div class="lq-head"><h2 id="quest-t" class="lcd-h">Quests</h2><span class="lq-n" aria-label="${nDone} of 3 done">${nDone}/3</span></div>
+      <ul class="lquests">${qs.map((q) => `<li class="${q.done ? 'done' : ''}">
+        ${art(q.done ? 'check' : q.art, { size: 16 })}
+        <span class="lq-label">${esc(q.label)}</span>
+        <span class="lq-pay">${q.done ? 'Done' : q.need > 1 ? `${q.have}/${q.need}` : `+${q.xp} XP`}</span>
+        <span class="vh">${q.done ? ', done' : `, ${q.have} of ${q.need}`}</span></li>`).join('')}</ul>
+      <p class="lq-bonus${d.bonus || d.chest ? ' got' : ''}">${art('seed-gem', { size: 16 })}${d.bonus ? `+${d.bonus} seeds for all 3` : d.chest ? 'Bonus collected' : 'All 3: bonus seeds'}</p>`;
   };
 
-  const stats = `
-    <section class="d-stats" aria-label="Your impact so far">
-      <a class="chip3 c-sky" href="#/impact">${art('lorry', { size: 44 })}<b data-count="${miles}">${fmt(miles)}</b><span>food miles</span></a>
-      <a class="chip3 c-leaf" href="#/impact">${art('cloud-co2', { size: 44 })}<b data-count="${co2g}" data-suffix=" g">${fmt(co2g)} g</b><span>CO₂ saved</span></a>
-      <a class="chip3 c-leaf" href="#/impact">${art('tree', { size: 44 })}<b data-count="${trees.length}">${trees.length}</b><span>trees</span></a>
-      <a class="chip3 c-tomato" href="#/impact">${art('basket', { size: 44 })}<b data-count="${kg.toFixed(1)}" data-dec="1">${fmt(kg, 1)}</b><span>kg grown</span></a>
-    </section>`;
+  const impact = `
+    <a class="t-impact c3" href="#/impact" aria-label="Your impact: ${fmt(miles)} food miles, ${fmt(co2g)} grams of CO2 saved, ${fmt(kg, 1)} kilograms grown, ${trees.length} trees. Open Impact">
+      <span><b data-count="${miles}">${fmt(miles)}</b> food miles</span>
+      <span><b data-count="${co2g}" data-suffix=" g">${fmt(co2g)} g</b> CO₂ saved</span>
+      <span><b data-count="${kg.toFixed(1)}" data-dec="1">${fmt(kg, 1)}</b> kg grown</span>
+      <span><b>${trees.length}</b> ${trees.length === 1 ? 'tree' : 'trees'}</span>
+      ${icon('chevron', { size: 18, cls: 'ti-go' })}
+    </a>`;
 
-  // the seasonal tree card: one big picture, a few trees to tap
-  const s = treeSeason(), m = new Date().getMonth() + 1, bt = bestTrees().slice(0, 4), top = bt[0];
-  const treeCard = top ? `
-    <section class="c3 d-tree" aria-labelledby="tree-t">
-      <div class="tree-body">
-        <p class="tree-when">${art('calendar', { size: 26 })}${s ? (s.on ? 'Planting season' : `From ${MONTH_NAMES[s.next - 1]}`) : 'Trees'}</p>
-        <h2 id="tree-t">${s?.on ? `Plant a tree this ${seasonWord(m)}` : 'Plant a tree'}</h2>
-        <ul class="tree-picks">${bt.slice(1).map((p) => `<li><a href="#/plant/${p.id}" aria-label="${esc(p.name)}"><img src="${thumb(p.id)}" alt="" width="64" height="64" loading="lazy"></a></li>`).join('')}</ul>
-        <a class="b3 b3-white" href="#/find/trees">All trees</a>
-      </div>
-      <a class="tree-pic" href="#/plant/${top.id}" aria-label="${esc(top.name)}"><img src="${thumb(top.id)}" alt="" width="220" height="220"><span>${esc(top.name)}</span></a>
-    </section>` : '';
-
-  const V = await RV();
   main.innerHTML = `
-  <div class="page today">
-    <div class="dash${fresh ? ' is-fresh' : ''}">
+  <div class="page today ombre" data-tone="today">
+    <div class="tgrid${fresh ? ' is-fresh' : ''}">
       ${hero}
-      <section class="c3 d-quests" id="quests" aria-labelledby="quest-t">${questCard()}</section>
-      ${fresh ? '' : `
-      <section class="c3 d-pot" aria-label="Your plant in its pot">
-        <div class="stage3d" id="pot-stage"></div>
-        <div class="pot-info"><h2 id="pot-name">${esc(plantById(entry.id).name)}</h2><span class="tag" id="pot-age"></span><p class="pot-mood" id="pot-mood"></p></div>
-      </section>
-      <section class="c3 d-plants" aria-labelledby="plants-t">
-        <div class="card-head"><h2 id="plants-t">Your plants</h2><a class="b3 b3-white b3-sm" href="#/find">${ICON.plus}Add</a></div>
-        <ul class="ptiles" id="plants"></ul>
-        <input type="file" accept="image/*" class="vh" id="repair-in" aria-hidden="true" tabindex="-1">
-      </section>`}
-      <section class="c3 d-path" aria-labelledby="path-t">
-        <div class="card-head"><h2 id="path-t">Streak chests</h2>${helpBtn('streak', 'How streaks work')}</div>
-        <div id="mpath">${V.milestonePath(n, { compact: true })}</div>
-      </section>
-      ${stats}
-      ${treeCard}
+      <section class="t-quests lcd" id="quests" aria-labelledby="quest-t">${questCard()}</section>
+      <div class="t-slot" id="today-slot" data-slot="care"></div>
       ${fresh ? `
-      <section class="c3 d-sow" aria-labelledby="easy-t">
-        <div class="card-head"><h2 id="easy-t">Easy in a pot</h2><a class="b3 b3-white b3-sm" href="#/find">All</a></div>
-        <div class="tiles">${easy.map((p) => tile(p)).join('')}</div>
-      </section>` : ''}
+      <section class="t-plants" aria-labelledby="easy-t">
+        <div class="sec-head"><h2 id="easy-t">Easy in a pot</h2><a class="sec-link" href="#/find">See all</a></div>
+        <ul class="pcards">${easy.map((p) => `<li class="pcard c3 pc-pick"><a class="pc-pic" href="#/plant/${p.id}" tabindex="-1" aria-hidden="true"><img src="${picOf(p.id)}" alt="" width="320" height="240" loading="lazy"></a><div class="pc-body"><a class="pc-name" href="#/plant/${p.id}"><b>${esc(p.name)}</b></a><span class="pc-sub">${esc(p.grow?.days_to_harvest ? `Ready in ${p.grow.days_to_harvest[0]}–${p.grow.days_to_harvest[1]} days` : 'Easy to grow')}</span></div></li>`).join('')}</ul>
+      </section>` : `
+      <section class="t-plants" aria-labelledby="plants-t">
+        <div class="sec-head"><h2 id="plants-t">Your plants</h2><a class="sec-link" href="#/find">${ICON.plus}Add</a></div>
+        <ul class="pcards" id="plants"></ul>
+        <input type="file" accept="image/*" class="vh" id="repair-in" aria-hidden="true" tabindex="-1">
+      </section>
+      ${impact}`}
     </div>
   </div>`;
 
   bindHelp(main, HELP);
   countAll(main); fillAll(main);
-  pop($('.hero-pip .pipw', main), { delay: 120 });
-  // green fluted glass behind the streak hero (the only place it stays)
-  const { fluted } = await import('./fluted.js?v=9');
-  const bg = risk ? { dispose() {} } : fluted($('#hero')); // the evening sky has no glass
+  const stopHero = runFaces($('#hero', main));
+  // a slot under the hero for other features (care help, weather): they listen for zm:today
+  dispatchEvent(new CustomEvent('zm:today', { detail: { slot: $('#today-slot', main), main } }));
 
-  // chests: today's (in the quest card) and the streak ones (on the path)
-  const bindChests = (root) => $$('[data-chest]', root).forEach((b) => b.addEventListener('click', async () => {
-    await V.openChestFlow(b.dataset.chest); refreshGame();
-  }));
   function refreshGame() {
     const q = $('#quests'); if (!q) return;
-    q.innerHTML = questCard(); fillAll(q); bindChests(q);
-    const p = $('#mpath'); if (p) { p.innerHTML = V.milestonePath(overallStreak(), { compact: true }); bindChests(p); }
+    q.innerHTML = questCard();
   }
-  bindChests(main);
   const offReward = onReward((o, kind) => { if (kind !== 'photo') setTimeout(refreshGame, 0); });
   addEventListener('zm:rewards', refreshGame);
 
-  let v = null, pot = null, stopFaces = () => {};
-  if (!fresh) {
-    const [{ createViewer }, { makePot }] = await Promise.all([import('./viewer.js?v=9'), import('./pot3d.js?v=2'), import('./trees3d.js?v=9')]);
-    v = createViewer($('#pot-stage'), { controls: true, spin: false });
-    v.onFrame = (dt) => pot?.tick(dt);
-    garden.makePot = makePot;
-  }
-
-  function drawPot() {
-    if (!v) return;
-    const id = entry.id, t = growthT(entry), tree = treeOf(entry);
-    pot = null;
-    if (tree) v.setPlant(id, t);
-    else v.setPlant(id, t, { extraObject: (box) => { const size = box.getSize(new (box.min.constructor)()); pot = garden.makePot(Math.max(.07, Math.max(size.x, size.z) * .32, size.y * .16)); return pot.group; } });
-    const md = moodOf(entry); pot?.setMood(md); v.stage.rotation.y = .6; v.kick();
-    const p = plantById(entry.id), age = dayDiff(entry.planted, today());
-    $('#pot-name').textContent = p.name;
-    if (tree) {
-      const due = treePhotoDue(entry);
-      $('#pot-age').textContent = treeAge(entry);
-      $('#pot-mood').textContent = due.due ? 'Seasonal photo due' : `Next photo in ${due.days} days`;
-      return;
-    }
-    $('#pot-age').textContent = age === 0 ? 'Planted today' : `Day ${age + 1}`;
-    $('#pot-mood').textContent = `${moodWord(md)} · ${stageName(entry, p)}`;
-  }
-
-  // this week: photo days show the photo, a day saved by the watering can shows the can, a missed day can be filled in
-  async function dots() {
+  // this week as pixel dots: lit for a photo, half-lit for a day the watering can saved, a missed day can be filled in
+  function dots() {
     const el = $('#dots'); if (!el) return;
     const days = photoDays(), kept = savedDays(), first = state.garden.map((e) => e.planted).sort()[0];
     el.innerHTML = '';
@@ -335,17 +273,12 @@ export default async function garden(main) {
       const dn = shortDay(d);
       const did = days.has(d), sav = !did && kept.has(d), isToday = d === today(), missed = !did && !sav && !isToday && d >= first;
       const t = document.createElement(missed ? 'button' : 'div');
-      t.className = `dot${did ? ' done' : ''}${sav ? ' kept' : ''}${isToday ? ' is-today' : ''}${missed ? ' miss' : ''}`;
+      t.className = `pxd${did ? ' did' : ''}${sav ? ' sav' : ''}${isToday ? ' tdy' : ''}${missed ? ' miss' : ''}`;
       const sayD = `${dn}${did ? ', photo taken' : sav ? ', saved by the watering can' : missed ? ', no photo, tap to add one from that day' : ''}${isToday ? ', today' : ''}`;
-      if (missed) { t.type = 'button'; t.setAttribute('aria-label', sayD); t.innerHTML = `<i>${ICON.plus}</i><span>${dn.slice(0, 1)}</span>`; }
-      else t.innerHTML = `<span class="vh">${sayD}</span><i aria-hidden="true">${sav ? art('can-freeze', { size: 26 }) : ''}</i><span aria-hidden="true">${dn.slice(0, 1)}</span>`;
+      if (missed) { t.type = 'button'; t.setAttribute('aria-label', sayD); }
+      t.innerHTML = `${missed ? '' : `<span class="vh">${sayD}</span>`}<i aria-hidden="true">${missed ? art('plus', { size: 16 }) : ''}</i><span aria-hidden="true">${dn.slice(0, 1)}</span>`;
       if (missed) t.addEventListener('click', () => { $('#repair-in').dataset.date = d; $('#repair-in').click(); });
       el.appendChild(t);
-      if (did) {
-        const l = state.garden.flatMap((e) => e.log).find((x) => x.date === d);
-        const b = l && await getPhoto(l.key);
-        if (b && t.isConnected) { const img = new Image(); img.alt = ''; img.src = objURL(b); t.querySelector('i').appendChild(img); }
-      }
     }
   }
   $('#repair-in')?.addEventListener('change', async (e) => {
@@ -356,7 +289,8 @@ export default async function garden(main) {
     dispatchEvent(new HashChangeEvent('hashchange')); // the router redraws Today
   });
 
-  // one tile per plant: Pip's face for its mood, day count, one-tap Photo and Water
+  // one card per plant: your latest photo (or a real reference photo), Pip's mood on a tiny LCD, Photo / Water / more
+  let stopFaces = () => {};
   function rows() {
     const box = $('#plants'); if (!box) return;
     stopFaces();
@@ -364,43 +298,42 @@ export default async function garden(main) {
       const p = plantById(e.id); if (!p) return '';
       const tree = isTree(p), w = wateredToday(e), md = moodOf(e);
       const ok = tree ? !treePhotoDue(e).due : snappedToday(e);
-      const age = tree ? treeAge(e) : `Day ${dayDiff(e.planted, today()) + 1}`;
-      return `<li class="ptile${e === entry ? ' active' : ''}${ok ? ' done' : ''}" data-id="${e.id}">
-        <button class="pt-face" type="button" data-pick aria-label="${esc(p.name)} feels: ${esc(moodWord(md))}. Show in the pot"><canvas data-mood="${md}"></canvas><img src="${thumb(e.id)}" alt="" width="44" height="44" loading="lazy"></button>
-        <a class="pt-name" href="#/plant/${e.id}"><b>${esc(p.name)}</b><span>${age}</span></a>
-        <div class="pt-acts">
-          ${ok ? `<span class="pt-ok" role="img" aria-label="${tree ? 'Seasonal photo done' : 'Photo done today'}">${ICON.check}</span>` : `<a class="b3 b3-sun b3-sq" href="#/snap/${e.id}" aria-label="Photo of ${esc(p.name)}">${ICON.photo}</a>`}
-          <button class="b3 b3-sq ${w ? 'b3-sky' : 'b3-white'} water" type="button" data-water aria-pressed="${w}" aria-label="${w ? 'Watered' : 'Water'} ${esc(p.name)}">${ICON.water}</button>
-          ${`<button class="b3 b3-white b3-sq" type="button" data-more aria-expanded="false" aria-label="Log ${tree ? 'height or harvest' : 'a harvest'} for ${esc(p.name)}">${ICON.more}</button>`}
+      const age = tree ? treeAge(e) : `Day ${dayDiff(e.planted, today()) + 1} · ${stageName(e, p)}`;
+      return `<li class="pcard c3${ok ? ' done' : ''}" data-id="${e.id}">
+        <a class="pc-pic" href="#/plant/${e.id}" tabindex="-1" aria-hidden="true"><img src="${picOf(e.id)}" alt="" width="320" height="240" loading="lazy" data-ref></a>
+        <span class="pc-mood lcd" title="${esc(moodWord(md))}">${faceCanvas(md)}<span class="vh">${esc(p.name)} feels: ${esc(moodWord(md))}</span></span>
+        <div class="pc-body"><a class="pc-name" href="#/plant/${e.id}"><b>${esc(p.name)}</b></a><span class="pc-sub">${esc(age)}</span></div>
+        <div class="pc-acts">
+          ${ok ? `<span class="pc-ok">${ICON.check}${tree ? 'Season done' : 'Photo done'}</span>` : `<a class="b3 b3-sm" href="#/snap/${e.id}">${ICON.photo}Photo</a>`}
+          <button class="b3 b3-sm b3-white pc-water" type="button" data-water aria-pressed="${w}">${ICON.water}<span>${w ? 'Watered' : 'Water'}</span><span class="vh"> ${esc(p.name)}</span></button>
+          <button class="b3 b3-sm b3-white b3-sq" type="button" data-more aria-expanded="false" aria-label="Log ${tree ? 'height or harvest' : 'a harvest'} for ${esc(p.name)}">${ICON.more}</button>
         </div>
         <div class="amounts" hidden>
-          ${!tree || isFruitTree(p) ? `<p class="am-h">${art('basket', { size: 28 })}Picked</p><div class="am-row">${[100, 250, 500, 1000].map((g) => `<button class="b3 b3-white b3-sm" type="button" data-g="${g}">${g < 1000 ? g + ' g' : '1 kg'}</button>`).join('')}</div>` : ''}
+          ${!tree || isFruitTree(p) ? `<p class="am-h">Picked</p><div class="am-row">${[100, 250, 500, 1000].map((g) => `<button class="b3 b3-white b3-sm" type="button" data-g="${g}">${g < 1000 ? g + ' g' : '1 kg'}</button>`).join('')}</div>` : ''}
           ${tree ? `<form class="hform"><label for="h-${e.id}">Height</label><input id="h-${e.id}" type="number" inputmode="numeric" min="1" max="6000" step="1" placeholder="cm" required><button class="b3 b3-sm">Save</button></form>` : ''}
         </div>
       </li>`;
-    }).join('');
-    stopFaces = faceLoop($$('canvas[data-mood]', box));
-    const idOf = (el) => el.closest('.ptile').dataset.id, find = (id) => state.garden.find((x) => x.id === id);
-    $$('[data-pick]', box).forEach((b) => b.addEventListener('click', () => {
-      const id = idOf(b); entry = find(id); state.active = id; save(); drawPot();
-      $$('.ptile', box).forEach((c) => c.classList.toggle('active', c.dataset.id === id));
-      if (matchMedia('(max-width: 999px)').matches) $('#pot-stage')?.scrollIntoView({ behavior: reduced() ? 'auto' : 'smooth', block: 'center' });
-    }));
+    }).join('') + `<li><a class="pc-add" href="#/find">${icon('plus')}Add a plant<span>Herbs, veg, fruit or a tree</span></a></li>`;
+    stopFaces = runFaces(box);
+    // your own latest photo replaces the reference picture
+    for (const li of $$('.pcard[data-id]', box)) {
+      const e = state.garden.find((x) => x.id === li.dataset.id), last = [...e.log].sort((a, b) => (a.date < b.date ? 1 : -1))[0];
+      if (last) getPhoto(last.key).then((b) => { if (b && li.isConnected) { const img = li.querySelector('[data-ref]'); img.src = objURL(b); img.closest('.pc-pic').classList.add('own'); } }).catch(() => {});
+    }
+    const idOf = (el) => el.closest('.pcard').dataset.id, find = (id) => state.garden.find((x) => x.id === id);
     $$('[data-water]', box).forEach((b) => b.addEventListener('click', () => {
       const e = find(idOf(b)); const on = toggleWatered(e);
-      b.setAttribute('aria-pressed', on); b.classList.toggle('b3-sky', on); b.classList.toggle('b3-white', !on);
-      b.setAttribute('aria-label', `${on ? 'Watered' : 'Water'} ${plantById(e.id).name}`);
+      b.setAttribute('aria-pressed', on); b.querySelector('span').textContent = on ? 'Watered' : 'Water';
       play(on ? 'water' : 'toggle');
       if (on) { haptic(10); drops(b); const out = award('water', { id: e.id }); if (out.xp) floatGain(b, `+${out.xp - out.quests.reduce((a, q) => a + q.xp, 0)} XP`, 'sky'); }
-      if (e === entry) drawPot();
     }));
-    $$('[data-more]', box).forEach((b) => b.addEventListener('click', () => { const h = b.closest('.ptile').querySelector('.amounts'); h.hidden = !h.hidden; b.setAttribute('aria-expanded', !h.hidden); if (!h.hidden) h.querySelector('input, button')?.focus(); }));
+    $$('[data-more]', box).forEach((b) => b.addEventListener('click', () => { const h = b.closest('.pcard').querySelector('.amounts'); h.hidden = !h.hidden; b.setAttribute('aria-expanded', !h.hidden); if (!h.hidden) h.querySelector('input, button')?.focus(); }));
     $$('.hform', box).forEach((f) => f.addEventListener('submit', (ev) => {
       ev.preventDefault();
       const cm = Math.round(+f.querySelector('input').value); if (!(cm > 0)) return;
       const e = find(idOf(f)); logHeight(e, cm);
       toast(`${plantById(e.id).name}: ${fmt(cm)} cm`);
-      const r = f.getBoundingClientRect(); burst(r.left + r.width / 2, r.top); rows(); if (e === entry) drawPot();
+      const r = f.getBoundingClientRect(); burst(r.left + r.width / 2, r.top); rows();
     }));
     $$('[data-g]', box).forEach((b) => b.addEventListener('click', () => {
       const e = find(idOf(b)); logHarvest(e, +b.dataset.g);
@@ -410,23 +343,26 @@ export default async function garden(main) {
       award('harvest', { id: e.id }); rows(); changed();
     }));
   }
-  // celebrate stages, once each: first sprout, first flower, ready to pick
+  // say stages once each: first sprout, first flower, ready to pick, and each tree's birthday
   function stages() {
     if (fresh) return;
-    const p = plantById(entry.id), st = stageName(entry, p);
-    const said = entry.stagesSeen ||= [];
-    const party = () => { const r = $('#pot-stage')?.getBoundingClientRect(); if (r) confetti(r.left + r.width / 2, r.top + r.height / 2, { count: 28 }); };
-    if (isTree(p)) {
-      const y = Math.floor(dayDiff(entry.planted, today()) / 365), key = `year-${y}`;
-      const msg = y >= 1 && !said.includes(key) ? `${y} year${y === 1 ? '' : 's'} since you planted your ${p.name.toLowerCase()}!` : st === 'Fruiting age' && !said.includes(st) ? `Your ${p.name.toLowerCase()} is old enough to fruit soon.` : null;
-      if (msg) { said.push(y >= 1 && !said.includes(key) ? key : st); save(); setTimeout(() => { toast(msg); party(); }, 600); }
-      return;
+    for (const e of state.garden) {
+      const p = plantById(e.id); if (!p) continue;
+      const st = stageName(e, p), said = e.stagesSeen ||= [];
+      let msg = null, key = null;
+      if (isTree(p)) {
+        const y = Math.floor(dayDiff(e.planted, today()) / 365);
+        if (y >= 1 && !said.includes(`year-${y}`)) { key = `year-${y}`; msg = `${y} year${y === 1 ? '' : 's'} since you planted your ${p.name.toLowerCase()}!`; }
+        else if (st === 'Fruiting age' && !said.includes(st)) { key = st; msg = `Your ${p.name.toLowerCase()} is old enough to fruit soon.`; }
+      } else {
+        msg = !said.includes(st) ? { Sprout: `${p.name} has sprouted!`, Flowering: `First flowers on your ${p.name.toLowerCase()}!`, 'Ready to pick': `Your ${p.name.toLowerCase()} is ready to pick!` }[st] : null;
+        key = st;
+      }
+      if (msg) { said.push(key); save(); setTimeout(() => { toast(msg); const r = $(`.pcard[data-id="${e.id}"]`)?.getBoundingClientRect(); if (r) confetti(r.left + r.width / 2, r.top + r.height / 3, { count: 24 }); }, 600); break; }
     }
-    const msg = { Sprout: `${p.name} has sprouted!`, Flowering: `First flowers on your ${p.name.toLowerCase()}!`, 'Ready to pick': `Your ${p.name.toLowerCase()} is ready to pick!` }[st];
-    if (msg && !said.includes(st)) { said.push(st); save(); setTimeout(() => { toast(msg); party(); }, 600); }
   }
-  drawPot(); dots(); rows(); stages();
-  return { unmount() { offReward(); removeEventListener('zm:rewards', refreshGame); stopFaces(); bg.dispose(); v?.dispose(); freeURLs(); } };
+  dots(); rows(); stages();
+  return { unmount() { offReward(); removeEventListener('zm:rewards', refreshGame); stopFaces(); stopHero(); freeURLs(); } };
 }
 // three water drops falling from the Water button
 function drops(b) {
@@ -448,25 +384,25 @@ export async function snapView(main, id) {
     const easy = D.plants.filter((p) => p.grow?.difficulty === 'easy' && p.grow?.container_ok).slice(0, 8);
     main.innerHTML = `<div class="page">
       <header class="page-head"><h1>Photo</h1></header>
-      <section class="c3 empty3">${pip('point', { size: 140 })}<p>Add a plant first</p><a class="b3 b3-sun" href="#/find">Pick a plant</a></section>
+      <section class="c3 empty3">${pip('point', { size: 140 })}<p>Add a plant first</p><a class="b3" href="#/find">Pick a plant</a></section>
       <section class="c3"><div class="card-head"><h2>Easy to start</h2><a class="b3 b3-white b3-sm" href="#/find">All</a></div><div class="tiles">${easy.map((p) => tile(p)).join('')}</div></section>
     </div>`;
     return;
   }
   let entry = state.garden.find((e) => e.id === id) || state.garden.find((e) => e.id === state.active) || state.garden[0];
   const CHECKS = `<ul class="checks" aria-label="What the app looks at">
-    <li><i style="--c:#3fae49"></i><span>Green</span></li>
-    <li><i style="--c:#ffc531"></i><span>Yellowing</span></li>
-    <li><i style="--c:#c4653d"></i><span>Dry edges</span></li></ul>`;
+    <li><i style="--c:#23774a"></i><span>Green</span></li>
+    <li><i style="--c:#d9a441"></i><span>Yellowing</span></li>
+    <li><i style="--c:#a8522d"></i><span>Dry edges</span></li></ul>`;
   main.innerHTML = `
-  <div class="page snap">
+  <div class="page snap ombre" data-tone="find">
     <header class="page-head"><h1>Photo</h1></header>
     <div class="chips" role="group" aria-label="Which plant" id="which"></div>
     <div class="snap-grid">
       <div class="snap-col">
-        <div class="frame" id="frame"><div class="corners" aria-hidden="true"><i></i><i></i><i></i><i></i></div><p class="hint" id="hint">Fill the frame</p><div class="frame-pip" aria-hidden="true">${pip('point', { size: 92 })}</div></div>
+        <div class="frame" id="frame"><div class="corners" aria-hidden="true"><i></i><i></i><i></i><i></i></div><p class="hint" id="hint">Fill the frame</p></div>
         <div class="snap-actions">
-          <label class="b3 b3-sun b3-wide b3-xl" for="photo" id="snap-btn">${ICON.photo}Take a photo</label>
+          <label class="b3 b3-wide b3-xl" for="photo" id="snap-btn">${ICON.photo}Take a photo</label>
           <input id="photo" class="vh" type="file" accept="image/*" capture="environment">
         </div>
       </div>
@@ -509,9 +445,9 @@ export async function snapView(main, id) {
     fb.innerHTML = `
       <div class="score"><div class="score-face"><canvas data-mood="${res.mood || 'okay'}"></canvas></div><div><h2><b data-count="${res.score}">${res.score}</b><span class="vh"> out of 100. </span></h2><p class="score-word">${esc(moodWord(res.mood))}</p></div></div>
       <div class="meter">
-        <div><span>Green</span><div class="bar3" style="--c:var(--leaf)"><i data-fill="${m.green.toFixed(3)}"></i></div><b>${pct(m.green)}%</b></div>
-        <div><span>Yellow</span><div class="bar3" style="--c:var(--sun)"><i data-fill="${m.yellow.toFixed(3)}"></i></div><b>${pct(m.yellow)}%</b></div>
-        <div><span>Dry</span><div class="bar3" style="--c:var(--pot-d)"><i data-fill="${m.brown.toFixed(3)}"></i></div><b>${pct(m.brown)}%</b></div>
+        <div><span>Green</span><div class="bar3"><i data-fill="${m.green.toFixed(3)}"></i></div><b>${pct(m.green)}%</b></div>
+        <div><span>Yellow</span><div class="bar3 y"><i data-fill="${m.yellow.toFixed(3)}"></i></div><b>${pct(m.yellow)}%</b></div>
+        <div><span>Dry</span><div class="bar3 dry"><i data-fill="${m.brown.toFixed(3)}"></i></div><b>${pct(m.brown)}%</b></div>
       </div>
       <ul class="notes">${res.notes.slice(0, 2).map((x) => `<li>${esc(x)}</li>`).join('')}</ul>`;
     countAll(fb); fillAll(fb);

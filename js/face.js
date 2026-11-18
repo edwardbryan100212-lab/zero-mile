@@ -11,7 +11,7 @@ export const moodWord = (m) => WORDS[m] || WORDS.okay;
 
 const RM = typeof matchMedia === 'function' ? matchMedia('(prefers-reduced-motion: reduce)') : null;
 
-export const LCD = { on: '#5dff7a', glow: 'rgba(93,255,122,.75)', screen: '#070b08', screenHi: '#0e1a11', bezel: '#151a16', grid: 'rgba(93,255,122,.06)' };
+export const LCD = { on: '#62f27e', glow: 'rgba(98,242,126,.7)', screen: '#0c110d', screenHi: '#121a14', bezel: '#1a1f1b', grid: 'rgba(98,242,126,.07)', dim: 'rgba(98,242,126,.06)' };
 
 // Pixel maps. '#' is a lit pixel, '+' a half-lit one, anything else is off.
 const P = (s) => s.trim().split('/');
@@ -121,7 +121,7 @@ function rr(ctx, x, y, w, h, r) {
 }
 
 export function drawFace(ctx, w, h, mood = 'okay', t = 0, opts = {}) {
-  const bg = opts.bg !== false;
+  const bg = opts.bg !== false, bare = !!opts.bare; // bare: drawn straight onto an LCD panel (no screen, glare or edge)
   const still = !!(RM && RM.matches);
   w = Math.round(w); h = Math.round(h);
   ctx.save();
@@ -129,10 +129,12 @@ export function drawFace(ctx, w, h, mood = 'okay', t = 0, opts = {}) {
   if (bg) { ctx.fillStyle = LCD.bezel; ctx.fillRect(0, 0, w, h); }
   const rad = Math.round(Math.min(w, h) * .2);
   rr(ctx, 0, 0, w, h, rad);
-  const sg = ctx.createRadialGradient(w * .5, h * .42, 0, w * .5, h * .5, Math.max(w, h) * .62);
-  sg.addColorStop(0, LCD.screenHi); sg.addColorStop(1, LCD.screen);
-  ctx.fillStyle = sg; ctx.fill();
-  ctx.clip();
+  if (!bare) {
+    const sg = ctx.createRadialGradient(w * .5, h * .42, 0, w * .5, h * .5, Math.max(w, h) * .62);
+    sg.addColorStop(0, LCD.screenHi); sg.addColorStop(1, LCD.screen);
+    ctx.fillStyle = sg; ctx.fill();
+    ctx.clip();
+  }
 
   // integer cells, sized so the 24 x 14 sprite fits with a margin
   const c = Math.max(2, Math.floor(Math.min(w / 26, h / 16)));
@@ -143,7 +145,7 @@ export function drawFace(ctx, w, h, mood = 'okay', t = 0, opts = {}) {
   const px = c - gap;
 
   // the soft grid of unlit pixels
-  ctx.fillStyle = LCD.grid;
+  ctx.fillStyle = bare ? LCD.dim : LCD.grid;
   for (let j = 0; j < rows; j++) for (let i = 0; i < cols; i++) ctx.fillRect(ox + i * c, oy + j * c, px, px);
 
   // lit pixels: one glowing pass, then the half-lit ones
@@ -157,6 +159,7 @@ export function drawFace(ctx, w, h, mood = 'okay', t = 0, opts = {}) {
   }
   ctx.globalAlpha = 1; ctx.shadowBlur = 0; ctx.shadowColor = 'transparent';
 
+  if (bare) { ctx.restore(); return; }
   // glass: a soft glare at the top and a thin inner edge
   const gl = ctx.createLinearGradient(0, 0, 0, h * .5);
   gl.addColorStop(0, 'rgba(255,255,255,.07)'); gl.addColorStop(1, 'rgba(255,255,255,0)');

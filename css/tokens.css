@@ -1,28 +1,106 @@
-/* Zero Mile app design tokens and chunky 3D components (see DESIGN.md). Loaded before every other app style. */
+/* Zero Mile app tokens, v2 "Garden LCD" (see DESIGN.md). Two materials only: calm paper with ink and real plant
+   photos, and Pip's black LCD with green pixels for everything game-like. Loaded before every other app style.
+   The v1 names (--sun, --sky, --berry, --tomato, .b3, .c3, .bar3) still work but now draw in the v2 palette. */
 :root {
-  --leaf: #3fae49; --leaf-d: #2b8a34; --ink: #1d3b24; --muted3: #5b6f60;
-  --sun: #ffc531; --sun-d: #e0a200; --tomato: #ff5a4e; --tomato-d: #d93b30;
-  --sky: #36b4f0; --sky-d: #1a8fcc; --berry: #a560e8; --berry-d: #7f3fc4;
-  --pot: #e8865b; --pot-d: #c4653d; --bg3: #ffffff; --line: #e5ebe2; --line-d: #d3dccf;
-  --r-btn: 16px; --r-card: 20px;
-  --ease: cubic-bezier(.22,1,.36,1); --pop: cubic-bezier(.34,1.56,.64,1);
-  --font3: 'Nunito', ui-rounded, system-ui, sans-serif;
+  /* paper */
+  --paper: #f6f3ea; --card: #fffdf7; --line: #e7e1d2; --line-d: #d6cebb; --paper-2: #efeadd;
+  --ink: #17221a; --ink-2: #4d5a50;
+  /* leaf: the one green, for the primary action */
+  --leaf: #23774a; --leaf-d: #1b5e3a; --leaf-dd: #154a2e; --leaf-t: #e3f1e8;
+  /* terracotta: Pip, pots, the one warm accent */
+  --pot: #c8673d; --pot-d: #a8522d; --pot-t: #f7e6dc; --pot-ink: #8f4322;
+  /* status chips only */
+  --warn: #b7791f; --err: #b42318;
+  /* Pip's LCD */
+  --lcd: #0c110d; --lcd-2: #121a14; --bezel: #1f2620; --bezel-d: #141915;
+  --px: #62f27e; --px-dim: #1f5a2b; --px-faint: rgba(98, 242, 126, .07); --px-amber: #ffcf4a;
+  --px-glow: 0 0 6px rgba(98, 242, 126, .55);
+  /* ombre fields (round 3): two soft fields per screen, drawn on the paper */
+  --o-mint: #dff0e4; --o-sage: #e8efe0; --o-peach: #f8e3d6; --o-butter: #fbf1d4; --o-sky: #e2eef5;
+  /* type */
+  --f-head: 'Bricolage Grotesque', 'Nunito', system-ui, sans-serif;
+  --f-ui: 'Nunito', ui-rounded, system-ui, sans-serif;
+  --f-px: 'Tiny5', 'Pixelify Sans', ui-monospace, monospace; /* Tiny5: clear pixel digits (Pixelify's 5 reads as S) */
+  --font3: var(--f-ui);
+  /* shape and motion */
+  --r-btn: 14px; --r-card: 18px; --r-lcd: 16px;
+  --sh-card: 0 1px 0 var(--line);
+  --ease: cubic-bezier(.22, 1, .36, 1); --pop: cubic-bezier(.22, 1, .36, 1);
+  --muted3: var(--ink-2);
+  /* v1 accent names, mapped onto the v2 palette so older markup keeps a sane colour */
+  --sun: var(--pot); --sun-d: var(--pot-d); --sun-s: var(--pot-t);
+  --sky: var(--leaf); --sky-d: var(--leaf-d); --sky-t: var(--leaf-d); --sky-s: var(--leaf-t);
+  --berry: var(--pot); --berry-d: var(--pot-d);
+  --tomato: var(--err); --tomato-d: #8f1c13;
+  --leaf-f: var(--leaf-t); --leaf-fd: var(--line); --leaf-s: var(--leaf-t);
+  --pot-s: var(--pot-t); --bg3: var(--card);
 }
-.b3 { --c: var(--leaf); --d: var(--leaf-d); --t: #fff;
+
+/* ---------- buttons: subtle, tactile, sentence case ---------- */
+.b3 { --c: var(--leaf); --d: var(--leaf-dd); --t: #fff; --b: var(--c);
   display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 0 20px;
-  font: 800 1rem/1 var(--font3); letter-spacing: .02em; text-transform: uppercase; color: var(--t);
-  background: var(--c); border: 2px solid var(--d); border-bottom-width: 6px; border-radius: var(--r-btn);
-  cursor: pointer; text-decoration: none; transition: transform 90ms var(--ease), border-bottom-width 90ms var(--ease);
+  font: 800 1rem/1.1 var(--f-ui); letter-spacing: 0; text-transform: none; color: var(--t);
+  background: var(--c); border: 1px solid var(--b); border-radius: var(--r-btn);
+  box-shadow: inset 0 -2px 0 var(--d);
+  cursor: pointer; text-decoration: none; white-space: nowrap;
+  transition: transform 140ms var(--ease), box-shadow 140ms var(--ease), background-color 160ms ease;
   touch-action: manipulation; user-select: none; -webkit-user-select: none; }
-.b3:active { transform: translateY(4px); border-bottom-width: 2px; }
-.b3-sun { --c: var(--sun); --d: var(--sun-d); --t: #5a3d00; }
-.b3-sky { --c: var(--sky); --d: var(--sky-d); }
-.b3-berry { --c: var(--berry); --d: var(--berry-d); }
-.b3-tomato { --c: var(--tomato); --d: var(--tomato-d); }
-.b3-white { --c: #fff; --d: var(--line-d); --t: var(--leaf-d); }
+.b3:active { transform: translateY(1px) scale(.98); box-shadow: inset 0 0 0 var(--d); }
+@media (hover: hover) and (pointer: fine) { .b3:hover { background: color-mix(in srgb, var(--c) 92%, #000); } }
+/* secondary: paper with an ink border */
+.b3-white, .b3-sky, .b3-ghost { --c: var(--card); --b: var(--ink); --d: var(--line); --t: var(--ink); }
+@media (hover: hover) and (pointer: fine) { .b3-white:hover, .b3-sky:hover, .b3-ghost:hover { background: var(--paper-2); } }
+/* warm: the terracotta for the rare second action (shop, Pip) */
+.b3-berry { --c: var(--pot); --d: var(--pot-ink); --t: #fff; }
+.b3-sun { --c: var(--leaf); --d: var(--leaf-dd); --t: #fff; } /* v1's main call to action */
+.b3-tomato { --c: var(--err); --d: #7a160d; --t: #fff; }
 .b3-wide { width: 100%; }
-.c3 { background: #fff; border: 2px solid var(--line); border-bottom-width: 4px; border-radius: var(--r-card); padding: 16px; }
-.bar3 { position: relative; height: 16px; border-radius: 999px; background: var(--line); overflow: hidden; }
-.bar3 > i { position: absolute; inset: 0 auto 0 0; width: var(--p, 0%); background: var(--c, var(--leaf)); border-radius: inherit; transition: width .6s var(--ease); }
-.bar3 > i::after { content: ''; position: absolute; left: 8px; right: 8px; top: 3px; height: 4px; border-radius: 4px; background: rgba(255,255,255,.35); }
-@media (prefers-reduced-motion: reduce) { .b3, .bar3 > i { transition: none; } }
+/* on LCD: a green-outlined pixel button */
+.b3-px, .lcd .b3 { --c: transparent; --b: var(--px); --d: transparent; --t: var(--px);
+  font-family: var(--f-px); font-weight: 400; font-size: 1.0625rem; letter-spacing: .02em; border-width: 2px; border-radius: 6px; box-shadow: none; }
+.lcd .b3:active, .b3-px:active { background: var(--px); color: var(--lcd); }
+@media (hover: hover) and (pointer: fine) { .lcd .b3:hover, .b3-px:hover { background: rgba(98, 242, 126, .12); } }
+.lcd .b3-solid { --c: var(--px); --t: var(--lcd); }
+
+/* ---------- paper card ---------- */
+.c3 { background: var(--card); border: 1px solid var(--line); border-radius: var(--r-card); padding: 16px; box-shadow: var(--sh-card); }
+
+/* ---------- progress bar: paper track, leaf fill; on LCD a pixel-segment bar ---------- */
+.bar3 { position: relative; height: 8px; border-radius: 999px; background: var(--paper-2); overflow: hidden; }
+.bar3 > i { position: absolute; inset: 0 auto 0 0; width: var(--p, 0%); background: var(--leaf); border-radius: inherit; transition: width .6s var(--ease); }
+.lcd .bar3 { height: 10px; border-radius: 2px; background: repeating-linear-gradient(90deg, var(--px-dim) 0 6px, transparent 6px 8px); }
+.lcd .bar3 > i { border-radius: 0; background: repeating-linear-gradient(90deg, var(--px) 0 6px, transparent 6px 8px); box-shadow: none; transition: width .6s steps(12, end); }
+
+/* ---------- Pip's LCD panel ---------- */
+.lcd { position: relative; color: var(--px); background: var(--lcd); border-radius: var(--r-lcd);
+  border: 6px solid var(--bezel); box-shadow: inset 0 0 0 1px #000, inset 0 0 28px rgba(98, 242, 126, .06), 0 1px 0 var(--bezel-d);
+  font-family: var(--f-px); isolation: isolate; }
+/* the faint pixel grid of unlit cells */
+.lcd::before { content: ''; position: absolute; inset: 0; z-index: -1; border-radius: calc(var(--r-lcd) - 6px); pointer-events: none;
+  background-image: linear-gradient(var(--lcd) 1px, transparent 1px), linear-gradient(90deg, var(--lcd) 1px, transparent 1px);
+  background-size: 4px 4px; background-color: var(--px-faint); opacity: .9; }
+.lcd :is(h1, h2, h3, p, b, span, em, strong) { color: inherit; }
+.px { font-family: var(--f-px); font-weight: 400; letter-spacing: .02em; }
+.px-glow { text-shadow: var(--px-glow); }
+.px-dim { color: var(--px-dim); }
+.px-amber { color: var(--px-amber); }
+.lcd .pxi, .pxi { display: inline-block; flex: none; shape-rendering: crispEdges; }
+
+/* ---------- ombre fields (round 3): two soft radial fields on the paper; LCD panels sit on top ---------- */
+.ombre { position: relative; isolation: isolate; }
+.ombre::after { content: ''; position: fixed; inset: -20vh -20vw; z-index: -1; pointer-events: none;
+  background:
+    radial-gradient(42% 38% at 12% 8%, var(--o1, var(--o-mint)) 0%, transparent 70%),
+    radial-gradient(46% 42% at 92% 62%, var(--o2, var(--o-peach)) 0%, transparent 72%);
+  animation: ombreDrift 60s ease-in-out infinite alternate; }
+.ombre[data-tone="today"] { --o1: var(--o-mint); --o2: var(--o-peach); }
+.ombre[data-tone="find"] { --o1: var(--o-sage); --o2: var(--o-butter); }
+.ombre[data-tone="impact"] { --o1: var(--o-sky); --o2: var(--o-mint); }
+.ombre[data-tone="rewards"] { --o1: var(--o-butter); --o2: var(--o-peach); }
+.ombre[data-tone="about"] { --o1: var(--o-sage); --o2: var(--o-sky); }
+@keyframes ombreDrift { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(4vw, 3vh, 0); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .b3, .bar3 > i, .lcd .bar3 > i { transition: none; }
+  .ombre::after { animation: none; }
+}

@@ -1,13 +1,13 @@
 // The game layer (see DESIGN.md): XP and levels with garden titles, seeds (the currency), 3 daily quests chosen
-// by the date, streak milestone chests, achievements and the shop. Everything lives in state.rewards and is saved
-// with save(). award(kind, opts) → { xp, seeds, levelUp, quests, unlocked, chest, milestones } and is idempotent per
+// by the date, streak milestones (a badge and seeds), achievements and the shop. Everything lives in state.rewards and is saved
+// with save(). award(kind, opts) → { xp, seeds, levelUp, quests, unlocked, chest (always null), milestones, bonus } and is idempotent per
 // day where it matters (a retaken photo, re-watering the same plant, opening the same plant page twice).
 import { state, save, today, overallStreak, bestStreak, plantById, trip, isTree } from './core.js?v=9';
 
 const R = () => {
   const r = (state.rewards ||= {});
   r.xp ??= 0; r.seeds ??= 0; r.days ||= {}; r.badges ||= []; r.owned ||= []; r.wear ||= {};
-  r.ms ||= {}; r.chests ||= []; r.photoDates ||= []; r.planted ||= []; r.trees ||= []; r.quests ||= {};
+  r.ms ||= {}; r.photoDates ||= []; r.planted ||= []; r.trees ||= []; r.quests ||= {};
   return r;
 };
 const subs = new Set();
@@ -59,30 +59,26 @@ export function dailyQuests(date = today()) {
   return d.q.map((id) => { const q = QUESTS[id]; const have = Math.min(q.need, q.have(d)); return { id, ...q, have, done: have >= q.need, claimed: d.done.includes(id) }; });
 }
 
-// ---------- chests ----------
+// ---------- streak milestones: a badge and seeds, paid once each (no chests) ----------
 export const MILESTONE_SEEDS = { 3: 20, 7: 50, 14: 75, 30: 150, 50: 200, 100: 400, 365: 1000 };
 export const MILESTONES = Object.keys(MILESTONE_SEEDS).map(Number);
-const dailyChestSeeds = (date) => 15 + Math.floor(rng(date + ':chest')() * 16); // 15–30
-// chest keys: 'day:YYYY-MM-DD' or 'ms:7'
-export function chestsReady() {
-  const r = R(), out = [];
-  for (const m of MILESTONES) if (r.ms[m] === 'ready') out.push({ key: `ms:${m}`, kind: 'milestone', n: m, seeds: MILESTONE_SEEDS[m] });
-  for (const [date, d] of Object.entries(r.days)) if (d.chest === 'ready') out.push({ key: `day:${date}`, kind: 'daily', date, seeds: dailyChestSeeds(date) });
-  return out;
-}
-export function openChest(key) {
-  const r = R(), [kind, v] = key.split(':'); let seeds = 0;
-  if (kind === 'ms' && r.ms[v] === 'ready') { r.ms[v] = 'open'; seeds = MILESTONE_SEEDS[v]; }
-  else if (kind === 'day') { const d = r.days[key.slice(4)]; if (d?.chest === 'ready') { d.chest = 'open'; seeds = dailyChestSeeds(key.slice(4)); } }
-  if (!seeds) return null;
-  r.seeds += seeds; r.chests.unshift({ key, date: today(), seeds, kind: kind === 'ms' ? 'milestone' : 'daily', n: kind === 'ms' ? +v : undefined }); r.chests = r.chests.slice(0, 60);
-  save(); emit({ seeds, chestOpened: key }, 'chest');
-  return { key, seeds };
-}
-// streak milestones reached become ready chests (each once, ever)
+export const dailyBonusSeeds = (date = today()) => 15 + Math.floor(rng(date + ':bonus')() * 16); // 15–30, all 3 quests done
+// kept so old callers don't break: there is nothing to open any more
+export const chestsReady = () => [];
+export const openChest = () => null;
+// streak milestones reached pay their seeds at once (each once, ever). r.ms[m] is 'paid'; the old 'ready' and
+// 'open' chest states from v1 count as reached, and a still-unopened 'ready' one pays out now.
 function syncMilestones(out) {
   const r = R(), n = Math.max(overallStreak(), 0);
-  for (const m of MILESTONES) if (n >= m && !r.ms[m]) { r.ms[m] = 'ready'; out?.milestones.push({ key: `ms:${m}`, n: m, seeds: MILESTONE_SEEDS[m] }); }
+  for (const m of MILESTONES) {
+    const st = r.ms[m];
+    if (st === 'ready' || (n >= m && !st)) {
+      r.ms[m] = 'paid'; r.seeds += MILESTONE_SEEDS[m];
+      if (out) { out.seeds += MILESTONE_SEEDS[m]; out.milestones.push({ key: `ms:${m}`, n: m, seeds: MILESTONE_SEEDS[m] }); }
+    }
+  }
+  // v1 daily chests left unopened: pay their seeds quietly
+  for (const [date, d] of Object.entries(r.days)) if (d.chest === 'ready') { d.chest = 'paid'; r.seeds += dailyBonusSeeds(date); }
 }
 
 // ---------- achievements ----------
@@ -94,21 +90,25 @@ function milesSkipped() {
 }
 export const BADGES = [
   { id: 'first-photo', name: 'First photo', test: () => state.garden.some((e) => e.log.length) },
+  { id: 'streak-3', name: '3-day streak', test: () => bestStreak() >= 3 },
   { id: 'streak-7', name: '7-day streak', test: () => bestStreak() >= 7 },
+  { id: 'streak-14', name: '14-day streak', test: () => bestStreak() >= 14 },
   { id: 'streak-30', name: '30-day streak', test: () => bestStreak() >= 30 },
-  { id: 'streak-100', name: '100-day streak', test: () => bestStreak() >= 100 },
+  { id: 'streak-50', name: '50-day streak', big: true, test: () => bestStreak() >= 50 },
+  { id: 'streak-100', name: '100-day streak', big: true, test: () => bestStreak() >= 100 },
+  { id: 'streak-365', name: 'A whole year', big: true, test: () => bestStreak() >= 365 },
   { id: 'first-harvest', name: 'First harvest', test: () => state.garden.some((e) => e.harvests?.length) },
   { id: 'five-plants', name: 'Five plants', test: () => state.garden.length >= 5 },
   { id: 'first-tree', name: 'First tree', test: () => countGroup('tree') >= 1 },
-  { id: 'ten-trees', name: 'Ten trees', test: () => countGroup('tree') >= 10 },
+  { id: 'ten-trees', name: 'Ten trees', big: true, test: () => countGroup('tree') >= 10 },
   { id: 'miles-100', name: '100 miles', test: () => milesSkipped() >= 100 },
-  { id: 'miles-1000', name: '1,000 miles', test: () => milesSkipped() >= 1000 },
+  { id: 'miles-1000', name: '1,000 miles', big: true, test: () => milesSkipped() >= 1000 },
   { id: 'herb-garden', name: 'Herb garden', test: () => countGroup('herb') >= 3 },
   { id: 'fruit-bowl', name: 'Fruit bowl', test: () => countGroup('fruit') >= 3 },
   { id: 'night-owl', name: 'Night owl', test: () => false }, // given by a photo after 9 pm
   { id: 'early-bird', name: 'Early bird', test: () => false }, // given by a photo before 8 am
   { id: 'level-5', name: 'Level 5', test: () => level().n >= 5 },
-  { id: 'level-10', name: 'Level 10', test: () => level().n >= 10 },
+  { id: 'level-10', name: 'Level 10', big: true, test: () => level().n >= 10 },
 ];
 export const BADGE_SEEDS = 10;
 const has = (id) => R().badges.some((b) => b.id === id);
@@ -170,14 +170,15 @@ export function award(kind, opts = {}) {
     d.done.push(q.id); r.seeds += q.seeds; out.seeds += q.seeds;
     addXP(q.xp, out); out.quests.push({ id: q.id, label: q.label, art: q.art, xp: q.xp, seeds: q.seeds });
   }
-  if (!d.chest && qs.every((q) => q.done)) { d.chest = 'ready'; out.chest = { key: `day:${today()}`, kind: 'daily', seeds: dailyChestSeeds(today()) }; }
+  // all three done: a seed bonus, added straight away
+  if (!d.bonus && !d.chest && qs.every((q) => q.done)) { d.bonus = dailyBonusSeeds(); r.seeds += d.bonus; out.seeds += d.bonus; out.bonus = d.bonus; }
   syncMilestones(out);
   checkBadges(out);
   prune(); save();
   emit(out, kind, opts);
   return out;
 }
-// call on app open: badges and milestone chests earned by existing data (no XP)
+// call on app open: badges and milestone seeds earned by existing data (no XP)
 export function check() {
   const out = { xp: 0, seeds: 0, levelUp: null, quests: [], unlocked: [], chest: null, milestones: [] };
   syncMilestones(out); checkBadges(out);
@@ -193,10 +194,10 @@ export function check() {
 export const SAVER_PRICE = 50, SAVER_MAX = 2;
 export const SHOP = [
   { id: 'can', kind: 'saver', name: 'Streak saver', art: 'can-freeze', price: SAVER_PRICE },
-  { id: 'pot-sky', kind: 'pot', name: 'Sky pot', color: '#36b4f0', shade: '#1a8fcc', price: 100 },
-  { id: 'pot-sun', kind: 'pot', name: 'Sun pot', color: '#ffc531', shade: '#e0a200', price: 150 },
-  { id: 'pot-berry', kind: 'pot', name: 'Berry pot', color: '#a560e8', shade: '#7f3fc4', price: 200 },
-  { id: 'pot-night', kind: 'pot', name: 'Night pot', color: '#2b3a4a', shade: '#18222c', price: 300 },
+  { id: 'pot-sky', kind: 'pot', name: 'Sky pot', color: '#5f8fa6', shade: '#47758b', price: 100 },
+  { id: 'pot-sun', kind: 'pot', name: 'Sun pot', color: '#d9a441', shade: '#b8862c', price: 150 },
+  { id: 'pot-berry', kind: 'pot', name: 'Berry pot', color: '#8c5a7e', shade: '#714563', price: 200 },
+  { id: 'pot-night', kind: 'pot', name: 'Night pot', color: '#2e3a33', shade: '#1d2620', price: 300 },
   { id: 'hat-cap', kind: 'hat', name: 'Cap', price: 100 },
   { id: 'hat-straw', kind: 'hat', name: 'Straw hat', price: 150 },
   { id: 'hat-flower', kind: 'hat', name: 'Flower crown', price: 250 },

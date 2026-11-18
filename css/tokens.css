@@ -1,0 +1,28 @@
+/* Zero Mile app design tokens and chunky 3D components (see DESIGN.md). Loaded before every other app style. */
+:root {
+  --leaf: #3fae49; --leaf-d: #2b8a34; --ink: #1d3b24; --muted3: #5b6f60;
+  --sun: #ffc531; --sun-d: #e0a200; --tomato: #ff5a4e; --tomato-d: #d93b30;
+  --sky: #36b4f0; --sky-d: #1a8fcc; --berry: #a560e8; --berry-d: #7f3fc4;
+  --pot: #e8865b; --pot-d: #c4653d; --bg3: #ffffff; --line: #e5ebe2; --line-d: #d3dccf;
+  --r-btn: 16px; --r-card: 20px;
+  --ease: cubic-bezier(.22,1,.36,1); --pop: cubic-bezier(.34,1.56,.64,1);
+  --font3: 'Nunito', ui-rounded, system-ui, sans-serif;
+}
+.b3 { --c: var(--leaf); --d: var(--leaf-d); --t: #fff;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 0 20px;
+  font: 800 1rem/1 var(--font3); letter-spacing: .02em; text-transform: uppercase; color: var(--t);
+  background: var(--c); border: 2px solid var(--d); border-bottom-width: 6px; border-radius: var(--r-btn);
+  cursor: pointer; text-decoration: none; transition: transform 90ms var(--ease), border-bottom-width 90ms var(--ease);
+  touch-action: manipulation; user-select: none; -webkit-user-select: none; }
+.b3:active { transform: translateY(4px); border-bottom-width: 2px; }
+.b3-sun { --c: var(--sun); --d: var(--sun-d); --t: #5a3d00; }
+.b3-sky { --c: var(--sky); --d: var(--sky-d); }
+.b3-berry { --c: var(--berry); --d: var(--berry-d); }
+.b3-tomato { --c: var(--tomato); --d: var(--tomato-d); }
+.b3-white { --c: #fff; --d: var(--line-d); --t: var(--leaf-d); }
+.b3-wide { width: 100%; }
+.c3 { background: #fff; border: 2px solid var(--line); border-bottom-width: 4px; border-radius: var(--r-card); padding: 16px; }
+.bar3 { position: relative; height: 16px; border-radius: 999px; background: var(--line); overflow: hidden; }
+.bar3 > i { position: absolute; inset: 0 auto 0 0; width: var(--p, 0%); background: var(--c, var(--leaf)); border-radius: inherit; transition: width .6s var(--ease); }
+.bar3 > i::after { content: ''; position: absolute; left: 8px; right: 8px; top: 3px; height: 4px; border-radius: 4px; background: rgba(255,255,255,.35); }
+@media (prefers-reduced-motion: reduce) { .b3, .bar3 > i { transition: none; } }

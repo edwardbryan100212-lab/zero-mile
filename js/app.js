@@ -90,7 +90,7 @@ async function route() {
     else a.removeAttribute('aria-current');
   });
   current = await mod[VIEW[key] || 'default'](main, decodeURIComponent(arg || ''));
-  if (!key || key === 'garden') { if (needsOnboarding()) onboard(); else todayNudge(main); } // first run, or the reminder card (js/onboard.js)
+  if (!key || key === 'garden') { if (needsOnboarding()) onboard(); else { todayNudge(main); const nb = $('.nudge3', main), cs = $('#care-slot', main) || $('.t-plants', main); if (nb && cs) cs.after(nb); } } // first run, or the reminder card (js/onboard.js)
   if (key === 'sources') settingsRow(main); // the reminder row in Settings
   import('./care.js?v=9').then((c) => { if (my === seq) c.autoMount(main, key, decodeURIComponent(arg || '')); }).catch(() => {}); // care today, plant care (js/care.js)
   enter(main.firstElementChild);

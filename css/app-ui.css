@@ -266,7 +266,7 @@ details.srcs q { color: var(--ink); }
 /* toast */
 .toast { position: fixed; left: 50%; bottom: calc(var(--tabs) + 18px + env(safe-area-inset-bottom, 0px)); translate: -50% 0; z-index: 85; background: var(--lcd); color: var(--px); border: 3px solid var(--bezel); padding: 10px 16px; border-radius: 12px; font-weight: 700; max-width: calc(100vw - 32px); opacity: 0; transform: translateY(14px); pointer-events: none; transition: opacity .25s var(--ease), transform .35s var(--ease); }
 .toast.on { opacity: 1; transform: none; }
-@media (min-width: 700px) { .toast { bottom: 28px; left: calc(50% + var(--side) / 2); } }
+@media (min-width: 700px) { .toast { bottom: 24px; left: auto; right: 24px; translate: none; } }
 
 /* motion */
 .view-enter { animation: viewIn .28s var(--ease) both; }

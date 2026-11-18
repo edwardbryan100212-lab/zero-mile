@@ -98,6 +98,8 @@
 .ombre[data-tone="impact"] { --o1: var(--o-sky); --o2: var(--o-mint); }
 .ombre[data-tone="rewards"] { --o1: var(--o-butter); --o2: var(--o-peach); }
 .ombre[data-tone="about"] { --o1: var(--o-sage); --o2: var(--o-sky); }
+/* on iPad and Mac the fields stay off the sidebar */
+@media (min-width: 700px) { .ombre::after { inset: -10vh -10vw -10vh var(--side, 264px); } }
 @keyframes ombreDrift { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(4vw, 3vh, 0); } }
 
 @media (prefers-reduced-motion: reduce) {

@@ -236,7 +236,7 @@ export default async function garden(main) {
     <div class="tgrid${fresh ? ' is-fresh' : ''}">
       ${hero}
       <section class="t-quests lcd" id="quests" aria-labelledby="quest-t">${questCard()}</section>
-      <div class="t-slot" id="today-slot" data-slot="care"></div>
+      <div class="t-slot" id="care-slot"></div>
       ${fresh ? `
       <section class="t-plants" aria-labelledby="easy-t">
         <div class="sec-head"><h2 id="easy-t">Easy in a pot</h2><a class="sec-link" href="#/find">See all</a></div>
@@ -255,7 +255,7 @@ export default async function garden(main) {
   countAll(main); fillAll(main);
   const stopHero = runFaces($('#hero', main));
   // a slot under the hero for other features (care help, weather): they listen for zm:today
-  dispatchEvent(new CustomEvent('zm:today', { detail: { slot: $('#today-slot', main), main } }));
+  dispatchEvent(new CustomEvent('zm:today', { detail: { slot: $("#care-slot", main), main } }));
 
   function refreshGame() {
     const q = $('#quests'); if (!q) return;

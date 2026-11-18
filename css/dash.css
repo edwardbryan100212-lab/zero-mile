@@ -144,7 +144,7 @@ p.tree-co2 b { font-size: 1.3rem; display: block; }
   .t-quests { grid-column: span 4; }
   .t-slot, .t-plants, .t-impact { grid-column: 1 / -1; }
 }
-.tgrid > .t-hero { order: 1; } .tgrid > .t-quests { order: 2; } .tgrid > .nudge3 { order: 3; } .tgrid > .t-slot { order: 4; } .tgrid > .t-plants { order: 5; } .tgrid > .t-impact { order: 6; }
+.tgrid > .t-hero { order: 1; } .tgrid > .t-quests { order: 2; } .tgrid > .nudge3 { order: 3; } .tgrid > .t-slot, .tgrid > .care-auto { order: 4; } .tgrid > .t-plants { order: 5; } .tgrid > .t-impact { order: 6; }
 @media (min-width: 1000px) { .tgrid > .nudge3 { grid-column: 1 / -1; } }
 .t-hero { display: grid; grid-template-columns: 208px minmax(0, 1fr); grid-template-areas: "face num" "face week" "face row"; gap: 14px 28px; align-items: center; align-content: center; padding: 24px 28px; }
 .th-face { grid-area: face; display: grid; gap: 10px; justify-items: center; align-self: center; }

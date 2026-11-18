@@ -7,7 +7,7 @@ import {
   rewards, level, titleOf, TITLES, levelNeed, BADGES, BADGE_SEEDS, MILESTONES, MILESTONE_SEEDS, SHOP, SAVER_MAX, saversHeld,
   canBuy, spend, wear, worn, chestsReady, openChest, onReward,
 } from './rewards.js?v=9';
-import { sheet, pip, hatArt, pop, countUp, fillAll, celebration, burstSeeds, floatGain, haptic, reduced } from './fun.js?v=9';
+import { sheet, pip, hatArt, pop, countUp, fillAll, celebration, burstSeeds, floatGain, haptic, reduced, play } from './fun.js?v=9';
 
 const fmtN = (n) => Number(n).toLocaleString('en-IE');
 const dateShort = (d) => new Date(d + 'T12:00').toLocaleDateString('en-IE', { day: 'numeric', month: 'short' });
@@ -36,11 +36,11 @@ export function milestonePath(n = overallStreak(), { compact = false } = {}) {
 export function chestScreen(c) {
   const title = c.kind === 'milestone' || String(c.key).startsWith('ms:') ? `${c.n ?? c.key.slice(3)}-day chest` : 'Daily chest';
   return {
-    tone: 'berry', confetti: false, title, art: `<div class="cele-chest shake">${art('chest', { size: 168 })}</div>`, sub: 'Tap to open', cta: 'Open',
+    tone: 'berry', sound: 'shake', confetti: false, title, art: `<div class="cele-chest shake">${art('chest', { size: 168 })}</div>`, sub: 'Tap to open', cta: 'Open',
     onContinue(el, next) {
       const got = openChest(c.key); if (!got) return next();
       const box = el.querySelector('.cele-chest'); box.classList.remove('shake'); box.innerHTML = art('chest-open', { size: 168 });
-      pop(box, { from: .85 }); burstSeeds(box, art('seed-gem', { size: 28 }), 14); haptic([12, 40, 18]);
+      pop(box, { from: .85 }); burstSeeds(box, art('seed-gem', { size: 28 }), 14); haptic([12, 40, 18]); play('open');
       el.querySelector('.cele-sub').innerHTML = `<span class="cele-seeds">${art('seed-gem', { size: 34 })}<b id="cs-n">+0</b></span>`;
       countUp(el.querySelector('#cs-n'), got.seeds, { dur: 700 }); setTimeout(() => { const b = el.querySelector('#cs-n'); if (b) b.textContent = `+${got.seeds}`; }, reduced() ? 0 : 720);
       const go = el.querySelector('.cele-go'); go.textContent = 'Continue';
@@ -57,13 +57,13 @@ export async function openChestFlow(key) {
 // the screens for whatever award() just gave (after the photo's own screens)
 export function rewardScreens(out = {}) {
   const s = [];
-  for (const q of out.quests || []) s.push({ tone: 'leaf', art: art(q.art, { size: 132 }), title: 'Quest done!', big: esc(q.label), sub: `<span class="gainrow"><span class="g-xp">${art('xp-bolt', { size: 26 })}+${q.xp} XP</span><span class="g-seed">${art('seed-gem', { size: 26 })}+${q.seeds}</span></span>` });
+  for (const q of out.quests || []) s.push({ tone: 'leaf', sound: 'quest', art: art(q.art, { size: 132 }), title: 'Quest done!', big: esc(q.label), sub: `<span class="gainrow"><span class="g-xp">${art('xp-bolt', { size: 26 })}+${q.xp} XP</span><span class="g-seed">${art('seed-gem', { size: 26 })}+${q.seeds}</span></span>` });
   if (out.chest) s.push(chestScreen(out.chest));
   for (const m of out.milestones || []) s.push(chestScreen({ key: m.key, kind: 'milestone', n: m.n }));
-  for (const b of out.unlocked || []) s.push({ tone: 'tomato', art: `<div class="badge-pop">${art('badge-' + b.id, { size: 150 })}</div>`, title: 'New badge!', big: esc(b.name), sub: `<span class="g-seed">${art('seed-gem', { size: 26 })}+${BADGE_SEEDS}</span>` });
+  for (const b of out.unlocked || []) s.push({ tone: 'tomato', sound: 'badge', art: `<div class="badge-pop">${art('badge-' + b.id, { size: 150 })}</div>`, title: 'New badge!', big: esc(b.name), sub: `<span class="g-seed">${art('seed-gem', { size: 26 })}+${BADGE_SEEDS}</span>` });
   if (out.levelUp) {
     const L = out.levelUp;
-    s.push({ tone: 'leaf', art: `<div class="lvl-pop">${pip('party', { size: 150, mood: 'happy' })}</div>`, title: `Level ${L.to}!`, big: esc(L.title), sub: `<span class="g-seed">${art('seed-gem', { size: 26 })}+${L.seeds}</span>`, confetti: 70 });
+    s.push({ tone: 'leaf', sound: 'level', art: `<div class="lvl-pop">${pip('party', { size: 150, mood: 'happy' })}</div>`, title: `Level ${L.to}!`, big: esc(L.title), sub: `<span class="g-seed">${art('seed-gem', { size: 26 })}+${L.seeds}</span>`, confetti: 70 });
   }
   return s;
 }
@@ -126,12 +126,12 @@ function bindShop(root, after) {
     if (buy) {
       const id = buy.dataset.buy, c = canBuy(id);
       if (!c.ok) { floatGain(buy, c.why === 'seeds' ? `${c.short} more seeds` : c.why === 'full' ? `${SAVER_MAX} is the most` : 'Yours', 'tomato'); haptic(30); return; }
-      spend(id); floatGain(buy, `−${SHOP.find((x) => x.id === id).price}`, 'berry'); haptic(14);
+      spend(id); floatGain(buy, `−${SHOP.find((x) => x.id === id).price}`, 'berry'); haptic(14); play('buy');
       redrawItems(root); after?.(id);
     }
     if (wr) {
       const it = SHOP.find((x) => x.id === wr.dataset.wear), r = rewards();
-      wear(it.kind, r.wear[it.kind] === it.id ? null : it.id); redrawItems(root); after?.(it.id);
+      wear(it.kind, r.wear[it.kind] === it.id ? null : it.id); play('toggle'); redrawItems(root); after?.(it.id);
     }
   });
 }

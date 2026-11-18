@@ -87,4 +87,21 @@ Pip is the terracotta pot with a sprout and a face, the same character as the 3D
 
 - **Top bar (phone):** streak sun with its count, seeds with their count, and the XP level ring. Tap any of them for a sheet.
 - **Tab bar:** Today, Find, Photo (the big centre button), Rewards (trophy) and More (Impact, About, Admin). Impact is reachable from Today and More.
-- **Celebrations:** full-screen, with Pip, a big number, a chunky "Continue" button, confetti, and sound off by default (none).
+- **Celebrations:** full-screen, with Pip, a big number, a chunky "Continue" button, confetti, and a short sound (see Sound and haptics).
+
+## Sound and haptics (`js/sound.js`)
+
+- All sounds are made in code with WebAudio; there are no audio files. They are short and warm, and each one peaks at 0.12 or less (most are 0.05–0.08).
+- **API:** `play(name, { soft })` and `buzz(pattern)`. `fun.js` re-exports both, and its `haptic()` calls `buzz()`.
+- **Names:** `tap`, `toggle`, `done`, `xp`, `quest`, `streak` (under 1 s), `shake`, `open`, `badge`, `level`, `buy`, `water` and `error`.
+- **Where they play:**
+  - Pressing a `.b3` button plays `tap`.
+  - A celebration screen plays its `sound`; without one, the tone picks it: leaf `done`, sky or sun `xp`, berry `shake`, tomato `badge`, night `streak`. `sound: false` means none.
+  - A sun `floatGain` plays a soft `xp` that gives way to any sound from the last 300 ms. A tomato one plays `error`.
+  - `countUp`, `pop` and `confetti` take an optional `sound`.
+- **Rules:**
+  - The same sound never plays again within its cooldown (about 260 ms; `tap` 70 ms).
+  - The AudioContext is made only after the first tap or key press.
+  - `state.sound` and `state.haptics` both default to on. They are the Sounds and Vibration switches in About.
+  - "Reduce motion" turns off vibration only.
+- **Checks:** `node ~/.cache/ecoapp-tools/sound.mjs <port> <dir>` renders every sound offline, prints its peak and length, and writes WAVs.

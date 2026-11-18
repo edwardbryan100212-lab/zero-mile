@@ -2,12 +2,19 @@
 // opacity only, and "reduce motion" turns every animation here into an instant change.
 export const EASE = 'cubic-bezier(.22,1,.36,1)';
 export const SPRING = 'cubic-bezier(.34,1.56,.64,1)'; // only for pops: rewards, badges, chests, Pip
+import { play, buzz } from './sound.js?v=9';
+export { play, buzz };
 const rm = matchMedia('(prefers-reduced-motion: reduce)');
 export const reduced = () => rm.matches;
 
 // ---------- press feedback: CSS does the scale on :active; iOS only fires :active when a touch listener exists ----------
+// A chunky .b3 button also gives a soft tick as it goes down (sound.js skips repeats within 70 ms).
 let pressOn = false;
-export function initPress() { if (pressOn) return; pressOn = true; document.addEventListener('touchstart', () => {}, { passive: true }); }
+export function initPress() {
+  if (pressOn) return; pressOn = true;
+  document.addEventListener('touchstart', () => {}, { passive: true });
+  document.addEventListener('pointerdown', (e) => { if (e.button === 0 && e.target.closest?.('.b3:not(:disabled)')) play('tap'); }, { passive: true });
+}
 
 // ---------- route transition: fade in and rise 8px ----------
 export function enter(el) {
@@ -23,8 +30,9 @@ export function hop(el) {
 
 // ---------- count-up numbers ----------
 const nf = (n, d) => Number(n).toLocaleString('en-IE', { maximumFractionDigits: d, minimumFractionDigits: d });
-export function countUp(el, to, { from = 0, dec = 0, dur = 900, suffix = '' } = {}) {
+export function countUp(el, to, { from = 0, dec = 0, dur = 900, suffix = '', sound } = {}) {
   if (!el) return;
+  if (sound && to !== from) play(sound);
   if (reduced() || to === from) { el.textContent = nf(to, dec) + suffix; return; }
   const t0 = performance.now();
   const step = (now) => {
@@ -60,11 +68,13 @@ export function fillAll(root) {
 }
 
 // ---------- haptics ----------
-export function haptic(pattern = 12) { try { navigator.vibrate?.(pattern); } catch { /* not supported */ } }
+// off with the Vibration switch in About, and with "reduce motion" (see sound.js)
+export function haptic(pattern = 12) { buzz(pattern); }
 
 // ---------- confetti of leaves and petals ----------
 const CONF = ['#3fae49', '#2b8a34', '#36b4f0', '#ffc531', '#ff5a4e', '#a560e8'];
-export function confetti(x = innerWidth / 2, y = innerHeight / 3, { count = 38, spread = 1 } = {}) {
+export function confetti(x = innerWidth / 2, y = innerHeight / 3, { count = 38, spread = 1, sound } = {}) {
+  if (sound) play(sound);
   if (reduced()) return;
   const layer = document.createElement('div'); layer.className = 'confetti'; layer.setAttribute('aria-hidden', 'true');
   document.body.appendChild(layer);
@@ -174,13 +184,17 @@ export function sprout(level) {
 
 // ================= game layer motion (the springy curve is only for pops) =================
 // a pop: scale up from .9 with the spring, opacity from 0. Reduced motion: shown at once.
-export function pop(el, { delay = 0, from = .9, dur = 420 } = {}) {
+export function pop(el, { delay = 0, from = .9, dur = 420, sound } = {}) {
+  if (sound) play(sound);
   if (!el || reduced()) return null;
   return el.animate([{ opacity: 0, transform: `scale(${from})` }, { opacity: 1, transform: 'none' }], { duration: dur, delay, easing: SPRING, fill: 'backwards' });
 }
 // "+2 XP" rises from a button and fades
+// (a sun "+XP" gives a soft sparkle that yields to any louder sound; a tomato one is the soft "no")
+const GAIN_SOUND = { sun: 'xp', tomato: 'error' };
 export function floatGain(anchor, text, tone = 'sun') {
   if (!anchor) return;
+  if (GAIN_SOUND[tone]) play(GAIN_SOUND[tone], { soft: tone === 'sun' });
   const r = anchor.getBoundingClientRect(), g = document.createElement('span');
   g.className = `gain gain-${tone}`; g.setAttribute('aria-hidden', 'true'); g.textContent = text;
   g.style.left = `${r.left + r.width / 2}px`; g.style.top = `${r.top}px`;
@@ -224,7 +238,9 @@ export function pip(pose = 'wave', { size = 120, mood = 'happy', cls = '', look 
 }
 
 // ---------- full-screen celebration: screens that tap through, each with a chunky Continue ----------
-// screens: [{ tone: 'leaf'|'sun'|'sky'|'berry'|'tomato', art, title, big, sub, extra, cta, onShow(el, next) }]
+// screens: [{ tone: 'leaf'|'sun'|'sky'|'berry'|'tomato', art, title, big, sub, extra, cta, sound, onShow(el, next) }]
+// sound: a name from sound.js, or false for none; without it the tone picks one
+const TONE_SOUND = { leaf: 'done', sun: 'xp', sky: 'xp', berry: 'shake', tomato: 'badge', night: 'streak' };
 let celeOpen = null;
 export function celebration(screens) {
   screens = screens.filter(Boolean);
@@ -260,6 +276,8 @@ export function celebration(screens) {
     [...bg.querySelectorAll('.cele-art, .cele-title, .cele-big, .cele-sub, .cele-extra, .cele-acts')].forEach((el, k) => pop(el, { delay: k * 70 }));
     if (s.confetti !== false) setTimeout(() => confetti(innerWidth / 2, innerHeight * .32, { count: s.confetti || 40 }), reduced() ? 0 : 160);
     haptic(14);
+    const snd = s.sound ?? TONE_SOUND[s.tone || 'leaf'];
+    if (snd) setTimeout(() => play(snd), reduced() ? 0 : 90);
     s.onShow?.(bg.firstElementChild, next);
     go.focus({ preventScroll: true });
   }

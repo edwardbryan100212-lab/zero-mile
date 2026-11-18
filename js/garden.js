@@ -4,7 +4,7 @@ import {
   overallStreak, lastDays, photoDays, wateredToday, toggleWatered, logHarvest, harvestKg, logPhoto, stageName, thumb,
   isTree, isFruitTree, treeAge, treePhotoDue, logHeight, treeSeason, bestTrees, dailyPlants, MONTH_NAMES,
   savedDays, earnSaver } from './core.js?v=9';
-import { EASE, reduced, countUp, countAll, fillAll, confetti, haptic, helpBtn, bindHelp, pip, pop, floatGain, celebration } from './fun.js?v=9';
+import { EASE, reduced, countUp, countAll, fillAll, confetti, haptic, helpBtn, bindHelp, pip, pop, floatGain, celebration, play } from './fun.js?v=9';
 import { art } from './art.js?v=9';
 import { award, dailyQuests, rewards, level, onReward, saversHeld, SAVER_MAX } from './rewards.js?v=9';
 import * as Face from './face.js?v=9';
@@ -114,11 +114,11 @@ async function photoParty({ res, blob, before, after, out, earned, lv0 }, plant)
   const url = objURL(blob);
   const lv1 = level(lv0.xp + xp);
   const S = [{
-    tone: 'leaf', title: 'Great snap!', big: esc(SNAP_LINE[res.mood] || 'Growing along!'),
+    tone: 'leaf', sound: 'done', title: 'Great snap!', big: esc(SNAP_LINE[res.mood] || 'Growing along!'),
     art: `<div class="snap-pol"><img src="${url}" alt="Your photo of ${esc(plant.name)}"></div><div class="cele-pip">${pip('cheer', { size: 120 })}</div>`,
   }];
   if (xp > 0) S.push({
-    tone: 'sky', title: 'XP earned', art: art('xp-bolt', { size: 140 }), big: `<b id="cx-n">+0</b> XP`,
+    tone: 'sky', sound: 'xp', title: 'XP earned', art: art('xp-bolt', { size: 140 }), big: `<b id="cx-n">+0</b> XP`,
     extra: `<div class="cele-extra"><div class="cele-lvl"><span>Level ${lv1.n}</span>${`<div class="bar3" style="--c:var(--sun)"><i style="width:${(lv0.n === lv1.n ? lv0.p : 0) * 100}%"></i></div>`}</div></div>`,
     onShow(el) {
       countUp(el.querySelector('#cx-n'), xp, { dur: 800, suffix: '' }); setTimeout(() => { const b = el.querySelector('#cx-n'); if (b) b.textContent = `+${xp}`; }, reduced() ? 0 : 820);
@@ -129,7 +129,7 @@ async function photoParty({ res, blob, before, after, out, earned, lv0 }, plant)
   if (after > before) {
     const share = [7, 30, 50, 100, 365].includes(after);
     S.push({
-      tone: 'night', title: after === 1 ? 'Streak started!' : 'Streak up!', art: `<div class="sun-grow">${art('streak-sun', { size: 170 })}</div>`, big: `<b id="cs-n">${before}</b>`, sub: 'day streak',
+      tone: 'night', sound: 'streak', title: after === 1 ? 'Streak started!' : 'Streak up!', art: `<div class="sun-grow">${art('streak-sun', { size: 170 })}</div>`, big: `<b id="cs-n">${before}</b>`, sub: 'day streak',
       extra: share ? `<div class="cele-extra"><button class="b3 b3-sun" type="button" id="share-streak">Share my streak</button></div>` : '',
       onShow(el) {
         const sun = el.querySelector('.sun-grow');
@@ -139,7 +139,7 @@ async function photoParty({ res, blob, before, after, out, earned, lv0 }, plant)
       },
     });
   }
-  if (earned) S.push({ tone: 'sky', title: 'Streak saver!', art: art('can-freeze', { size: 150 }), big: `${saversHeld()}/${SAVER_MAX}`, sub: 'cans held' });
+  if (earned) S.push({ tone: 'sky', sound: 'quest', title: 'Streak saver!', art: art('can-freeze', { size: 150 }), big: `${saversHeld()}/${SAVER_MAX}`, sub: 'cans held' });
   S.push(...V.rewardScreens(out));
   await celebration(S);
   return true;
@@ -387,6 +387,7 @@ export default async function garden(main) {
       const e = find(idOf(b)); const on = toggleWatered(e);
       b.setAttribute('aria-pressed', on); b.classList.toggle('b3-sky', on); b.classList.toggle('b3-white', !on);
       b.setAttribute('aria-label', `${on ? 'Watered' : 'Water'} ${plantById(e.id).name}`);
+      play(on ? 'water' : 'toggle');
       if (on) { haptic(10); drops(b); const out = award('water', { id: e.id }); if (out.xp) floatGain(b, `+${out.xp - out.quests.reduce((a, q) => a + q.xp, 0)} XP`, 'sky'); }
       if (e === entry) drawPot();
     }));

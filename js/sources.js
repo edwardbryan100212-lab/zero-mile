@@ -1,6 +1,18 @@
 // About: settings, how the numbers are worked out, and every citation.
 import { $, esc, fmt, data, ROOT, state, save, toast } from './core.js?v=9';
 import { art, mascot } from './art.js?v=9';
+import { setSound, setHaptics, play } from './sound.js?v=9';
+
+// chunky little pictures for the Sounds and Vibration switches, drawn like the rest of the art (fill, darker lip, shine)
+const ico = (inner) => `<svg class="art" width="44" height="44" viewBox="0 0 64 64" aria-hidden="true" focusable="false">${inner}</svg>`;
+const SPEAKER = ico('<ellipse cx="32" cy="58" rx="20" ry="3.5" fill="#1d3b24" opacity=".12"/>'
+  + '<path d="M10 26h9l14-11v34L19 38h-9a3 3 0 0 1-3-3v-6a3 3 0 0 1 3-3z" fill="#e0a200"/><path d="M10 24h9l14-11v34L19 36h-9a3 3 0 0 1-3-3v-6a3 3 0 0 1 3-3z" fill="#ffc531"/>'
+  + '<path d="M11 28v4" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".7"/>'
+  + '<path d="M41 22a12 12 0 0 1 0 18M47 16a20 20 0 0 1 0 30" fill="none" stroke="#36b4f0" stroke-width="5" stroke-linecap="round"/>');
+const PHONE = ico('<ellipse cx="32" cy="58" rx="16" ry="3.5" fill="#1d3b24" opacity=".12"/>'
+  + '<rect x="20" y="10" width="24" height="44" rx="6" fill="#1a8fcc"/><rect x="20" y="8" width="24" height="44" rx="6" fill="#36b4f0"/>'
+  + '<rect x="24" y="14" width="16" height="28" rx="3" fill="#e6f6ff"/><circle cx="32" cy="47" r="2.5" fill="#e6f6ff"/>'
+  + '<path d="M12 20l-4 4 4 4-4 4 4 4M52 20l4 4-4 4 4 4-4 4" fill="none" stroke="#a560e8" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>');
 
 const SRC_ART = { 'Where food comes from': 'map-pin', 'Food, energy and carbon': 'cloud-co2', 'Trees and planting': 'tree', 'Growing, trees and transport': 'lorry' };
 
@@ -44,6 +56,8 @@ export default async function sources(main) {
         <h2 id="set-t">Settings</h2>
         <div class="row3 c3">${art('map-pin', { size: 44 })}<label for="region">Where you live</label><span class="sel3"><select id="region">${Object.entries(D.regions).map(([k, r]) => `<option value="${k}"${k === state.region ? ' selected' : ''}>${esc(r.name)}</option>`).join('')}</select></span></div>
         <label class="row3 c3 tog3">${art('camera', { size: 44 })}<span>Smart photo check<small>90 MB, on this device</small></span><input type="checkbox" role="switch" id="smart"${state.smartAI ? ' checked' : ''}><i aria-hidden="true"></i></label>
+        <label class="row3 c3 tog3">${SPEAKER}<span>Sounds<small>Chimes and pops</small></span><input type="checkbox" role="switch" id="snd"${state.sound !== false ? ' checked' : ''}><i aria-hidden="true"></i></label>
+        <label class="row3 c3 tog3">${PHONE}<span>Vibration<small>${matchMedia('(prefers-reduced-motion: reduce)').matches ? 'Off: reduce motion is on' : 'Phones that buzz'}</small></span><input type="checkbox" role="switch" id="hap"${state.haptics !== false ? ' checked' : ''}><i aria-hidden="true"></i></label>
         <div class="row3 c3">${art('scene-garden', { size: 44 })}<span>My plants</span><b class="row3-n">${state.garden.length}</b></div>
         <h2>App</h2>
         <details class="row3 c3 det3"><summary>${art('gift', { size: 44 })}<span>Install the app</span></summary><p>iPhone: Share, then “Add to Home Screen”. Mac or PC: “Install” in the address bar.</p></details>
@@ -70,5 +84,7 @@ export default async function sources(main) {
     </div>
   </div>`;
   $('#region').addEventListener('change', (e) => { state.region = e.target.value; save(); toast(`Food miles now for ${D.regions[e.target.value].name}.`); });
-  $('#smart').addEventListener('change', async (e) => { state.smartAI = e.target.checked; save(); if (state.smartAI) (await import('./analyze.js?v=2')).loadSmart().catch(() => toast('Couldn’t download the smart check. The colour check still works.')); });
+  $('#snd').addEventListener('change', (e) => setSound(e.target.checked));
+  $('#hap').addEventListener('change', (e) => setHaptics(e.target.checked));
+  $('#smart').addEventListener('change', async (e) => { state.smartAI = e.target.checked; save(); play('toggle'); if (state.smartAI) (await import('./analyze.js?v=2')).loadSmart().catch(() => toast('Couldn’t download the smart check. The colour check still works.')); });
 }

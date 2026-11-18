@@ -1,6 +1,7 @@
 // Zero Mile: small motion helpers and drawn pictures for the app. One easing curve everywhere, transforms and
 // opacity only, and "reduce motion" turns every animation here into an instant change.
 export const EASE = 'cubic-bezier(.22,1,.36,1)';
+export const SPRING = 'cubic-bezier(.34,1.56,.64,1)'; // only for pops: rewards, badges, chests, Pip
 const rm = matchMedia('(prefers-reduced-motion: reduce)');
 export const reduced = () => rm.matches;
 
@@ -45,7 +46,11 @@ export function countAll(root) {
 // bars and meters ([data-fill="0..1"]) grow from empty when they come into view
 export function fillAll(root) {
   const els = [...root.querySelectorAll('[data-fill]')];
-  const set = (el) => { el.style.transform = el.dataset.axis === 'x-move' ? `translateX(${+el.dataset.fill * 100}%)` : `scaleX(${+el.dataset.fill})`; };
+  // a .bar3 fill grows by its width (it has rounded ends and a shine); the rest scale on x
+  const set = (el) => {
+    if (el.parentElement?.classList.contains('bar3')) { el.style.width = `${+el.dataset.fill * 100}%`; if (+el.dataset.fill > 0 && !reduced()) setTimeout(() => el.parentElement.classList.add('shine'), 520); return; }
+    el.style.transform = el.dataset.axis === 'x-move' ? `translateX(${+el.dataset.fill * 100}%)` : `scaleX(${+el.dataset.fill})`;
+  };
   if (reduced() || !('IntersectionObserver' in window)) { els.forEach(set); return; }
   // watch the bar's track, not the bar: a bar at scaleX(0) has no area, so it never "intersects"
   const of = new Map();
@@ -58,7 +63,7 @@ export function fillAll(root) {
 export function haptic(pattern = 12) { try { navigator.vibrate?.(pattern); } catch { /* not supported */ } }
 
 // ---------- confetti of leaves and petals ----------
-const CONF = ['#2f7d32', '#5aa83f', '#9fd47f', '#f2c94c', '#f6a6b2', '#ffffff'];
+const CONF = ['#3fae49', '#2b8a34', '#36b4f0', '#ffc531', '#ff5a4e', '#a560e8'];
 export function confetti(x = innerWidth / 2, y = innerHeight / 3, { count = 38, spread = 1 } = {}) {
   if (reduced()) return;
   const layer = document.createElement('div'); layer.className = 'confetti'; layer.setAttribute('aria-hidden', 'true');
@@ -165,4 +170,105 @@ export function sprout(level) {
   // crop the empty sky above a small plant so it fills its box
   const vy = level >= 7 ? 0 : Math.max(0, Math.min(base - 70, top - (level >= 5 ? 26 : 18)));
   return svg(`0 ${vy} 120 ${150 - vy}`, `${crown}${stem}${leaves}${flower}${fruit}${seed}<path d="M22 136h76l-7 14H29z" fill="${G.pot}"/><rect x="18" y="130" width="84" height="9" rx="4" fill="${G.pot2}"/>`, 'sprout');
+}
+
+// ================= game layer motion (the springy curve is only for pops) =================
+// a pop: scale up from .9 with the spring, opacity from 0. Reduced motion: shown at once.
+export function pop(el, { delay = 0, from = .9, dur = 420 } = {}) {
+  if (!el || reduced()) return null;
+  return el.animate([{ opacity: 0, transform: `scale(${from})` }, { opacity: 1, transform: 'none' }], { duration: dur, delay, easing: SPRING, fill: 'backwards' });
+}
+// "+2 XP" rises from a button and fades
+export function floatGain(anchor, text, tone = 'sun') {
+  if (!anchor) return;
+  const r = anchor.getBoundingClientRect(), g = document.createElement('span');
+  g.className = `gain gain-${tone}`; g.setAttribute('aria-hidden', 'true'); g.textContent = text;
+  g.style.left = `${r.left + r.width / 2}px`; g.style.top = `${r.top}px`;
+  document.body.appendChild(g);
+  if (reduced()) { setTimeout(() => g.remove(), 900); return; }
+  g.animate([{ opacity: 0, transform: 'translate(-50%, 0) scale(.9)' }, { opacity: 1, transform: 'translate(-50%, -18px) scale(1)', offset: .3 }, { opacity: 0, transform: 'translate(-50%, -40px) scale(1)' }], { duration: 1100, easing: EASE }).onfinish = () => g.remove();
+}
+// seed gems burst out of a chest and fly off
+export function burstSeeds(from, gem, n = 12) {
+  if (!from || reduced()) return;
+  const r = from.getBoundingClientRect(), x = r.left + r.width / 2, y = r.top + r.height * .45;
+  for (let i = 0; i < n; i++) {
+    const s = document.createElement('i'); s.className = 'seed-fly'; s.setAttribute('aria-hidden', 'true'); s.innerHTML = gem;
+    s.style.left = `${x}px`; s.style.top = `${y}px`; document.body.appendChild(s);
+    const a = -Math.PI / 2 + (i / (n - 1) - .5) * Math.PI * 1.3, v = 90 + Math.random() * 90;
+    s.animate([
+      { transform: 'translate(-50%,-50%) scale(.6)', opacity: 0 },
+      { transform: `translate(calc(-50% + ${Math.cos(a) * v}px), calc(-50% + ${Math.sin(a) * v}px)) scale(1.1)`, opacity: 1, offset: .45 },
+      { transform: `translate(calc(-50% + ${Math.cos(a) * v * 1.2}px), calc(-50% + ${Math.sin(a) * v + 140}px)) scale(.8)`, opacity: 0 },
+    ], { duration: 1000 + Math.random() * 300, delay: i * 18, easing: EASE }).onfinish = () => s.remove();
+  }
+}
+
+// ---------- Pip wearing what was bought in the shop ----------
+import { mascot } from './art.js?v=9';
+import { worn } from './rewards.js?v=9';
+const HATS = {
+  'hat-cap': '<g transform="translate(40 30) rotate(-14)"><path d="M-16 6a16 14 0 0 1 32 0z" fill="#36b4f0"/><path d="M-16 6h40a4 4 0 0 1 0 6h-40z" fill="#1a8fcc"/><circle cy="-8" r="3" fill="#1a8fcc"/><path d="M-9-2a9 8 0 0 1 8-6" stroke="#fff" stroke-width="3" stroke-linecap="round" fill="none" opacity=".5"/></g>',
+  'hat-straw': '<g transform="translate(42 32) rotate(-12)"><ellipse rx="26" ry="7" cy="6" fill="#e0a200"/><path d="M-13 6c0-16 26-16 26 0z" fill="#ffc531"/><path d="M-13 2h26v4h-26z" fill="#ff5a4e"/><ellipse rx="20" ry="3" cy="6" fill="#ffd866" opacity=".6"/></g>',
+  'hat-flower': `<g>${[[26, 40, '#ff5a4e'], [40, 36, '#ffc531'], [54, 35, '#a560e8'], [68, 35, '#36b4f0'], [82, 36, '#ff5a4e'], [95, 40, '#ffc531']].map(([x, y, c]) => `<g transform="translate(${x} ${y})">${[0, 72, 144, 216, 288].map((a) => `<ellipse rx="3.2" ry="4.6" cy="-4" fill="${c}" transform="rotate(${a})"/>`).join('')}<circle r="2.6" fill="#fff"/></g>`).join('')}</g>`,
+  'hat-crown': '<g transform="translate(44 30) rotate(-10)"><path d="M-16 8l-2-18 9 8 9-12 9 12 9-8-2 18z" fill="#ffc531" stroke="#e0a200" stroke-width="2" stroke-linejoin="round"/><circle cy="2" r="3" fill="#ff5a4e"/><circle cx="-9" cy="4" r="2" fill="#36b4f0"/><circle cx="9" cy="4" r="2" fill="#a560e8"/></g>',
+};
+export const hatArt = (id, size = 48) => (HATS[id] ? `<svg class="art hat" width="${size}" height="${size}" viewBox="14 14 92 40" aria-hidden="true">${HATS[id]}</svg>` : '');
+// Pip with the pot colour and hat worn (or a preview of { pot, hat })
+export function pip(pose = 'wave', { size = 120, mood = 'happy', cls = '', look } = {}) {
+  const w = look || worn();
+  const potC = w.pot?.color, hat = w.hat;
+  const svg = mascot(pose, { size, mood, pot: potC, potShade: w.pot?.shade, hat });
+  const style = potC ? ` style="--pip-pot:${potC};--pip-pot-d:${w.pot.shade}"` : '';
+  return `<span class="pipw ${cls}"${style} data-pose="${pose}"${hat ? ` data-hat="${hat}"` : ''}>${svg}${hat && !/data-hat=/.test(svg) ? `<svg class="pip-hat" viewBox="0 0 120 120" aria-hidden="true">${HATS[hat] || ''}</svg>` : ''}</span>`;
+}
+
+// ---------- full-screen celebration: screens that tap through, each with a chunky Continue ----------
+// screens: [{ tone: 'leaf'|'sun'|'sky'|'berry'|'tomato', art, title, big, sub, extra, cta, onShow(el, next) }]
+let celeOpen = null;
+export function celebration(screens) {
+  screens = screens.filter(Boolean);
+  if (!screens.length) return Promise.resolve();
+  if (celeOpen) return celeOpen.then(() => celebration(screens));
+  const opener = document.activeElement;
+  const bg = document.createElement('div'); bg.className = 'cele';
+  bg.setAttribute('role', 'dialog'); bg.setAttribute('aria-modal', 'true'); bg.setAttribute('aria-labelledby', 'cele-t');
+  document.body.appendChild(bg); document.documentElement.classList.add('cele-on');
+  let i = -1, done;
+  const p = new Promise((r) => { done = r; });
+  celeOpen = p;
+  const finish = () => {
+    removeEventListener('keydown', onKey);
+    const end = () => { bg.remove(); document.documentElement.classList.remove('cele-on'); celeOpen = null; opener?.focus?.({ preventScroll: true }); done(); };
+    if (reduced()) return end();
+    bg.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 200, easing: EASE, fill: 'forwards' }).onfinish = end;
+  };
+  const next = () => { if (++i >= screens.length) return finish(); show(screens[i]); };
+  function show(s) {
+    bg.dataset.tone = s.tone || 'leaf';
+    bg.innerHTML = `<div class="cele-in">
+      <div class="cele-art">${s.art || ''}</div>
+      <h2 class="cele-title" id="cele-t">${s.title || ''}</h2>
+      ${s.big != null ? `<p class="cele-big">${s.big}</p>` : ''}
+      ${s.sub ? `<p class="cele-sub">${s.sub}</p>` : ''}
+      ${s.extra || ''}
+      <div class="cele-acts"><button class="b3 b3-white b3-wide cele-go" type="button">${s.cta || 'Continue'}</button></div>
+      ${screens.length > 1 ? `<p class="cele-dots" aria-hidden="true">${screens.map((_, k) => `<i class="${k === i ? 'on' : ''}"></i>`).join('')}</p>` : ''}
+    </div>`;
+    const go = bg.querySelector('.cele-go');
+    go.addEventListener('click', () => (s.onContinue ? s.onContinue(bg.firstElementChild, next) : next()));
+    [...bg.querySelectorAll('.cele-art, .cele-title, .cele-big, .cele-sub, .cele-extra, .cele-acts')].forEach((el, k) => pop(el, { delay: k * 70 }));
+    if (s.confetti !== false) setTimeout(() => confetti(innerWidth / 2, innerHeight * .32, { count: s.confetti || 40 }), reduced() ? 0 : 160);
+    haptic(14);
+    s.onShow?.(bg.firstElementChild, next);
+    go.focus({ preventScroll: true });
+  }
+  const onKey = (e) => {
+    if (e.key === 'Escape') { i = screens.length; finish(); }
+    if (e.key === 'Tab') { const f = [...bg.querySelectorAll('button, a[href]')]; if (!f.length) return; if (e.shiftKey && document.activeElement === f[0]) { e.preventDefault(); f.at(-1).focus(); } else if (!e.shiftKey && document.activeElement === f.at(-1)) { e.preventDefault(); f[0].focus(); } }
+  };
+  addEventListener('keydown', onKey);
+  if (!reduced()) bg.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 220, easing: EASE });
+  next();
+  return p;
 }

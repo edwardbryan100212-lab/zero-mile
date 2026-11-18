@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
 <title>Today · Zero Mile</title>
 <meta name="description" content="Your Zero Mile garden: a photo a day, a growth journal, and the food miles you save.">
-<meta name="theme-color" content="#f5f6f1">
+<meta name="theme-color" content="#ffffff">
 <meta name="color-scheme" content="light">
 <link rel="manifest" href="../manifest.webmanifest">
 <link rel="icon" href="../icons/icon.svg" type="image/svg+xml">
@@ -15,7 +15,6 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../css/tokens.css?v=9">
 <link rel="stylesheet" href="../css/app-ui.css?v=9">
@@ -28,16 +27,16 @@
 <a class="skip" href="#main">Skip to content</a>
 <div class="shell">
   <aside class="side" aria-label="Zero Mile">
-    <div class="side-head" id="side-head">
-      <a class="brand" href="#/"><img src="../icons/icon.svg" alt="" width="34" height="34"><span>Zero Mile</span></a>
-      <p class="side-streak" id="side-streak"></p>
-    </div>
+    <a class="brand" href="#/"><img src="../icons/icon.svg" alt="" width="36" height="36"><span>Zero Mile</span></a>
+    <div class="side-stats stats3" id="side-stats"></div>
     <nav class="side-nav" aria-label="App">
-      <a href="#/" data-nav="garden"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11l8-6 8 6v8a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z"/></svg>Today</a>
-      <a href="#/snap" data-nav="snap"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>Take a photo</a>
-      <a href="#/find" data-nav="find"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="M16 16l4 4"/></svg>Find plants</a>
-      <a href="#/impact" data-nav="impact"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V12M10 20V6M15 20v-9M20 20V4"/></svg>Your impact</a>
-      <a href="#/sources" data-nav="sources"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg>About and sources</a>
+      <a href="#/" data-nav="garden"><svg class="ti" viewBox="0 0 32 32" aria-hidden="true"><path d="M4 15 16 5l12 10v11a2 2 0 0 1-2 2h-6v-8h-8v8H6a2 2 0 0 1-2-2z"/></svg>Today</a>
+      <a href="#/find" data-nav="find"><svg class="ti" viewBox="0 0 32 32" aria-hidden="true"><circle cx="14" cy="14" r="9" class="ti-o"/><path d="M21 21l6 6" class="ti-o"/></svg>Find</a>
+      <a href="#/snap" data-nav="snap"><svg class="ti" viewBox="0 0 32 32" aria-hidden="true"><path d="M4 10a3 3 0 0 1 3-3h3l2-3h8l2 3h3a3 3 0 0 1 3 3v14a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3z"/><circle cx="16" cy="16.5" r="5.5" class="ti-cut"/></svg>Photo</a>
+      <a href="#/rewards" data-nav="rewards"><svg class="ti" viewBox="0 0 32 32" aria-hidden="true"><path d="M9 4h14v8a7 7 0 0 1-14 0z"/><path d="M9 7H5a4 4 0 0 0 4 6M23 7h4a4 4 0 0 1-4 6" class="ti-o"/><path d="M13 22h6v3h3v3H10v-3h3z"/></svg>Rewards</a>
+      <a href="#/impact" data-nav="impact"><svg class="ti" viewBox="0 0 32 32" aria-hidden="true"><rect x="5" y="16" width="5" height="11" rx="2"/><rect x="13.5" y="9" width="5" height="18" rx="2"/><rect x="22" y="4" width="5" height="23" rx="2"/></svg>Impact</a>
+      <a href="#/sources" data-nav="sources"><svg class="ti" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="12"/><path d="M16 14v8M16 9.5v.5" class="ti-cut"/></svg>About</a>
+      <a href="#/admin" data-nav="admin"><svg class="ti" viewBox="0 0 32 32" aria-hidden="true"><path d="M13 4h6l1 4 3 2 4-1 3 5-3 3v2l3 3-3 5-4-1-3 2-1 4h-6l-1-4-3-2-4 1-3-5 3-3v-2l-3-3 3-5 4 1 3-2z"/><circle cx="16" cy="16" r="4" class="ti-cut"/></svg>Admin</a>
     </nav>
     <div class="side-sec">
       <p class="side-label">My plants</p>
@@ -45,14 +44,17 @@
       <a class="side-add" href="#/find"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Add a plant</a>
     </div>
   </aside>
-  <main id="main" tabindex="-1"></main>
+  <div class="col">
+    <header class="topbar" aria-label="Your progress"><a class="tb-brand" href="#/" aria-label="Zero Mile, Today"><img src="../icons/icon.svg" alt="" width="32" height="32"></a><div class="stats3" id="top-stats"></div></header>
+    <main id="main" tabindex="-1"></main>
+  </div>
 </div>
 <nav class="tabbar" aria-label="App">
-  <a href="#/" data-nav="garden"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11l8-6 8 6v8a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z"/></svg><span>Today</span></a>
-  <a href="#/find" data-nav="find"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="M16 16l4 4"/></svg><span>Find</span></a>
-  <a href="#/snap" data-nav="snap" class="tab-snap"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg><span>Photo</span></a>
-  <a href="#/impact" data-nav="impact"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V12M10 20V6M15 20v-9M20 20V4"/></svg><span>Impact</span></a>
-  <a href="#/sources" data-nav="sources"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg><span>About</span></a>
+  <a href="#/" data-nav="garden"><svg class="ti" viewBox="0 0 32 32" aria-hidden="true"><path d="M4 15 16 5l12 10v11a2 2 0 0 1-2 2h-6v-8h-8v8H6a2 2 0 0 1-2-2z"/></svg><span>Today</span></a>
+  <a href="#/find" data-nav="find"><svg class="ti" viewBox="0 0 32 32" aria-hidden="true"><circle cx="14" cy="14" r="9" class="ti-o"/><path d="M21 21l6 6" class="ti-o"/></svg><span>Find</span></a>
+  <a href="#/snap" data-nav="snap" class="tab-snap"><i class="snap-btn"><svg class="ti" viewBox="0 0 32 32" aria-hidden="true"><path d="M4 10a3 3 0 0 1 3-3h3l2-3h8l2 3h3a3 3 0 0 1 3 3v14a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3z"/><circle cx="16" cy="16.5" r="5.5" class="ti-cut"/></svg></i><span>Photo</span></a>
+  <a href="#/rewards" data-nav="rewards"><svg class="ti" viewBox="0 0 32 32" aria-hidden="true"><path d="M9 4h14v8a7 7 0 0 1-14 0z"/><path d="M9 7H5a4 4 0 0 0 4 6M23 7h4a4 4 0 0 1-4 6" class="ti-o"/><path d="M13 22h6v3h3v3H10v-3h3z"/></svg><span>Rewards</span></a>
+  <button type="button" data-nav="more" id="more-btn" aria-haspopup="dialog"><svg class="ti" viewBox="0 0 32 32" aria-hidden="true"><circle cx="7" cy="16" r="3"/><circle cx="16" cy="16" r="3"/><circle cx="25" cy="16" r="3"/></svg><span>More</span></button>
 </nav>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <script type="module" src="../js/app.js?v=9"></script>

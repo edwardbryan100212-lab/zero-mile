@@ -77,7 +77,7 @@ export function streakOf(entry) {
 }
 export function addToGarden(id) {
   let e = S.garden.find((g) => g.id === id);
-  if (!e) { e = { id, planted: today(), log: [] }; S.garden.push(e); }
+  if (!e) { e = { id, planted: today(), log: [] }; S.garden.push(e); dispatchEvent(new CustomEvent('zm:added', { detail: id })); } // the app awards XP for it
   S.active = id; save();
   return e;
 }
@@ -143,13 +143,13 @@ export function bestStreak() {
 }
 
 // ---------- streak saver: one free skip a week, earned by a 7-day streak, shown as a watering can ----------
-// state.saver = { have: 0 | 1, earned: 'YYYY-MM-DD' (day the last one was earned), used: ['YYYY-MM-DD', …] (days it covered) }
+// state.saver = { have: 0–2 (earned at 7 days or bought in the shop for 50 seeds), earned: 'YYYY-MM-DD' (day the last one was earned), used: ['YYYY-MM-DD', …] (days it covered) }
 const saverState = () => (S.saver ||= { have: 0, earned: null, used: [] });
 export const saverReady = () => saverState().have > 0;
 // call after a photo is logged: every 7th day of a run earns a watering can (you can hold one)
 export function earnSaver() {
   const s = saverState(), n = overallStreak();
-  if (n >= 7 && n % 7 === 0 && !s.have && s.earned !== today()) { s.have = 1; s.earned = today(); save(); return true; }
+  if (n >= 7 && n % 7 === 0 && (s.have || 0) < 2 && s.earned !== today()) { s.have = (s.have || 0) + 1; s.earned = today(); save(); return true; }
   return false;
 }
 // call when the app opens: if yesterday was missed but the run was alive the day before, the can covers yesterday.
@@ -163,7 +163,7 @@ export function useSaverIfNeeded() {
   const yd = today(y), y2d = today(y2);
   if (days.has(yd) || kept.has(yd) || !(days.has(y2d) || kept.has(y2d))) return null;
   if (s.used.some((d) => dayDiff(d, yd) < 7)) return null;
-  s.have = 0; s.used = [...s.used, yd].slice(-30); save();
+  s.have = Math.max(0, s.have - 1); s.used = [...s.used, yd].slice(-30); save();
   return yd;
 }
 // streak levels: the sprout on Today grows a stage at each badge

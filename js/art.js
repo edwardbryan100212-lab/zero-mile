@@ -569,12 +569,36 @@ const GLYPH = {
   lock: '<path fill-rule="evenodd" d="M12 2a5 5 0 0 1 5 5v2.2a3 3 0 0 1 2.5 3V19a3 3 0 0 1-3 3h-9a3 3 0 0 1-3-3v-6.8a3 3 0 0 1 2.5-3V7a5 5 0 0 1 5-5zm0 3a2 2 0 0 0-2 2v2h4V7a2 2 0 0 0-2-2z"/>',
   sprout: '<path d="M13.5 13.2V20a1.5 1.5 0 0 1-3 0v-4.3C6 15.8 3 13 3 8.4c0-.6.4-1 1-1 3.3 0 5.6 1.2 6.8 3.3.6-3.6 3.4-6.2 8.2-6.2.6 0 1 .4 1 1 0 4.5-2.4 7.4-6.5 7.7z"/>',
   sound: '<path d="M11.2 4.2a1.3 1.3 0 0 1 2.1 1v13.6a1.3 1.3 0 0 1-2.1 1L7 16.5H4.5A1.5 1.5 0 0 1 3 15V9a1.5 1.5 0 0 1 1.5-1.5H7zM16.6 8.3a1.3 1.3 0 0 1 1.8.2 5.6 5.6 0 0 1 0 7 1.3 1.3 0 1 1-2-1.6 3 3 0 0 0 0-3.8 1.3 1.3 0 0 1 .2-1.8z"/>',
+  sow: '<path d="M4 20.5h16a1.5 1.5 0 0 1 0 3H4a1.5 1.5 0 0 1 0-3zM12 19V12.5C8.6 12.3 6 10 6 6.4c0-.5.4-.9.9-.9 2.8 0 4.6 1 5.4 2.8.8-3 3-4.8 6.8-4.8.5 0 .9.4.9.9 0 4.1-2.5 6.5-6.5 6.6V19z"/>',
   phone: '<path d="M8 2h8a3 3 0 0 1 3 3v14a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3V5a3 3 0 0 1 3-3zm2.5 16a1.5 1.5 0 0 0 0 3h3a1.5 1.5 0 0 0 0-3z"/>',
 };
 export const ICON_NAMES = Object.keys(GLYPH);
-export function icon(name, { size = 24, cls = '' } = {}) {
+// coloured versions for Today and the sidebar (round 4): the same glyph filled in the palette, plus at most one
+// accent shape in a second colour. Other screens stay single-colour (currentColor).
+const P = { leaf: '#23774a', pot: '#c8673d', butter: '#e8b23a', sky: '#3a8fc4', berry: '#8a4fb8', ink: '#17221a', cream: '#fffdf7' };
+const TINT = {
+  today: [P.leaf, `<path d="M10 22v-5.2a2 2 0 0 1 4 0V22z" fill="${P.pot}"/>`],
+  find: [P.sky],
+  camera: [P.ink, `<circle cx="12" cy="13.2" r="2.6" fill="${P.sky}"/>`],
+  rewards: [P.butter, `<path d="M9.5 19h5v3h-5z" fill="${P.pot}"/>`],
+  more: [P.ink],
+  impact: [P.sky, `<path d="M16 4.5A1.5 1.5 0 0 1 17.5 3h1A1.5 1.5 0 0 1 20 4.5v15a1.5 1.5 0 0 1-1.5 1.5h-1a1.5 1.5 0 0 1-1.5-1.5z" fill="${P.leaf}"/>`],
+  about: [P.berry],
+  admin: [P.ink],
+  water: [P.sky, `<path d="M9 14.5a3 3 0 0 0 2 2.8" fill="none" stroke="${P.cream}" stroke-width="1.6" stroke-linecap="round"/>`],
+  check: [P.leaf], plus: [P.leaf], close: [P.ink],
+  leaf: [P.leaf], sprout: [P.leaf], tree: [P.leaf, `<path d="M10.5 17.5h3v3.1a1.5 1.5 0 0 1-3 0z" fill="${P.pot}"/>`],
+  seed: [P.pot], sun: [P.butter], basket: [P.pot, `<circle cx="9" cy="14" r="1.6" fill="${P.butter}"/><circle cx="15" cy="14" r="1.6" fill="${P.butter}"/>`],
+  calendar: [P.pot, `<path d="M5 10h14v9H5z" fill="${P.cream}"/><path d="M7.5 12.5h3v3h-3z" fill="${P.leaf}"/>`],
+  sow: [P.leaf, `<path d="M4 20.5h16a1.5 1.5 0 0 1 0 3H4a1.5 1.5 0 0 1 0-3z" fill="${P.pot}"/>`],
+  bell: [P.butter], share: [P.leaf], chevron: [P.ink], back: [P.ink], heart: [P.pot], pin: [P.pot],
+  lorry: [P.sky, `<circle cx="7" cy="17.5" r="1.6" fill="${P.ink}"/><circle cx="17" cy="17.5" r="1.6" fill="${P.ink}"/>`],
+  star: [P.butter], lock: [P.ink], sound: [P.berry], phone: [P.ink],
+};
+export function icon(name, { size = 24, cls = '', color = false } = {}) {
   const g = GLYPH[name] || GLYPH.leaf;
-  return `<svg class="ico ${cls}" width="${size}" height="${size}" viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true" focusable="false" data-icon="${name}">${g}</svg>`;
+  const t = color ? (TINT[name] || [P.leaf]) : null;
+  return `<svg class="ico${color ? ' ico-c' : ''} ${cls}" width="${size}" height="${size}" viewBox="0 0 24 24" fill="${t ? t[0] : 'currentColor'}"${t ? ` style="fill:${t[0]}"` : ''} stroke="none" aria-hidden="true" focusable="false" data-icon="${name}">${g}${t?.[1] || ''}</svg>`;
 }
 
 // ---------- Pip ----------

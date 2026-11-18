@@ -135,17 +135,19 @@ p.tree-co2 b { font-size: 1.3rem; display: block; }
 .sec-link .ico { width: 18px; height: 18px; }
 @media (hover: hover) and (pointer: fine) { .sec-link:hover { text-decoration: underline; text-underline-offset: 3px; } }
 
-/* ---------- Today: hero (8) + quests (4), then plants 3-up ---------- */
-.tgrid { display: grid; gap: 12px; grid-template-columns: minmax(0, 1fr); }
+/* ---------- Today (round 4): greeting, LCD hero, Care today, your plants, quests, small links ----------
+   Phone: one column in that order. Mac: a 12-column dashboard: hero 8 + quests 4 on top, then Care today, the
+   plants grid and the links, all on the same edges with a 16/24 rhythm. */
+.tgrid { display: grid; gap: 16px; grid-template-columns: minmax(0, 1fr); }
 .t-slot:empty { display: none; }
+.t-greet { display: grid; gap: 2px; padding-top: 4px; }
+.t-date { color: var(--ink-2); font-weight: 600; }
 @media (min-width: 1000px) {
-  .tgrid { grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 16px; }
-  .t-hero { grid-column: span 8; }
-  .t-quests { grid-column: span 4; }
-  .t-slot, .t-plants, .t-impact { grid-column: 1 / -1; }
+  .tgrid { grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 24px; }
+  .tgrid > * { grid-column: 1 / -1; }
+  .tgrid > .t-hero { grid-column: 1 / span 8; grid-row: 2; }
+  .tgrid > .t-quests { grid-column: 9 / -1; grid-row: 2; }
 }
-.tgrid > .t-hero { order: 1; } .tgrid > .t-quests { order: 2; } .tgrid > .nudge3 { order: 3; } .tgrid > .t-slot, .tgrid > .care-auto { order: 4; } .tgrid > .t-plants { order: 5; } .tgrid > .t-impact { order: 6; }
-@media (min-width: 1000px) { .tgrid > .nudge3 { grid-column: 1 / -1; } }
 .t-hero { display: grid; grid-template-columns: 208px minmax(0, 1fr); grid-template-areas: "face num" "face week" "face row"; gap: 14px 28px; align-items: center; align-content: center; padding: 24px 28px; }
 .th-face { grid-area: face; display: grid; gap: 10px; justify-items: center; align-self: center; }
 .th-face .pxface { width: 100%; }
@@ -192,38 +194,45 @@ p.tree-co2 b { font-size: 1.3rem; display: block; }
 .lquests li.done .lq-label { color: var(--px); opacity: .7; text-decoration: line-through; text-decoration-thickness: 1px; }
 .lq-bonus { margin-top: auto; display: flex; align-items: center; gap: 8px; padding-top: 10px; border-top: 2px solid var(--px-dim); font: 400 1.0625rem/1.2 var(--f-px); color: var(--px); opacity: .75; }
 .lq-bonus.got { opacity: 1; }
-/* plants: real-photo cards */
-.pcards { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; grid-template-columns: minmax(0, 1fr); }
-@media (min-width: 560px) { .pcards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-@media (min-width: 1000px) { .pcards { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; } }
-.pcard { position: relative; display: grid; grid-template-rows: auto 1fr auto; padding: 0; overflow: hidden; }
-.pc-pic { display: block; aspect-ratio: 4 / 3; background: var(--paper-2); overflow: hidden; }
-.pc-pic img { width: 100%; height: 100%; object-fit: cover; transition: transform .4s var(--ease); }
-@media (hover: hover) and (pointer: fine) { .pc-pic:hover img { transform: scale(1.03); } }
-.pc-mood { position: absolute; top: 10px; left: 10px; width: 54px; padding: 3px; border-width: 3px; border-radius: 9px; }
-.pc-mood::before { display: none; }
-.pc-body { display: grid; gap: 2px; padding: 12px 16px 4px; align-content: start; }
+/* plants: tiles with the plant's produce symbol (or a square photo until js/produce.js lands) */
+.pcards { list-style: none; margin: 0; padding: 0; display: grid; gap: 16px; grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 640px) { .pcards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1000px) { .pcards { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; } }
+.pcard { display: grid; grid-template-columns: 72px minmax(0, 1fr); grid-template-rows: auto 1fr; gap: 16px; padding: 16px; align-items: start; }
+.pc-media { display: grid; place-items: center; width: 72px; height: 72px; border-radius: 16px; background: var(--paper-2); overflow: hidden; }
+.pc-media img { width: 100%; height: 100%; object-fit: cover; }
+.pc-sym { display: grid; place-items: center; }
+.pc-sym svg { width: 56px; height: 56px; flex: none; }
+.pc-body { display: grid; gap: 2px; align-content: start; min-width: 0; }
 .pc-name { text-decoration: none; }
 .pc-name b { font: 650 1.125rem/1.25 var(--f-head); letter-spacing: -.01em; }
+@media (hover: hover) and (pointer: fine) { .pc-name:hover b { text-decoration: underline; text-underline-offset: 3px; } }
 .pc-sub { font-size: .9375rem; color: var(--ink-2); }
-.pc-acts { display: flex; gap: 8px; align-items: center; padding: 10px 16px 16px; }
+.pc-mood { display: inline-flex; align-items: center; gap: 8px; margin-top: 6px; font-size: .875rem; font-weight: 700; color: var(--ink-2); }
+.pc-face { display: block; width: 36px; padding: 2px; border-width: 2px; border-radius: 6px; flex: none; }
+.pc-face::before { display: none; }
+.pc-acts { grid-column: 1 / -1; align-self: end; display: flex; gap: 8px; align-items: center; }
 .pc-acts > :first-child { flex: 1; }
 .pc-ok { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; font-weight: 800; color: var(--leaf-d); }
-.pc-ok .gi { width: 18px; height: 18px; }
 .pc-water[aria-pressed="true"] { --c: var(--leaf-t); --b: var(--leaf-t); --t: var(--leaf-dd); }
-.pcard .amounts { display: grid; gap: 8px; padding: 0 16px 16px; }
+.pcard .amounts { grid-column: 1 / -1; display: grid; gap: 8px; }
 .am-h { font-weight: 800; }
 .am-row { display: flex; flex-wrap: wrap; gap: 8px; }
 .hform { display: flex; gap: 8px; align-items: center; }
 .hform input { width: 6em; min-height: 40px; padding: 0 10px; border: 1px solid var(--line-d); border-radius: 10px; background: var(--card); }
-.pc-pick .pc-body { padding-bottom: 16px; }
+.pc-pick { grid-template-rows: auto; align-items: center; }
 .drop { position: fixed; z-index: 90; width: 6px; height: 6px; background: var(--leaf); pointer-events: none; }
-/* impact: one plain row */
-.t-impact { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 24px; padding: 14px 18px; text-decoration: none; color: var(--ink-2); }
-.t-impact b { font: 700 1.125rem/1 var(--f-head); color: var(--ink); margin-right: 4px; }
-.t-impact .ti-go { margin-left: auto; color: var(--ink-2); }
-@media (hover: hover) and (pointer: fine) { .t-impact:hover { border-color: var(--line-d); } }
-
+/* small links: sow this month, impact */
+.t-links { display: grid; gap: 16px; grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 640px) { .t-links { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1000px) { .t-links { gap: 24px; } }
+.t-link { display: grid; grid-template-columns: 28px minmax(0, 1fr) 18px; gap: 14px; align-items: center; padding: 16px 18px; text-decoration: none; }
+.t-link span { display: grid; gap: 2px; min-width: 0; }
+.t-link b { font: 650 1.0625rem/1.25 var(--f-head); }
+.t-link em { font-style: normal; font-size: .9375rem; color: var(--ink-2); }
+.t-link .ti-go { color: var(--ink-2); }
+@media (hover: hover) and (pointer: fine) { .t-link:hover { border-color: var(--line-d); } }
+.sec-head h2 { display: flex; align-items: center; gap: 10px; }
 /* ---------- Photo ---------- */
 .snap-grid { display: grid; gap: 16px; }
 @media (min-width: 1000px) { .snap-grid { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); align-items: start; } }
@@ -406,7 +415,7 @@ button.si-art { cursor: pointer; }
 }
 .t-hero.at-risk { --px: var(--px-amber); --px-dim: #5a4a1c; --px-glow: 0 0 6px rgba(255, 207, 74, .5); }
 /* the last card in Your plants: add one more (keeps the 3-up rows from ending ragged) */
-.pc-add { height: 100%; display: grid; place-items: center; align-content: center; gap: 10px; min-height: 240px; padding: 24px; border: 1.5px dashed var(--line-d); border-radius: var(--r-card); text-decoration: none; color: var(--leaf-d); font-weight: 800; background: transparent; box-shadow: none; }
+.pc-add { height: 100%; display: grid; place-items: center; align-content: center; gap: 6px; min-height: 160px; padding: 24px; border: 1.5px dashed var(--line-d); border-radius: var(--r-card); text-decoration: none; color: var(--leaf-d); font-weight: 800; background: transparent; box-shadow: none; }
 .pc-add .ico { width: 28px; height: 28px; }
 .pc-add span { color: var(--ink-2); font-weight: 600; font-size: .9375rem; }
 @media (hover: hover) and (pointer: fine) { .pc-add:hover { border-color: var(--leaf); background: var(--card); } }

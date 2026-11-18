@@ -37,7 +37,8 @@ button, .btn, .b3, .chip, .tabbar a, .tabbar button, .side-nav a, .tbs { user-se
 .muted { color: var(--muted); }
 .small { font-size: .9375rem; }
 svg { fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
-svg.ico, svg.pxi { fill: currentColor; stroke: none; flex: none; }
+svg.ico:not(.ico-c), svg.pxi { fill: currentColor; stroke: none; flex: none; }
+svg.ico-c { stroke: none; flex: none; }
 .art { color: var(--leaf); }
 .lcd .art { color: var(--px); }
 .fluted { display: none; }

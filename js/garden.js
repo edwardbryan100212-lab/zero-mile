@@ -51,6 +51,9 @@ const snappedToday = (e) => e.log.some((l) => l.date === today());
 let PHOTO = {}; // id → real photo (js/photos.js), so Today's tiles match Find
 const tile = (p) => `<a class="tile c3" href="#/plant/${p.id}"><div class="tile-art${PHOTO[p.id] ? ' photo' : ''}"><img src="${PHOTO[p.id] || thumb(p.id)}" alt="" width="132" height="132" loading="lazy"></div><b>${esc(p.name)}</b></a>`;
 const picOf = (id) => PHOTO[id] || thumb(id);
+// a plant's small picture on Today: its flat produce symbol (js/produce.js) when that module is there, else its photo
+let PRODUCE = null;
+const media = (id) => (PRODUCE ? `<span class="pc-sym">${PRODUCE(id, { size: 56 })}</span>` : `<img src="${picOf(id)}" alt="" width="144" height="144" loading="lazy">`);
 
 // ---------- a few pixel sparkles: the small celebration when something is logged ----------
 export function burst(x, y) { confetti(x, y, { count: 16, spread: .6 }); }
@@ -205,7 +208,7 @@ export default async function garden(main) {
     <section class="t-hero lcd${risk ? ' at-risk' : ''}" id="hero" aria-labelledby="streak-t">
       <div class="th-face">${faceCanvas(mood, 'th-pxface')}<p class="th-say">${esc(say)}</p></div>
       <div class="th-main">
-        <h1 id="streak-t" class="th-num"><b data-count="${n}">${n}</b><span>day streak</span></h1>
+        <h2 id="streak-t" class="th-num"><b data-count="${n}">${n}</b><span>day streak</span></h2>
         ${fresh ? '<p class="th-lead">One photo a day grows your streak.</p>' : '<div class="pxweek" role="group" aria-label="This week" id="dots"></div>'}
         <div class="th-row">${cta}${fresh ? '' : `<button class="th-cans" type="button" data-help="streak" aria-label="Watering cans: ${cans} of ${SAVER_MAX}. How streaks work">${[0, 1].map((k) => `<span class="${k < cans ? 'on' : ''}">${art('can-freeze', { size: 16 })}</span>`).join('')}</button>`}</div>
       </div>
@@ -222,32 +225,38 @@ export default async function garden(main) {
       <p class="lq-bonus${d.bonus || d.chest ? ' got' : ''}">${art('seed-gem', { size: 16 })}${d.bonus ? `+${d.bonus} seeds for all 3` : d.chest ? 'Bonus collected' : 'All 3: bonus seeds'}</p>`;
   };
 
-  const impact = `
-    <a class="t-impact c3" href="#/impact" aria-label="Your impact: ${fmt(miles)} food miles, ${fmt(co2g)} grams of CO2 saved, ${fmt(kg, 1)} kilograms grown, ${trees.length} trees. Open Impact">
-      <span><b data-count="${miles}">${fmt(miles)}</b> food miles</span>
-      <span><b data-count="${co2g}" data-suffix=" g">${fmt(co2g)} g</b> CO₂ saved</span>
-      <span><b data-count="${kg.toFixed(1)}" data-dec="1">${fmt(kg, 1)}</b> kg grown</span>
-      <span><b>${trees.length}</b> ${trees.length === 1 ? 'tree' : 'trees'}</span>
-      ${icon('chevron', { size: 18, cls: 'ti-go' })}
-    </a>`;
+  const hr = new Date().getHours();
+  const greet = `
+    <header class="t-greet">
+      <h1>${hr < 12 ? 'Good morning' : hr < 18 ? 'Good afternoon' : 'Good evening'}</h1>
+      <p class="t-date">${new Date().toLocaleDateString('en-IE', { weekday: 'long', day: 'numeric', month: 'long' })}</p>
+    </header>`;
+  const month = new Date().toLocaleDateString('en-IE', { month: 'long' });
+  const links = `
+    <nav class="t-links" aria-label="More for today">
+      <a class="t-link c3" href="#/sow">${icon('sow', { size: 28, color: true })}<span><b>Sow this month</b><em>What to plant in ${month}</em></span>${icon('chevron', { size: 18, cls: 'ti-go' })}</a>
+      <a class="t-link c3" href="#/impact">${icon('impact', { size: 28, color: true })}<span><b>Your impact</b><em>${fmt(miles)} food miles · ${fmt(co2g)} g CO₂ · ${fmt(kg, 1)} kg grown</em></span>${icon('chevron', { size: 18, cls: 'ti-go' })}</a>
+    </nav>`;
+  const quests = `<section class="t-quests lcd" id="quests" aria-labelledby="quest-t">${questCard()}</section>`;
 
   main.innerHTML = `
   <div class="page today ombre" data-tone="today">
     <div class="tgrid${fresh ? ' is-fresh' : ''}">
+      ${greet}
       ${hero}
-      <section class="t-quests lcd" id="quests" aria-labelledby="quest-t">${questCard()}</section>
-      <div class="t-slot" id="care-slot"></div>
+      ${fresh ? '' : '<div class="t-slot" id="care-slot"></div>'}
       ${fresh ? `
       <section class="t-plants" aria-labelledby="easy-t">
-        <div class="sec-head"><h2 id="easy-t">Easy in a pot</h2><a class="sec-link" href="#/find">See all</a></div>
-        <ul class="pcards">${easy.map((p) => `<li class="pcard c3 pc-pick"><a class="pc-pic" href="#/plant/${p.id}" tabindex="-1" aria-hidden="true"><img src="${picOf(p.id)}" alt="" width="320" height="240" loading="lazy"></a><div class="pc-body"><a class="pc-name" href="#/plant/${p.id}"><b>${esc(p.name)}</b></a><span class="pc-sub">${esc(p.grow?.days_to_harvest ? `Ready in ${p.grow.days_to_harvest[0]}–${p.grow.days_to_harvest[1]} days` : 'Easy to grow')}</span></div></li>`).join('')}</ul>
+        <div class="sec-head"><h2 id="easy-t">${icon('sprout', { size: 24, color: true })}Easy in a pot</h2><a class="sec-link" href="#/find">See all</a></div>
+        <ul class="pcards">${easy.map((p) => `<li class="pcard c3 pc-pick"><a class="pc-media" href="#/plant/${p.id}" tabindex="-1" aria-hidden="true">${media(p.id)}</a><div class="pc-body"><a class="pc-name" href="#/plant/${p.id}"><b>${esc(p.name)}</b></a><span class="pc-sub">${esc(p.grow?.days_to_harvest ? `Ready in ${p.grow.days_to_harvest[0]}–${p.grow.days_to_harvest[1]} days` : 'Easy to grow')}</span></div></li>`).join('')}</ul>
       </section>` : `
       <section class="t-plants" aria-labelledby="plants-t">
-        <div class="sec-head"><h2 id="plants-t">Your plants</h2><a class="sec-link" href="#/find">${ICON.plus}Add</a></div>
+        <div class="sec-head"><h2 id="plants-t">${icon('sprout', { size: 24, color: true })}Your plants</h2><a class="sec-link" href="#/find">${icon('plus', { size: 18, color: true })}Add</a></div>
         <ul class="pcards" id="plants"></ul>
         <input type="file" accept="image/*" class="vh" id="repair-in" aria-hidden="true" tabindex="-1">
-      </section>
-      ${impact}`}
+      </section>`}
+      ${quests}
+      ${links}
     </div>
   </div>`;
 
@@ -300,12 +309,12 @@ export default async function garden(main) {
       const ok = tree ? !treePhotoDue(e).due : snappedToday(e);
       const age = tree ? treeAge(e) : `Day ${dayDiff(e.planted, today()) + 1} · ${stageName(e, p)}`;
       return `<li class="pcard c3${ok ? ' done' : ''}" data-id="${e.id}">
-        <a class="pc-pic" href="#/plant/${e.id}" tabindex="-1" aria-hidden="true"><img src="${picOf(e.id)}" alt="" width="320" height="240" loading="lazy" data-ref></a>
-        <span class="pc-mood lcd" title="${esc(moodWord(md))}">${faceCanvas(md)}<span class="vh">${esc(p.name)} feels: ${esc(moodWord(md))}</span></span>
-        <div class="pc-body"><a class="pc-name" href="#/plant/${e.id}"><b>${esc(p.name)}</b></a><span class="pc-sub">${esc(age)}</span></div>
+        <a class="pc-media" href="#/plant/${e.id}" tabindex="-1" aria-hidden="true">${media(e.id)}</a>
+        <div class="pc-body"><a class="pc-name" href="#/plant/${e.id}"><b>${esc(p.name)}</b></a><span class="pc-sub">${esc(age)}</span>
+          <span class="pc-mood"><span class="pc-face lcd">${faceCanvas(md)}</span>${esc(moodWord(md))}</span></div>
         <div class="pc-acts">
-          ${ok ? `<span class="pc-ok">${ICON.check}${tree ? 'Season done' : 'Photo done'}</span>` : `<a class="b3 b3-sm" href="#/snap/${e.id}">${ICON.photo}Photo</a>`}
-          <button class="b3 b3-sm b3-white pc-water" type="button" data-water aria-pressed="${w}">${ICON.water}<span>${w ? 'Watered' : 'Water'}</span><span class="vh"> ${esc(p.name)}</span></button>
+          ${ok ? `<span class="pc-ok">${icon('check', { size: 18, color: true })}${tree ? 'Season done' : 'Photo done'}</span>` : `<a class="b3 b3-sm" href="#/snap/${e.id}">${ICON.photo}Photo</a>`}
+          <button class="b3 b3-sm b3-white pc-water" type="button" data-water aria-pressed="${w}">${icon('water', { size: 20, color: true })}<span>${w ? 'Watered' : 'Water'}</span><span class="vh"> ${esc(p.name)}</span></button>
           <button class="b3 b3-sm b3-white b3-sq" type="button" data-more aria-expanded="false" aria-label="Log ${tree ? 'height or harvest' : 'a harvest'} for ${esc(p.name)}">${ICON.more}</button>
         </div>
         <div class="amounts" hidden>
@@ -315,11 +324,6 @@ export default async function garden(main) {
       </li>`;
     }).join('') + `<li><a class="pc-add" href="#/find">${icon('plus')}Add a plant<span>Herbs, veg, fruit or a tree</span></a></li>`;
     stopFaces = runFaces(box);
-    // your own latest photo replaces the reference picture
-    for (const li of $$('.pcard[data-id]', box)) {
-      const e = state.garden.find((x) => x.id === li.dataset.id), last = [...e.log].sort((a, b) => (a.date < b.date ? 1 : -1))[0];
-      if (last) getPhoto(last.key).then((b) => { if (b && li.isConnected) { const img = li.querySelector('[data-ref]'); img.src = objURL(b); img.closest('.pc-pic').classList.add('own'); } }).catch(() => {});
-    }
     const idOf = (el) => el.closest('.pcard').dataset.id, find = (id) => state.garden.find((x) => x.id === id);
     $$('[data-water]', box).forEach((b) => b.addEventListener('click', () => {
       const e = find(idOf(b)); const on = toggleWatered(e);

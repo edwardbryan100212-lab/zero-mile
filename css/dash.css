@@ -432,3 +432,13 @@ p.tree-co2 b { font-size: 1.3rem; display: block; }
 .q-n { font-size: .875rem; color: var(--muted); }
 .quest .bar3 { height: 16px; }
 .hero-row .b3 { white-space: nowrap; }
+/* real photos in Today's tiles fill the square (3D renders keep their padding) */
+.tile-art.photo { padding: 0; overflow: hidden; }
+.tile-art.photo img { width: 100%; height: 100%; object-fit: cover !important; padding: 0 !important; }
+/* on a big screen the celebration fills the stage, as it does on a phone */
+@media (min-width: 900px) and (min-height: 700px) {
+  .cele-in { width: min(100%, 560px); }
+  .cele-art { transform: scale(1.4); transform-origin: 50% 100%; margin-bottom: 9vh; }
+  .cele-title { font-size: 2.25rem; }
+  .cele-big { font-size: 4.5rem; }
+}

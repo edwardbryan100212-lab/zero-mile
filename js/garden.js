@@ -47,7 +47,8 @@ function moodOf(e) {
   return last.mood;
 }
 const snappedToday = (e) => e.log.some((l) => l.date === today());
-const tile = (p) => `<a class="tile c3" href="#/plant/${p.id}"><div class="tile-art"><img src="${thumb(p.id)}" alt="" width="132" height="132" loading="lazy"></div><b>${esc(p.name)}</b></a>`;
+let PHOTO = {}; // id → real photo (js/photos.js), so Today's tiles match Find
+const tile = (p) => `<a class="tile c3" href="#/plant/${p.id}"><div class="tile-art${PHOTO[p.id] ? ' photo' : ''}"><img src="${PHOTO[p.id] || thumb(p.id)}" alt="" width="132" height="132" loading="lazy"></div><b>${esc(p.name)}</b></a>`;
 
 // ---------- a small burst of leaves: the celebration when something is logged ----------
 export function burst(x, y) { confetti(x, y, { count: 16, spread: .8 }); }
@@ -102,6 +103,8 @@ async function analyseAndLog(entry, file, date, onBusy) {
   return { res, blob, before, after, out, earned, lv0 };
 }
 
+// Friendly headline for the photo: never lead with bad news; the tips on the result screen say what to do
+const SNAP_LINE = { thriving: 'Looking amazing!', happy: 'Looking good!', okay: 'Growing along!', thirsty: 'Needs a drink?', poorly: 'Let\u2019s help it!', new: 'First photo!', sleepy: 'Growing along!' };
 // ---------- the photo celebration: Pip cheers, XP counts up, the sun grows, then quests, chests, badges, level ----------
 async function photoParty({ res, blob, before, after, out, earned, lv0 }, plant) {
   const V = await RV();
@@ -111,7 +114,7 @@ async function photoParty({ res, blob, before, after, out, earned, lv0 }, plant)
   const url = objURL(blob);
   const lv1 = level(lv0.xp + xp);
   const S = [{
-    tone: 'leaf', title: 'Great snap!', big: esc(moodWord(res.mood)),
+    tone: 'leaf', title: 'Great snap!', big: esc(SNAP_LINE[res.mood] || 'Growing along!'),
     art: `<div class="snap-pol"><img src="${url}" alt="Your photo of ${esc(plant.name)}"></div><div class="cele-pip">${pip('cheer', { size: 120 })}</div>`,
   }];
   if (xp > 0) S.push({
@@ -174,6 +177,7 @@ const HELP = {
 
 export default async function garden(main) {
   const D = await data();
+  if (!Object.keys(PHOTO).length) PHOTO = await import('./photos.js?v=9').then((m) => m.photoThumbs()).catch(() => ({}));
   freeURLs();
   const fresh = !state.garden.length;
   let entry = state.garden.find((e) => e.id === state.active) || state.garden[0];

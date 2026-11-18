@@ -112,6 +112,15 @@ onReward(async (out, kind) => {
   const vis = [...$$('.st-lvl')].find((b) => b.offsetParent);
   if (out.xp > 0 && kind !== 'photo') { floatGain(vis, `+${out.xp} XP`, 'sun'); pop(vis, { from: .8 }); }
   if (kind === 'photo' || kind === 'chest' || kind === 'spend') return;
+  // browsing (learning about plants) and the admin tools: a finished quest is a small banner, not a full-screen stop.
+  // Badges, level-ups and chests still get their moment, except in admin where everything stays quiet.
+  const quiet = location.hash.startsWith('#/admin') || (kind === 'learn' && !out.levelUp && !out.unlocked?.length && !out.chest);
+  if (quiet) {
+    const q = out.quests || [];
+    if (q.length) toast(`Quest done: ${q.map((x) => x.label).join(', ')}! +${q.reduce((a, x) => a + (x.xp || 0), 0)} XP`);
+    else if (out.unlocked?.length || out.levelUp) toast(out.levelUp ? `Level ${out.levelUp.to}: ${out.levelUp.title}!` : 'New badge unlocked!');
+    renderStats(); dispatchEvent(new Event('zm:rewards')); return;
+  }
   const V = await RV(), s = V.rewardScreens(out);
   if (s.length) { await celebration(s); renderStats(); dispatchEvent(new Event('zm:rewards')); }
 });

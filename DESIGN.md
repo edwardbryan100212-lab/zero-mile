@@ -10,7 +10,9 @@ Keep the habit loop (streak, XP, seeds, quests, badges, celebrations). It must l
 
 The owner also asked for:
 - **better colour schemes:** see the palette below, with one green, one warm accent and an LCD green, and nothing else
-- **an improved layout:** a clear hierarchy, a 4/8 spacing grid, aligned edges, and no ragged rows Drop the borrowed look: candy colours, sticker art everywhere, treasure chests, fat 3D buttons on every control.
+- **an improved layout:** a clear hierarchy, a 4/8 spacing grid, aligned edges, and no ragged rows
+
+Drop the borrowed look: candy colours, sticker art everywhere, treasure chests, fat 3D buttons on every control.
 
 ## The idea
 
@@ -78,11 +80,11 @@ Pip is a terracotta pot with a sprout and the black LCD face with green pixels. 
   - open a plant page (learn) +3, max 5 a day
   - a completed quest gives its own XP
 - **Levels:** level n needs `50 * n * (n + 1) / 2` XP in total. Each level has a garden title: Seedling, Sprout, Gardener, Green Thumb, Grower, Harvester, Orchard Keeper, Forest Maker…
-- **Seeds:** the currency. Earned from chests, quests and level-ups. You can spend them in the "Shop":
+- **Seeds:** the currency. Earned from quests, milestones and level-ups. You can spend them in the "Shop":
   - a streak saver (watering can) costs 50 and you can hold 2
   - cosmetic pot colours and hats for Pip cost 100–400
-- **Daily quests:** 3 a day, chosen from photo, water, learn 2 plants, harvest, plant a tree and keep the streak. Each gives XP and seeds. Completing all 3 opens a daily chest.
-- **Streak milestones (badge + seeds; no chests):** 3, 7, 14, 30, 50, 100 and 365 days, each with a chest of seeds and a badge.
+- **Daily quests:** 3 a day, chosen from photo, water, learn 2 plants, harvest, plant a tree and keep the streak. Each gives XP and seeds. Completing all 3 adds a seed bonus (no chest).
+- **Streak milestones (badge + seeds; no chests):** 3, 7, 14, 30, 50, 100 and 365 days, each giving a badge and some seeds.
 - **Achievements:** `first-photo`, `streak-7`, `streak-30`, `streak-100`, `first-harvest`, `five-plants`, `first-tree`, `ten-trees`, `miles-100`, `miles-1000`, `herb-garden` (3 herbs), `fruit-bowl` (3 fruits), `night-owl`, `early-bird`, `level-5` and `level-10`.
 - **API:**
   - `award(kind, opts)` returns `{ xp, seeds, levelUp, quests, unlocked }`. The kinds are photo, water, harvest, plant, tree, learn and quest.

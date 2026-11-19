@@ -117,7 +117,7 @@ export default async function admin(main, arg) {
         await logPhoto(e, date, blob, res);
         const l = e.log.find((x) => x.date === date); if (l) delete l.repaired; // a set-up photo, not a repaired day
         if (date < e.planted) e.planted = date; // a plant can't be photographed before it was planted
-        award('photo', { date }); // demo states earn XP and quests like real photos
+        award('photo', { date }); // demo states earn streak stamps like real photos
       } catch { toast(`Couldn’t read ${files[i].name}.`); }
     }
     save(); busy.textContent = '';
@@ -127,8 +127,7 @@ export default async function admin(main, arg) {
 
   $('#ad-harvest').addEventListener('click', () => {
     const g = Math.round(+$('#ad-grams').value || 0); if (g <= 0) return;
-    logHarvest(entry() || addToGarden(id), g); const r = award('harvest', { id, g }) || {};
-    toast(`${g} g of ${plantById(id).name} logged${r.xp ? `. +${r.xp} XP` : ''}.`);
+    logHarvest(entry() || addToGarden(id), g); award('harvest', { id, g }); // the app says the km cancelled
   });
 
   $('#ad-list').addEventListener('click', async (ev) => {

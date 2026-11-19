@@ -4,9 +4,11 @@ import {
   overallStreak, lastDays, photoDays, wateredToday, toggleWatered, logHarvest, harvestKg, logPhoto, stageName, thumb,
   isTree, isFruitTree, treeAge, treePhotoDue, logHeight, treeSeason, bestTrees, dailyPlants, MONTH_NAMES,
   savedDays, earnSaver } from './core.js?v=9';
-import { EASE, reduced, countUp, countAll, fillAll, confetti, haptic, helpBtn, bindHelp, pip, pop, floatGain, celebration, play, faceCanvas, runFaces } from './fun.js?v=9';
+import { EASE, reduced, countAll, fillAll, confetti, haptic, helpBtn, bindHelp, pip, celebration, play, runFaces, pipPot } from './fun.js?v=9';
 import { art, icon } from './art.js?v=9';
-import { award, dailyQuests, rewards, level, onReward, saversHeld, SAVER_MAX } from './rewards.js?v=9';
+import { award, rewards, saversHeld, SAVER_MAX, journeyLabel, placeShort } from './rewards.js?v=9';
+import { kmCancelled, nextJourney, journeyOf, odometer, routeSvg, stickerSvg } from './journey.js?v=9';
+import { stampDay } from './rewards-view.js?v=9';
 import * as Face from './face.js?v=9';
 import { produceIcon } from './produce.js?v=9';
 import { streakRisk, riskLine } from './onboard.js?v=9';
@@ -103,77 +105,42 @@ async function analyseAndLog(entry, file, date, onBusy) {
   await logPhoto(entry, date, blob, res);
   const after = overallStreak();
   const earned = after > before ? earnSaver() : false;
-  // XP, quests, milestones and badges; a retaken photo of the same day earns nothing twice
-  const lv0 = level();
+  // streak stamps and other stickers; a retaken photo of the same day earns nothing twice
   const out = award('photo', { date, id: entry.id });
   changed();
-  return { res, blob, before, after, out, earned, lv0 };
+  return { res, blob, before, after, out, earned };
 }
 
 // Friendly headline for the photo: never lead with bad news; the tips on the result screen say what to do
 const SNAP_LINE = { thriving: 'Looking amazing!', happy: 'Looking good!', okay: 'Growing along!', thirsty: 'Needs a drink?', poorly: 'Let\u2019s help it!', new: 'First photo!', sleepy: 'Growing along!' };
-// ---------- the photo celebration on Pip's LCD: your photo once, the XP ticking up, the streak, then the rest ----------
-async function photoParty({ res, blob, before, after, out, earned, lv0 }, plant) {
+// ---------- the photo celebration: your photo once beside Pip's pot face, the streak stamped, then any stickers ----------
+async function photoParty({ res, blob, before, after, out, earned }, plant) {
   const V = await RV();
-  const qxp = (out.quests || []).reduce((a, q) => a + q.xp, 0), xp = out.xp - qxp;
-  const big = after > before || xp > 0 || out.quests.length || out.unlocked.length || out.levelUp || out.bonus || out.milestones.length;
-  if (!big) return false;
+  const more = V.rewardScreens(out);
+  if (!(after > before) && !more.length && !earned) return false;
   const url = objURL(blob);
-  const lv1 = level(lv0.xp + xp);
   const S = [{
-    tone: 'leaf', sound: 'done', face: res.mood === 'poorly' || res.mood === 'thirsty' ? 'okay' : 'thriving',
+    tone: 'paper', sound: 'done', face: res.mood === 'poorly' || res.mood === 'thirsty' ? 'okay' : 'thriving',
     photo: url, photoAlt: `Your photo of ${esc(plant.name)}`, title: 'Photo saved', big: esc(SNAP_LINE[res.mood] || 'Growing along!'),
-    sub: xp > 0 ? `+${xp} XP` : '',
-    extra: xp > 0 ? `<div class="cele-extra"><div class="cele-lvl"><span>LV ${lv1.n}</span><div class="bar3"><i style="width:${(lv0.n === lv1.n ? lv0.p : 0) * 100}%"></i></div></div></div>` : '',
-    onShow(el) {
-      const fill = el.querySelector('.cele-lvl .bar3 > i'); if (!fill) return;
-      setTimeout(() => { fill.style.width = `${lv1.p * 100}%`; }, reduced() ? 0 : 420);
-    },
   }];
   if (after > before) {
     const share = [7, 30, 50, 100, 365].includes(after);
+    const days = lastDays(7), photos = photoDays(), kept = savedDays();
     S.push({
-      tone: 'night', sound: 'streak', art: art('streak-sun', { size: 96 }), title: after === 1 ? 'Streak started' : 'Streak up',
-      big: `<b class="cele-num">${before}</b>`, count: { from: before, to: after }, sub: 'day streak',
-      extra: share ? `<div class="cele-extra"><button class="b3 b3-px" type="button" id="share-streak">${icon('share', { size: 18 })}Share</button></div>` : '',
+      tone: 'paper', sound: 'streak', title: after === 1 ? 'Streak started' : 'Streak up',
+      big: `<b class="cele-num">${before}</b>`, count: { from: before, to: after }, sub: `day${after === 1 ? '' : 's'} in a row`,
+      sticker: `<span class="ds-row cele-ds">${days.map((d) => stampDay(d, { photos, kept })).join('')}</span>`,
+      extra: share ? `<div class="cele-extra"><button class="b3 b3-white" type="button" id="share-streak">${icon('share', { size: 18 })}Share</button></div>` : '',
       onShow(el) { el.querySelector('#share-streak')?.addEventListener('click', () => shareStreak(after, plant, blob)); },
     });
   }
-  if (earned) S.push({ tone: 'sky', sound: 'quest', art: art('can-freeze', { size: 96 }), title: 'Watering can', big: `${saversHeld()} of ${SAVER_MAX}`, sub: 'it saves a missed day' });
-  S.push(...V.rewardScreens(out));
+  if (earned) S.push({ tone: 'paper', sound: 'quest', art: `<span class="cele-can">${icon('water', { size: 72, color: true })}</span>`, title: 'Watering can', big: `${saversHeld()} of ${SAVER_MAX}`, sub: 'It saves one missed day.' });
+  S.push(...more);
   await celebration(S);
   return true;
 }
 
 // ================= TODAY =================
-// The plant faces: Pip's LCD screen, drawn live by the shared face renderer (js/face.js) on small canvases
-function faceLoop(canvases) {
-  let raf = 0, stopped = false, last = 0;
-  const items = [];
-  import('./face.js?v=9').then(({ drawFace }) => {
-    if (stopped) return;
-    const dpr = Math.min(2, devicePixelRatio || 1);
-    for (const c of canvases) {
-      const w = c.clientWidth || 64, h = c.clientHeight || w; c.width = Math.round(w * dpr); c.height = Math.round(h * dpr);
-      items.push({ c, ctx: c.getContext('2d'), mood: c.dataset.mood || 'okay', phase: Math.random() * 6 });
-    }
-    const draw = (t) => { for (const it of items) { if (!it.c.isConnected) continue; it.ctx.clearRect(0, 0, it.c.width, it.c.height); drawFace(it.ctx, it.c.width, it.c.height, it.mood, t + it.phase); } };
-    if (reduced()) { draw(0); return; }
-    const tick = (now) => { if (stopped) return; if (now - last > 66) { last = now; draw(now / 1000); } raf = requestAnimationFrame(tick); };
-    raf = requestAnimationFrame(tick);
-  }).catch(() => {});
-  return () => { stopped = true; cancelAnimationFrame(raf); };
-}
-const shortDay = (d) => new Date(d + 'T12:00').toLocaleDateString('en-IE', { weekday: 'short' });
-
-const HELP = {
-  streak: () => ({ title: 'How streaks work', body: `<ul class="help-rows">
-    <li>${icon('camera')}<span><b>One photo a day</b> keeps your streak.</span></li>
-    <li>${icon('check')}<span><b>3 quests a day.</b> Finish all 3 for bonus seeds.</span></li>
-    <li>${icon('sun')}<span><b>Milestones</b> at 3, 7, 14, 30, 50, 100 and 365 days give a badge and seeds.</span></li>
-    <li>${icon('water')}<span><b>A watering can</b> saves a missed day. Earn one every 7 days, or buy one for 50 seeds.</span></li>
-    <li>${icon('tree')}<span><b>Trees</b> need a photo each season.</span></li></ul>` }),
-};
 
 export default async function garden(main) {
   const D = await data();
@@ -188,10 +155,10 @@ export default async function garden(main) {
   const easy = D.plants.filter((p) => p.grow?.difficulty === 'easy' && p.grow?.container_ok).slice(0, 6);
 
   // impact so far (same sums as the Impact screen)
-  let miles = 0, co2g = 0, kg = 0;
+  let co2g = 0, kg = 0;
   for (const e of state.garden) {
     const t = trip(plantById(e.id), state.region), k = harvestKg(e);
-    kg += k; if (t) { miles += Math.round(t.crowMi * (e.harvests || []).length); co2g += Math.round(t.co2Transport * k * 1000); }
+    kg += k; if (t) { co2g += Math.round(t.co2Transport * k * 1000); }
   }
 
   // Pip's face says how today is going: hello to a new grower, sleepy before today's photo, thriving after it, and
@@ -201,29 +168,37 @@ export default async function garden(main) {
   const say = fresh ? 'Hi! I’m Pip' : anyToday ? (allDone ? 'All done today' : 'Nice one') : risk ? riskLine(n) : !daily.length ? 'Trees grow slowly' : 'Snap me today';
   const cta = fresh ? `<a class="b3 b3-solid" href="#/find">Pick a plant</a>`
     : !daily.length ? (treesDue ? `<a class="b3 b3-solid" href="#/snap">${ICON.photo}Seasonal photo</a>` : `<a class="b3" href="#/find">${ICON.plus}Add a plant</a>`)
-    : allDone ? `<a class="b3" href="#/snap">${ICON.photo}Snap another</a>` : `<a class="b3 b3-solid${risk ? ' pulse3' : ''}" href="#/snap">${ICON.photo}Take today’s photo</a>`;
-  const cans = saversHeld();
+    : allDone ? `<a class="b3 b3-white" href="#/snap">${ICON.photo}Snap another</a>` : `<a class="b3 b3-solid${risk ? ' pulse3' : ''}" href="#/snap">${ICON.photo}Take today’s photo</a>`;
 
+  // the one score: km of shop trips cancelled by your harvests, and the next real journey to cancel
+  const km = kmCancelled(), nx = nextJourney(km);
   const hero = `
-    <section class="t-hero lcd${risk ? ' at-risk' : ''}" id="hero" aria-labelledby="streak-t">
-      <div class="th-face">${faceCanvas(mood, 'th-pxface')}<p class="th-say">${esc(say)}</p></div>
+    <section class="t-hero c3${risk ? ' at-risk' : ''}" id="hero" aria-labelledby="odo-t">
+      <div class="th-pip">${pipPot(mood, 'th-pot')}<p class="th-say">${esc(say)}</p></div>
       <div class="th-main">
-        <h2 id="streak-t" class="th-num"><b data-count="${n}">${n}</b><span>day streak</span></h2>
-        ${fresh ? '<p class="th-lead">One photo a day grows your streak.</p>' : '<div class="pxweek" role="group" aria-label="This week" id="dots"></div>'}
-        <div class="th-row">${cta}${fresh ? '' : `<button class="th-cans" type="button" data-help="streak" aria-label="Watering cans: ${cans} of ${SAVER_MAX}. How streaks work">${[0, 1].map((k) => `<span class="${k < cans ? 'on' : ''}">${art('can-freeze', { size: 16 })}</span>`).join('')}</button>`}</div>
+        <h2 id="odo-t" class="th-k">Km cancelled</h2>
+        <button class="th-odo" type="button" data-sheet="km" aria-label="${fmt(km)} km cancelled. What is this?">${odometer(km)}</button>
+        ${nx ? `<p class="th-next">Next: <b>${esc(journeyLabel(nx))}</b>, ${fmt(nx.km)} km</p>` : ''}
+        ${fresh ? '<p class="th-lead">Every harvest cancels a real shop trip.</p>' : `
+        <div class="th-streak"><button class="th-k th-sk" type="button" data-sheet="streak" aria-label="${n} day streak. What is this?">${n}-day streak</button><div class="ds-row" role="group" aria-label="This week" id="dots"></div></div>`}
+        <div class="th-row">${cta}</div>
       </div>
     </section>`;
 
-  const questCard = () => {
-    const qs = dailyQuests(), d = rewards().days[today()] || {}, nDone = qs.filter((q) => q.done).length;
-    return `<div class="lq-head"><h2 id="quest-t" class="lcd-h">Quests</h2><span class="lq-n" aria-label="${nDone} of 3 done">${nDone}/3</span></div>
-      <ul class="lquests">${qs.map((q) => `<li class="${q.done ? 'done' : ''}">
-        ${art(q.done ? 'check' : q.art, { size: 16 })}
-        <span class="lq-label">${esc(q.label)}</span>
-        <span class="lq-pay">${q.done ? 'Done' : q.need > 1 ? `${q.have}/${q.need}` : `+${q.xp} XP`}</span>
-        <span class="vh">${q.done ? ', done' : `, ${q.have} of ${q.need}`}</span></li>`).join('')}</ul>
-      <p class="lq-bonus${d.bonus || d.chest ? ' got' : ''}">${art('seed-gem', { size: 16 })}${d.bonus ? `+${d.bonus} seeds for all 3` : d.chest ? 'Bonus collected' : 'All 3: bonus seeds'}</p>`;
-  };
+  // the next trip to cancel: the growing plant closest to its first harvest
+  const ageOf = (e) => dayDiff(e.planted, today()) + 1;
+  const near = state.garden.filter((e) => !treeOf(e) && journeyOf(e.id)).map((e) => {
+    const p = plantById(e.id), d0 = p.grow?.days_to_harvest?.[0] || 60;
+    return { e, p, j: journeyOf(e.id), left: d0 - ageOf(e) };
+  }).sort((a, b) => a.left - b.left)[0];
+  const nextTrip = near ? `
+    <section class="t-next c3" aria-labelledby="next-t">
+      <div class="sec-head"><h2 id="next-t">Next trip to cancel</h2><a class="sec-link" href="#/plant/${near.p.id}">${esc(near.p.name)}</a></div>
+      <div class="tn-map">${routeSvg(near.p.id, { w: 320, h: 180 })}</div>
+      <p class="tn-line"><b>${esc(placeShort(near.j.from.place))}, ${esc(near.j.from.country)} → ${esc(near.j.to.name)}</b><span>${fmt(near.j.km)} km by ${esc(near.j.mode.replace('+', ' and '))}</span></p>
+      <p class="tn-when">${near.left > 0 ? `Your ${esc(near.p.name.toLowerCase())} could be ready in about ${near.left} day${near.left === 1 ? '' : 's'}.` : `Your ${esc(near.p.name.toLowerCase())} may be ready to pick.`}
+        ${near.j.sources[0]?.url ? `<a class="tn-src" href="${esc(near.j.sources[0].url)}" target="_blank" rel="noopener">Source</a>` : ''}</p>
+    </section>` : '';
 
   const hr = new Date().getHours();
   const greet = `
@@ -235,13 +210,13 @@ export default async function garden(main) {
   const links = `
     <nav class="t-links" aria-label="More for today">
       <a class="t-link c3" href="#/sow">${icon('sow', { size: 28, color: true })}<span><b>Sow this month</b><em>What to plant in ${month}</em></span>${icon('chevron', { size: 18, cls: 'ti-go' })}</a>
-      <a class="t-link c3" href="#/impact">${icon('impact', { size: 28, color: true })}<span><b>Your impact</b><em>${fmt(miles)} food miles · ${fmt(co2g)} g CO₂ · ${fmt(kg, 1)} kg grown</em></span>${icon('chevron', { size: 18, cls: 'ti-go' })}</a>
+      <a class="t-link c3" href="#/impact">${icon('impact', { size: 28, color: true })}<span><b>Your impact</b><em>${fmt(co2g)} g CO₂ · ${fmt(kg, 1)} kg grown</em></span>${icon('chevron', { size: 18, cls: 'ti-go' })}</a>
+      <a class="t-link c3" href="#/rewards">${icon('star', { size: 28, color: true })}<span><b>Stickers</b><em>${Object.keys(rewards().stickers).length} collected</em></span>${icon('chevron', { size: 18, cls: 'ti-go' })}</a>
     </nav>`;
-  const quests = `<section class="t-quests lcd" id="quests" aria-labelledby="quest-t">${questCard()}</section>`;
 
   main.innerHTML = `
-  <div class="page today ombre" data-tone="today">
-    <div class="tgrid${fresh ? ' is-fresh' : ''}">
+  <div class="page today" data-tone="today">
+    <div class="tgrid${fresh ? ' is-fresh' : ''}${nextTrip ? ' has-next' : ''}">
       ${greet}
       ${hero}
       ${fresh ? '' : '<div class="t-slot" id="care-slot"></div>'}
@@ -251,44 +226,24 @@ export default async function garden(main) {
         <ul class="pcards">${easy.map((p) => `<li class="pcard c3 pc-pick"><a class="pc-media" href="#/plant/${p.id}" tabindex="-1" aria-hidden="true">${media(p.id)}</a><div class="pc-body"><a class="pc-name" href="#/plant/${p.id}"><b>${esc(p.name)}</b></a><span class="pc-sub">${esc(p.grow?.days_to_harvest ? `Ready in ${p.grow.days_to_harvest[0]}–${p.grow.days_to_harvest[1]} days` : 'Easy to grow')}</span></div></li>`).join('')}</ul>
       </section>` : `
       <section class="t-plants" aria-labelledby="plants-t">
-        <div class="sec-head"><h2 id="plants-t">${icon('sprout', { size: 24, color: true })}Your plants</h2><a class="sec-link" href="#/find">${icon('plus', { size: 18, color: true })}Add</a></div>
-        <ul class="pcards" id="plants"></ul>
+        <div class="sec-head"><h2 id="plants-t">Your plants</h2><a class="sec-link" href="#/find">${icon('plus', { size: 18, color: true })}Add</a></div>
+        <ul class="psts" id="plants"></ul>
         <input type="file" accept="image/*" class="vh" id="repair-in" aria-hidden="true" tabindex="-1">
       </section>`}
-      ${quests}
+      ${nextTrip}
       ${links}
     </div>
   </div>`;
-
-  bindHelp(main, HELP);
-  countAll(main); fillAll(main);
   const stopHero = runFaces($('#hero', main));
   // a slot under the hero for other features (care help, weather): they listen for zm:today
   dispatchEvent(new CustomEvent('zm:today', { detail: { slot: $("#care-slot", main), main } }));
 
-  function refreshGame() {
-    const q = $('#quests'); if (!q) return;
-    q.innerHTML = questCard();
-  }
-  const offReward = onReward((o, kind) => { if (kind !== 'photo') setTimeout(refreshGame, 0); });
-  addEventListener('zm:rewards', refreshGame);
-
-  // this week as pixel dots: lit for a photo, half-lit for a day the watering can saved, a missed day can be filled in
+  // this week as date stamps: a photo day is stamped, a day the watering can saved says SAVED, a missed day can be filled in
   function dots() {
     const el = $('#dots'); if (!el) return;
-    const days = photoDays(), kept = savedDays(), first = state.garden.map((e) => e.planted).sort()[0];
-    el.innerHTML = '';
-    for (const d of lastDays(7)) {
-      const dn = shortDay(d);
-      const did = days.has(d), sav = !did && kept.has(d), isToday = d === today(), missed = !did && !sav && !isToday && d >= first;
-      const t = document.createElement(missed ? 'button' : 'div');
-      t.className = `pxd${did ? ' did' : ''}${sav ? ' sav' : ''}${isToday ? ' tdy' : ''}${missed ? ' miss' : ''}`;
-      const sayD = `${dn}${did ? ', photo taken' : sav ? ', saved by the watering can' : missed ? ', no photo, tap to add one from that day' : ''}${isToday ? ', today' : ''}`;
-      if (missed) { t.type = 'button'; t.setAttribute('aria-label', sayD); }
-      t.innerHTML = `${missed ? '' : `<span class="vh">${sayD}</span>`}<i aria-hidden="true">${missed ? art('plus', { size: 16 }) : ''}</i><span aria-hidden="true">${dn.slice(0, 1)}</span>`;
-      if (missed) t.addEventListener('click', () => { $('#repair-in').dataset.date = d; $('#repair-in').click(); });
-      el.appendChild(t);
-    }
+    const photos = photoDays(), kept = savedDays(), first = state.garden.map((e) => e.planted).sort()[0];
+    el.innerHTML = lastDays(7).map((d) => stampDay(d, { photos, kept, first, repair: true })).join('');
+    $$('[data-repair]', el).forEach((b) => b.addEventListener('click', () => { $('#repair-in').dataset.date = b.dataset.repair; $('#repair-in').click(); }));
   }
   $('#repair-in')?.addEventListener('change', async (e) => {
     const f = e.target.files?.[0], d = e.target.dataset.date; e.target.value = '';
@@ -297,41 +252,28 @@ export default async function garden(main) {
     if (!(await photoParty(r, plantById(entry.id)))) toast('Added to your journal.');
     dispatchEvent(new HashChangeEvent('hashchange')); // the router redraws Today
   });
+  const onRw = () => { const o = $('.th-odo', main); if (o) o.innerHTML = odometer(kmCancelled()); };
+  addEventListener('zm:rewards', onRw);
 
-  // one card per plant: your latest photo (or a real reference photo), Pip's mood on a tiny LCD, Photo / Water / more
-  let stopFaces = () => {};
+  // your plants as their home stickers: name, day and a small log button (a harvest cancels its shop twin's trip)
   function rows() {
     const box = $('#plants'); if (!box) return;
-    stopFaces();
     box.innerHTML = state.garden.map((e) => {
       const p = plantById(e.id); if (!p) return '';
-      const tree = isTree(p), w = wateredToday(e), md = moodOf(e);
-      const ok = tree ? !treePhotoDue(e).due : snappedToday(e);
-      const age = tree ? treeAge(e) : `Day ${dayDiff(e.planted, today()) + 1} · ${stageName(e, p)}`;
-      return `<li class="pcard c3${ok ? ' done' : ''}" data-id="${e.id}">
-        <a class="pc-media" href="#/plant/${e.id}" tabindex="-1" aria-hidden="true">${media(e.id)}</a>
-        <div class="pc-body"><a class="pc-name" href="#/plant/${e.id}"><b>${esc(p.name)}</b></a><span class="pc-sub">${esc(age)}</span>
-          <span class="pc-mood"><span class="pc-face lcd">${faceCanvas(md)}</span>${esc(moodWord(md))}</span></div>
-        <div class="pc-acts">
-          ${ok ? `<span class="pc-ok">${icon('check', { size: 18, color: true })}${tree ? 'Season done' : 'Photo done'}</span>` : `<a class="b3 b3-sm" href="#/snap/${e.id}">${ICON.photo}Photo</a>`}
-          <button class="b3 b3-sm b3-white pc-water" type="button" data-water aria-pressed="${w}">${icon('water', { size: 20, color: true })}<span>${w ? 'Watered' : 'Water'}</span><span class="vh"> ${esc(p.name)}</span></button>
-          <button class="b3 b3-sm b3-white b3-sq" type="button" data-more aria-expanded="false" aria-label="Log ${tree ? 'height or harvest' : 'a harvest'} for ${esc(p.name)}">${ICON.more}</button>
-        </div>
+      const tree = isTree(p), ok = tree ? !treePhotoDue(e).due : snappedToday(e);
+      const age = tree ? treeAge(e) : `Day ${ageOf(e)} · ${stageName(e, p)}`;
+      return `<li class="pst c3${ok ? ' done' : ''}" data-id="${e.id}">
+        <a class="pst-a" href="#/plant/${e.id}"><span class="pst-stk">${stickerSvg(e.id, { kind: 'home', size: 104, day: ageOf(e), tilt: true })}</span><b>${esc(p.name)}</b></a>
+        <span class="pst-sub">${esc(age)}${ok ? `<span class="pst-ok">${icon('check', { size: 16, color: true })}<span class="vh">, ${tree ? 'season photo done' : 'photo done today'}</span></span>` : ''}</span>
+        <button class="b3 b3-sm b3-white pst-log" type="button" data-more aria-expanded="false">${tree && !isFruitTree(p) ? 'Log height' : 'Log a harvest'}<span class="vh"> for ${esc(p.name)}</span></button>
         <div class="amounts" hidden>
           ${!tree || isFruitTree(p) ? `<p class="am-h">Picked</p><div class="am-row">${[100, 250, 500, 1000].map((g) => `<button class="b3 b3-white b3-sm" type="button" data-g="${g}">${g < 1000 ? g + ' g' : '1 kg'}</button>`).join('')}</div>` : ''}
           ${tree ? `<form class="hform"><label for="h-${e.id}">Height</label><input id="h-${e.id}" type="number" inputmode="numeric" min="1" max="6000" step="1" placeholder="cm" required><button class="b3 b3-sm">Save</button></form>` : ''}
         </div>
       </li>`;
-    }).join('') + `<li><a class="pc-add" href="#/find">${icon('plus')}Add a plant<span>Herbs, veg, fruit or a tree</span></a></li>`;
-    stopFaces = runFaces(box);
-    const idOf = (el) => el.closest('.pcard').dataset.id, find = (id) => state.garden.find((x) => x.id === id);
-    $$('[data-water]', box).forEach((b) => b.addEventListener('click', () => {
-      const e = find(idOf(b)); const on = toggleWatered(e);
-      b.setAttribute('aria-pressed', on); b.querySelector('span').textContent = on ? 'Watered' : 'Water';
-      play(on ? 'water' : 'toggle');
-      if (on) { haptic(10); drops(b); const out = award('water', { id: e.id }); if (out.xp) floatGain(b, `+${out.xp - out.quests.reduce((a, q) => a + q.xp, 0)} XP`, 'sky'); }
-    }));
-    $$('[data-more]', box).forEach((b) => b.addEventListener('click', () => { const h = b.closest('.pcard').querySelector('.amounts'); h.hidden = !h.hidden; b.setAttribute('aria-expanded', !h.hidden); if (!h.hidden) h.querySelector('input, button')?.focus(); }));
+    }).join('') + `<li class="pst pst-add"><a href="#/find">${icon('plus')}<b>Add a plant</b><span>Each one is a new sticker</span></a></li>`;
+    const idOf = (el) => el.closest('.pst').dataset.id, find = (id) => state.garden.find((x) => x.id === id);
+    $$('[data-more]', box).forEach((b) => b.addEventListener('click', () => { const h = b.closest('.pst').querySelector('.amounts'); h.hidden = !h.hidden; b.setAttribute('aria-expanded', !h.hidden); if (!h.hidden) h.querySelector('input, button')?.focus(); }));
     $$('.hform', box).forEach((f) => f.addEventListener('submit', (ev) => {
       ev.preventDefault();
       const cm = Math.round(+f.querySelector('input').value); if (!(cm > 0)) return;
@@ -340,11 +282,11 @@ export default async function garden(main) {
       const r = f.getBoundingClientRect(); burst(r.left + r.width / 2, r.top); rows();
     }));
     $$('[data-g]', box).forEach((b) => b.addEventListener('click', () => {
-      const e = find(idOf(b)); logHarvest(e, +b.dataset.g);
-      const t = trip(plantById(e.id), state.region);
-      toast(t ? `${fmt(t.crowMi)} food miles skipped!` : 'Harvest logged!');
-      const r = b.getBoundingClientRect(); burst(r.left + r.width / 2, r.top); haptic(12);
-      award('harvest', { id: e.id }); rows(); changed();
+      const e = find(idOf(b)); logHarvest(e, +b.dataset.g); haptic(12);
+      rows(); changed();
+      const out = award('harvest', { id: e.id }); // the app shows the trip cancelling and the odometer rolling
+      if (!(out.km > 0)) toast('Harvest logged!');
+      onRw();
     }));
   }
   // say stages once each: first sprout, first flower, ready to pick, and each tree's birthday
@@ -362,22 +304,11 @@ export default async function garden(main) {
         msg = !said.includes(st) ? { Sprout: `${p.name} has sprouted!`, Flowering: `First flowers on your ${p.name.toLowerCase()}!`, 'Ready to pick': `Your ${p.name.toLowerCase()} is ready to pick!` }[st] : null;
         key = st;
       }
-      if (msg) { said.push(key); save(); setTimeout(() => { toast(msg); const r = $(`.pcard[data-id="${e.id}"]`)?.getBoundingClientRect(); if (r) confetti(r.left + r.width / 2, r.top + r.height / 3, { count: 24 }); }, 600); break; }
+      if (msg) { said.push(key); save(); setTimeout(() => { toast(msg); const r = $(`.pst[data-id="${e.id}"]`)?.getBoundingClientRect(); if (r) confetti(r.left + r.width / 2, r.top + r.height / 3, { count: 12 }); }, 600); break; }
     }
   }
   dots(); rows(); stages();
-  return { unmount() { offReward(); removeEventListener('zm:rewards', refreshGame); stopFaces(); stopHero(); freeURLs(); } };
-}
-// three water drops falling from the Water button
-function drops(b) {
-  if (reduced()) return;
-  const r = b.getBoundingClientRect();
-  for (let i = 0; i < 3; i++) {
-    const d = document.createElement('i'); d.className = 'drop'; d.setAttribute('aria-hidden', 'true');
-    d.style.left = `${r.left + r.width * (.3 + i * .2)}px`; d.style.top = `${r.top - 6}px`;
-    document.body.appendChild(d);
-    d.animate([{ transform: 'translateY(-10px) scale(.6)', opacity: 0 }, { transform: 'translateY(0) scale(1)', opacity: 1, offset: .3 }, { transform: 'translateY(26px) scale(.8)', opacity: 0 }], { duration: 600, delay: i * 70, easing: EASE }).onfinish = () => d.remove();
-  }
+  return { unmount() { removeEventListener('zm:rewards', onRw); stopHero(); freeURLs(); } };
 }
 
 // ================= PHOTO =================
@@ -453,7 +384,7 @@ export async function snapView(main, id) {
     const fb = $('#feedback'); fb.removeAttribute('aria-busy');
     const m = res.m, pct = (x) => Math.round(x * 100);
     fb.innerHTML = `
-      <div class="score"><div class="score-face"><canvas data-mood="${res.mood || 'okay'}"></canvas></div><div><h2><b data-count="${res.score}">${res.score}</b><span class="vh"> out of 100. </span></h2><p class="score-word">${esc(moodWord(res.mood))}</p></div></div>
+      <div class="score"><div class="score-face">${pipPot(res.mood || 'okay', 'score-pot')}</div><div><h2><b data-count="${res.score}">${res.score}</b><span class="vh"> out of 100. </span></h2><p class="score-word">${esc(moodWord(res.mood))}</p></div></div>
       <div class="meter">
         <div><span>Green</span><div class="bar3"><i data-fill="${m.green.toFixed(3)}"></i></div><b>${pct(m.green)}%</b></div>
         <div><span>Yellow</span><div class="bar3 y"><i data-fill="${m.yellow.toFixed(3)}"></i></div><b>${pct(m.yellow)}%</b></div>
@@ -461,7 +392,7 @@ export async function snapView(main, id) {
       </div>
       <ul class="notes">${res.notes.slice(0, 2).map((x) => `<li>${esc(x)}</li>`).join('')}</ul>`;
     countAll(fb); fillAll(fb);
-    stopFace(); stopFace = faceLoop($$('canvas[data-mood]', fb));
+    stopFace(); stopFace = runFaces(fb);
   }
   $('#smart').addEventListener('change', async (e) => { state.smartAI = e.target.checked; save(); if (state.smartAI) (await import('./analyze.js?v=2')).loadSmart().catch(() => toast('Couldn’t download the smart check. The colour check still works.')); });
   $('#photo').addEventListener('change', async (e) => {

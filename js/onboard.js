@@ -6,7 +6,8 @@
 // - Streak at risk: after 6pm, with a streak and no photo yet today, Today's hero turns into an evening sky.
 // - Welcome back: after 2 or more days away, Pip says hello once.
 import { $, $$, esc, data, state, save, today, dayDiff, addToGarden, plantById, overallStreak, photoDays, bestTrees, toast } from './core.js?v=9';
-import { EASE, reduced, pip, haptic } from './fun.js?v=9';
+import { EASE, reduced, pip, haptic, stickOn } from './fun.js?v=9';
+import { stickerSvg } from './journey.js?v=9';
 import { produceIcon } from './produce.js?v=9';
 
 // ---------- streak at risk (used by the Today hero in js/garden.js) ----------
@@ -141,7 +142,7 @@ export async function onboard() {
   const view = {
     hi: () => `<div class="ob-hi">
         <div class="ob-pip">${pip('wave', { size: 200 })}</div>
-        <div class="lcd ob-lcd" aria-hidden="true"><span class="px">HI! I'M PIP</span></div>
+        <p class="ob-say" aria-hidden="true">Hi! I’m Pip</p>
         <h1 id="ob-t" tabindex="-1">Let’s grow food together</h1>
         <p class="ob-lead">A photo a day keeps your plant growing.</p>
       </div>
@@ -150,7 +151,7 @@ export async function onboard() {
       <div class="ob-cards">${CHOICES.map(card).join('')}</div>
       <div class="ob-foot"><button class="obtn obtn-xl" type="button" data-next${pick.grow ? '' : ' aria-disabled="true"'}>Next</button></div>`,
     goal: () => `<div class="ob-head"><h1 id="ob-t" tabindex="-1">Your daily goal</h1></div>
-      <div class="lcd ob-lcd ob-goal-lcd" aria-hidden="true"><span class="px" id="ob-goal-px">${esc(GOALS.find((g) => g.id === pick.goal)?.lcd || 'PICK ONE')}</span></div>
+      <div class="ob-stamp" aria-hidden="true"><span id="ob-goal-px">${esc(GOALS.find((g) => g.id === pick.goal)?.lcd || 'PICK ONE')}</span></div>
       <div class="ob-goals">${GOALS.map(goalCard).join('')}</div>
       <div class="ob-foot"><button class="obtn obtn-xl" type="button" data-next${pick.goal ? '' : ' aria-disabled="true"'}>Next</button></div>`,
     where: () => `<div class="ob-head"><h1 id="ob-t" tabindex="-1">Where do you live?</h1></div>
@@ -162,7 +163,7 @@ export async function onboard() {
         ${pics[pick.grow] ? `<img class="ob-pic" src="${esc(pics[pick.grow])}" alt="" width="220" height="165">` : ''}
         <h1 id="ob-t" tabindex="-1">Planted!</h1>
         <p class="ob-lead">${p ? `<span class="ob-sym" style="display:inline-flex;vertical-align:-6px;margin-right:6px">${produceIcon(p.id, { size: 28, group: p.group })}</span>` : ''}${esc(p?.name || 'Your plant')} is in your garden.</p>
-        <div class="lcd ob-lcd ob-xp" aria-label="Plus ${p?.group === 'tree' ? 20 : 5} XP"><span class="px">+${p?.group === 'tree' ? 20 : 5} XP</span></div>
+        ${p ? `<div class="ob-stick"><span class="ob-stk">${stickerSvg(p.id, { kind: 'home', size: 132, day: 1, tilt: true })}</span><p>Your first sticker: grown at home, 0 km</p></div>` : ''}
         <div class="ob-rem">${reminderBlock('ob-rem')}</div>
       </div>
       <div class="ob-foot"><button class="obtn obtn-xl obtn-2" type="button" data-finish>Go to my garden</button></div>`;
@@ -185,6 +186,7 @@ export async function onboard() {
       if (old) old.animate([{ transform: 'none', opacity: 1 }, { transform: `translateX(${-dir * 30}%)`, opacity: 0 }], { duration: 220, easing: EASE, fill: 'forwards' }).onfinish = () => old.remove();
     } else old?.remove();
     bind(el);
+    const stk = $('.ob-stk', el); if (stk) stickOn(stk, { delay: 380 }); // the first sticker is pressed on
     $('#ob-t', el)?.focus({ preventScroll: true });
   }
   const go = (d) => { i = Math.max(0, Math.min(STEPS.length - 1, i + d)); show(d); };
@@ -216,7 +218,7 @@ export async function onboard() {
   function plant() {
     state.region = pick.region; state.goal = pick.goal || 'regular'; state.onboarded = today();
     state.lastOpen = today();
-    addToGarden(plantId()); // fires zm:added, so the app awards the XP
+    addToGarden(plantId()); // fires zm:added, so the app gives its home sticker
     dispatchEvent(new Event('zm:garden'));
     haptic([10, 40, 14]);
     go(1);

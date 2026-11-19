@@ -62,6 +62,12 @@ export default async function sources(main) {
       <section class="ab3-src" aria-labelledby="src-t">
         <h2 id="src-t">How we know</h2>
         <div class="c3 rows3">
+          <details class="src3" id="km-count"><summary><span>How we count km</span></summary>
+          <div class="src3-in">
+          <p>Every plant has a shop twin: the same food in a shop near you, which usually comes from one main place. For each plant and country we take that place from trade data (mostly UN Comtrade import figures, with national statistics where the country grows its own; each plant’s source is listed below and on its page).</p>
+          <p><b>One harvest cancels one trip.</b> Each time you log a harvest, we add the straight-line distance from the twin’s growing area to ${esc(D.regions[state.region]?.dest.name || D.regions.IE.dest.name)} to your km cancelled. Real lorries and ships go further than a straight line, so the true number is bigger.</p>
+          <p>The journeys on your stickers (like Westland → Dublin) are real routes from the same data, sorted by length.</p>
+          </div></details>
           <details class="src3"><summary><span>How we count</span></summary>
           <div class="src3-in">
           <p><b>Where it comes from.</b> For each plant and country we use the single biggest source of what shops sell: home-grown if the country grows the most, otherwise the top import partner by weight in recent trade data. Some are marked low confidence; herbs have no trade codes of their own.</p>
@@ -78,6 +84,7 @@ export default async function sources(main) {
         </div>
         <h2>Credits</h2>
         <div class="c3 rows3">
+          <a class="row3 go3" href="https://www.naturalearthdata.com/" target="_blank" rel="noopener"><span>Map: Made with Natural Earth, public domain</span></a>
           ${photos.length ? `<details class="src3"><summary><span>Plant photos</span><b class="n3">${photos.length}</b></summary><ol>${photos.map((c) => `<li>${c.url ? `<a href="${esc(c.url)}" target="_blank" rel="noopener">${esc(c.title || c.id)}</a>` : esc(c.title || c.id)}<small>${esc([c.author, c.license].filter(Boolean).join(', '))}</small></li>`).join('')}</ol></details>` : ''}
           ${credits.length ? `<details class="src3"><summary><span>3D models</span><b class="n3">${credits.length}</b></summary><ol>${credits.map((c) => `<li>${typeof c === 'string' ? esc(c) : `${c.url ? `<a href="${esc(c.url)}" target="_blank" rel="noopener">${esc(c.title || c.name || c.url)}</a>` : esc(c.title || c.name || '')}<small>${esc([c.author, c.license].filter(Boolean).join(', '))}</small>`}</li>`).join('')}</ol></details>` : ''}
         </div>

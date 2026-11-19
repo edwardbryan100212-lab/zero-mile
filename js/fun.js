@@ -1,6 +1,6 @@
-// Zero Mile: motion helpers for the app, v2 "Garden LCD" (see DESIGN.md). Two kinds of motion:
-// - paper UI: calm easing (EASE), transforms and opacity only, short;
-// - LCD UI: pixel steps (steps(), two-frame wiggles, blinking), never smooth.
+// Zero Mile: motion helpers for the app, v3 "The cancelled journey" (see DESIGN.md). Two kinds of motion:
+// - paper UI: calm easing (EASE), transforms and opacity only, short; stickers press down (stickOn);
+// - Pip's LCD face on the pot: pixel steps, never smooth.
 // "Reduce motion" makes every animation here an instant change.
 export const EASE = 'cubic-bezier(.22,1,.36,1)';
 export const SPRING = EASE; // v1 name: there is no spring any more
@@ -150,8 +150,8 @@ export function pop(el, { delay = 0, from = .96, dur = 240, sound } = {}) {
   if (!el || reduced()) return null;
   return el.animate([{ opacity: 0, transform: `scale(${Math.max(.94, from)})` }, { opacity: 1, transform: 'none' }], { duration: dur, delay, easing: EASE, fill: 'backwards' });
 }
-// "+2 XP" rises from a button on a tiny LCD chip and goes
-// (a sun "+XP" gives a soft sparkle that yields to any louder sound; a tomato one is the soft "no")
+// a short note ("Saved", "Wearing") rises from a button and goes
+// (a sun one gives a soft sparkle that yields to any louder sound; a tomato one is the soft "no")
 const GAIN_SOUND = { sun: 'xp', tomato: 'error' };
 export function floatGain(anchor, text, tone = 'sun') {
   if (!anchor) return;
@@ -163,14 +163,52 @@ export function floatGain(anchor, text, tone = 'sun') {
   if (reduced()) { setTimeout(() => g.remove(), 900); return; }
   g.animate([{ opacity: 0, transform: 'translate(-50%, 0)' }, { opacity: 1, transform: 'translate(-50%, -12px)', offset: .25 }, { opacity: 1, transform: 'translate(-50%, -24px)', offset: .75 }, { opacity: 0, transform: 'translate(-50%, -32px)' }], { duration: 1000, easing: 'steps(6, end)' }).onfinish = () => g.remove();
 }
-// v1: seed gems burst out of a chest. There are no chests now; a few sparkles instead.
-export function burstSeeds(from) {
-  if (!from) return;
-  const r = from.getBoundingClientRect();
-  sparkles(r.left + r.width / 2, r.top + r.height / 2, { count: 24 });
+
+// ================= v3: stickers, the odometer and the cancelled route =================
+// A sticker is pressed onto the page: it comes down from a touch above and slightly bigger, and settles flat.
+// Transform only, 320 ms, no overshoot. Reduced motion: it is simply there.
+export function stickOn(el, { delay = 0 } = {}) {
+  if (!el || reduced()) return null;
+  const r = getComputedStyle(el).getPropertyValue('--r').trim() || '0deg';
+  return el.animate([
+    { transform: `translateY(-10px) scale(1.14) rotate(${r})` },
+    { transform: `translateY(1px) scale(.985) rotate(${r})`, offset: .7 },
+    { transform: `translateY(0) scale(1) rotate(${r})` },
+  ], { duration: 320, delay, easing: 'cubic-bezier(.4,0,.2,1)', fill: 'backwards' });
+}
+// the odometer rolls from one km total to the next (js/journey.js odometerRoll when it is there)
+export async function rollOdo(el, from, to) {
+  if (!el) return;
+  const J = await import('./journey.js?v=9');
+  if (typeof J.odometerRoll === 'function') { await J.odometerRoll(el.querySelector('.odo') || el, from, to); return; }
+  const put = (v) => { el.innerHTML = J.odometer(v); };
+  if (reduced() || from === to) { put(to); return; }
+  play('xp', { soft: true });
+  await new Promise((done) => {
+    const t0 = performance.now(), dur = 1100;
+    const step = (now) => { const k = Math.min(1, (now - t0) / dur), e = 1 - (1 - k) ** 3; put(Math.round(from + (to - from) * e)); if (k < 1 && el.isConnected) requestAnimationFrame(step); else done(); };
+    requestAnimationFrame(step);
+  });
+}
+// the shop twin's route shrinks back into the home dot (routeSvg's cancel 0 → 1)
+export async function cancelRoute(box, id, { w = 320, h = 180, dur = 1300 } = {}) {
+  if (!box) return;
+  const J = await import('./journey.js?v=9');
+  const put = (c) => { box.innerHTML = J.routeSvg(id, { w, h, cancel: c }); };
+  if (reduced()) { put(1); return; }
+  await new Promise((r) => setTimeout(r, 450)); // let the trip be seen first
+  await new Promise((done) => {
+    const t0 = performance.now(); let last = 0;
+    const step = (now) => {
+      const k = Math.min(1, (now - t0) / dur), e = k * k * (3 - 2 * k);
+      if (now - last > 30 || k >= 1) { last = now; put(e); }
+      if (k < 1 && box.isConnected) requestAnimationFrame(step); else done();
+    };
+    requestAnimationFrame(step);
+  });
 }
 
-// ---------- Pip wearing what was bought in the shop ----------
+// ---------- Pip wearing the pot and hat unlocked by km cancelled ----------
 import { mascot } from './art.js?v=9';
 import { worn } from './rewards.js?v=9';
 const HATS = {
@@ -192,6 +230,12 @@ export function pip(pose = 'wave', { size = 120, mood, cls = '', look } = {}) {
 // faceCanvas(mood) is markup; runFaces(root) draws every canvas[data-face] in root with a two-frame idle and blink
 // at about 8 fps (stepped, like a real LCD) and returns a stop function.
 export const faceCanvas = (mood = 'happy', cls = '') => `<canvas class="pxface ${cls}" data-face="${mood}" aria-hidden="true"></canvas>`;
+// Pip as a terracotta pot (or the pot colour Pip wears) with the LCD face on its front: the one place the LCD lives
+export function pipPot(mood = 'happy', cls = '') {
+  const w = worn();
+  const st = w.pot ? ` style="--pot:${w.pot.color};--pot-d:${w.pot.shade}"` : '';
+  return `<span class="ppot ${cls}"${st} aria-hidden="true">${w.hat && HATS[w.hat] ? `<svg class="ppot-hat" viewBox="14 14 92 40">${HATS[w.hat]}</svg>` : ''}<span class="ppot-rim"></span><span class="ppot-body"><span class="ppot-screen">${faceCanvas(mood, 'ppot-face')}</span></span></span>`;
+}
 export function runFaces(root) {
   let raf = 0, stopped = false, last = 0;
   const items = [];
@@ -211,12 +255,13 @@ export function runFaces(root) {
   return () => { stopped = true; cancelAnimationFrame(raf); };
 }
 
-// ---------- full-screen celebration on Pip's LCD ----------
-// screens: [{ face, art, photo, title, big, count, sub, extra, cta, sound, tone, amber, onShow(el, next), onContinue(el, next) }]
-// - face: a mood for Pip's pixel face (the default is 'thriving'); art: a pixel icon instead of the face
-// - photo: an image URL, shown once in a paper frame; big: the large pixel line; count: { from, to, prefix, suffix }
-//   ticks the big number up in steps; sound: a name from sound.js, or false; without it the tone picks one
-const TONE_SOUND = { leaf: 'done', sun: 'xp', sky: 'xp', berry: 'shake', tomato: 'badge', night: 'streak' };
+// ---------- full-screen celebration, on paper ----------
+// screens: [{ face, sticker, art, photo, title, big, count, sub, extra, cta, alt, sound, tone, onShow(el, next), onContinue(el, next) }]
+// - face: a mood for Pip's LCD face on the pot (the default is 'thriving'); sticker: sticker markup pressed onto
+//   the page instead of Pip; art: any other picture
+// - photo: an image URL, shown once in a paper frame; count: { from, to, prefix, suffix } counts the .cele-num up;
+//   alt: a second, quieter button that just moves on; sound: a name from sound.js, or false (the tone picks one)
+const TONE_SOUND = { paper: 'done', leaf: 'done', sun: 'xp', sky: 'xp', berry: 'shake', tomato: 'badge', night: 'streak' };
 let celeOpen = null;
 export function celebration(screens) {
   screens = screens.filter(Boolean);
@@ -233,7 +278,7 @@ export function celebration(screens) {
     removeEventListener('keydown', onKey); stopFace();
     const end = () => { bg.remove(); document.documentElement.classList.remove('cele-on'); celeOpen = null; opener?.focus?.({ preventScroll: true }); done(); };
     if (reduced()) return end();
-    bg.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 160, easing: 'steps(3, end)', fill: 'forwards' }).onfinish = end;
+    bg.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 160, easing: EASE, fill: 'forwards' }).onfinish = end;
   };
   const next = () => { if (++i >= screens.length) return finish(); show(screens[i]); };
   function show(s) {
@@ -241,25 +286,27 @@ export function celebration(screens) {
     bg.dataset.tone = s.tone || 'leaf';
     bg.classList.toggle('amber', !!s.amber);
     const pic = s.photo ? `<figure class="cele-photo"><img src="${s.photo}" alt="${s.photoAlt || 'Your photo'}"></figure>` : '';
-    const top = s.art ? `<div class="cele-icon">${s.art}</div>` : faceCanvas(s.face || 'thriving', 'cele-face');
+    const top = s.sticker ? `<div class="cele-sticker">${s.sticker}</div>` : s.art ? `<div class="cele-icon">${s.art}</div>` : pipPot(s.face || 'thriving', 'cele-pot');
     bg.innerHTML = `<div class="cele-in">
-      <div class="cele-art">${pic}${top}<span class="cele-sparks" aria-hidden="true">${'<i></i>'.repeat(6)}</span></div>
+      <div class="cele-art">${pic}${top}</div>
       <h2 class="cele-title" id="cele-t">${s.title || ''}</h2>
       ${s.big != null ? `<p class="cele-big">${s.big}</p>` : ''}
       ${s.sub ? `<p class="cele-sub">${s.sub}</p>` : ''}
       ${s.extra || ''}
-      <div class="cele-acts"><button class="b3 b3-px cele-go" type="button">${s.cta || 'Continue'}</button></div>
+      <div class="cele-acts"><button class="b3 cele-go" type="button">${s.cta || 'Continue'}</button>${s.alt ? `<button class="b3 b3-white cele-alt" type="button">${s.alt}</button>` : ''}</div>
       ${screens.length > 1 ? `<p class="cele-dots" aria-hidden="true">${screens.map((_, k) => `<i class="${k === i ? 'on' : ''}"></i>`).join('')}</p>` : ''}
     </div>`;
     const inner = bg.firstElementChild;
     stopFace = runFaces(inner);
     const go = bg.querySelector('.cele-go');
     go.addEventListener('click', () => (s.onContinue ? s.onContinue(inner, next) : next()));
-    // stepped entrance: each line switches on a beat after the last, like an LCD drawing itself
+    bg.querySelector('.cele-alt')?.addEventListener('click', next);
+    // calm entrance on paper: each line fades up a beat after the last; a sticker is pressed down onto the page
     if (!reduced()) [...inner.querySelectorAll('.cele-art, .cele-title, .cele-big, .cele-sub, .cele-extra, .cele-acts')].forEach((el, k) => {
-      el.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 160, delay: 60 + k * 90, easing: 'steps(2, end)', fill: 'backwards' });
+      el.animate([{ opacity: 0, transform: 'translateY(6px)' }, { opacity: 1, transform: 'none' }], { duration: 220, delay: 40 + k * 70, easing: EASE, fill: 'backwards' });
     });
-    if (s.count) { const b = inner.querySelector('.cele-num'); if (b) setTimeout(() => countUp(b, s.count.to, { from: s.count.from || 0, prefix: s.count.prefix || '', suffix: s.count.suffix || '', dur: 700, px: true }), reduced() ? 0 : 300); }
+    const stk = inner.querySelector('.cele-sticker > *'); if (stk) stickOn(stk, { delay: 120 });
+    if (s.count) { const b = inner.querySelector('.cele-num'); if (b) setTimeout(() => countUp(b, s.count.to, { from: s.count.from || 0, prefix: s.count.prefix || '', suffix: s.count.suffix || '', dur: 700 }), reduced() ? 0 : 300); }
     haptic(14);
     const snd = s.sound ?? TONE_SOUND[s.tone || 'leaf'];
     if (snd) setTimeout(() => play(snd), reduced() ? 0 : 90);
@@ -271,7 +318,7 @@ export function celebration(screens) {
     if (e.key === 'Tab') { const f = [...bg.querySelectorAll('button, a[href]')]; if (!f.length) return; if (e.shiftKey && document.activeElement === f[0]) { e.preventDefault(); f.at(-1).focus(); } else if (!e.shiftKey && document.activeElement === f.at(-1)) { e.preventDefault(); f[0].focus(); } }
   };
   addEventListener('keydown', onKey);
-  if (!reduced()) bg.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 160, easing: 'steps(3, end)' });
+  if (!reduced()) bg.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 180, easing: EASE });
   next();
   return p;
 }

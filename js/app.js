@@ -1,10 +1,11 @@
-// Zero Mile app: the router for the daily-use screens (Today, Find, Photo, Rewards, and Impact, About and Admin
-// under More), the top bar of stats on a phone, the Mac/iPad sidebar, and the rewards that pop up anywhere.
-import { $, $$, esc, data, rise, ROOT, state, plantById, overallStreak, today, thumb, useSaverIfNeeded, toast, photoDays, isTree } from './core.js?v=9';
-import { initPress, enter, sheet, pop, floatGain, celebration } from './fun.js?v=9';
-import { art, icon } from './art.js?v=9';
+// Zero Mile app: the router for the daily-use screens (Today, Find, Photo, Stickers (#/rewards), and Impact, About
+// and Admin under More), the top bar of stats on a phone, the Mac/iPad sidebar, and the stickers that pop up anywhere.
+import { $, $$, esc, fmt, data, rise, ROOT, state, plantById, overallStreak, today, thumb, useSaverIfNeeded, toast, photoDays, isTree } from './core.js?v=9';
+import { initPress, enter, sheet, celebration } from './fun.js?v=9';
+import { kmCancelled, odometer } from './journey.js?v=9';
+import { icon } from './art.js?v=9';
 import { produceIcon } from './produce.js?v=9';
-import { rewards, level, award, check, onReward } from './rewards.js?v=9';
+import { award, check, onReward } from './rewards.js?v=9';
 import { needsOnboarding, onboard, welcomeBack, todayNudge, settingsRow, photoTimeNudge } from './onboard.js?v=9';
 
 const routes = {
@@ -25,14 +26,12 @@ const MORE = ['impact', 'sources', 'admin'];
 let current = null, routed = false, seq = 0;
 const RV = () => import('./rewards-view.js?v=9');
 
-// ---------- the stats: streak sun, seeds and the XP ring (top bar on a phone, top of the sidebar on a Mac) ----------
-const nf = (n) => Number(n).toLocaleString('en-IE');
+// ---------- the stats: the streak in days and the odometer in km cancelled (top bar on a phone, sidebar on a Mac) ----------
 export function renderStats() {
-  const n = overallStreak(), r = rewards(), lv = level(), snapped = photoDays().has(today());
+  const n = overallStreak(), snapped = photoDays().has(today()), km = kmCancelled();
   const html = (where) => `
-    <button class="tbs st-sun${snapped ? '' : ' dim'}" type="button" data-sheet="streak" aria-label="${n} day streak${snapped ? '' : ', no photo yet today'}">${art('streak-sun', { size: 16 })}<b>${n}</b></button>
-    <button class="tbs st-seed" type="button" data-sheet="seeds" aria-label="${nf(r.seeds)} seeds">${art('seed-gem', { size: 16 })}<b>${nf(r.seeds)}</b></button>
-    <button class="tbs st-lvl" type="button" data-sheet="level" aria-label="Level ${lv.n}, ${esc(lv.title)}"><span class="lv" aria-hidden="true">LV</span><b>${lv.n}</b><i class="lvbar" aria-hidden="true"><i style="width:${Math.round(lv.p * 7) / 7 * 100}%"></i></i>${where === 'side' ? `<em>${esc(lv.title)}</em>` : ''}</button>`;
+    <button class="tbs st-days${snapped ? '' : ' dim'}" type="button" data-sheet="streak" aria-label="${n} day streak${snapped ? '' : ', no photo yet today'}. What is this?"><span class="st-stamp" aria-hidden="true"><b>${n}</b></span><span class="st-l">${where === 'side' ? `day${n === 1 ? '' : 's'} in a row` : 'days'}</span></button>
+    <button class="tbs st-km" type="button" data-sheet="km" aria-label="${fmt(km)} km cancelled. What is this?">${odometer(km, { digits: where === 'side' ? 6 : 5 })}${where === 'side' ? '<span class="st-l">cancelled</span>' : ''}</button>`;
   const top = $('#top-stats'), side = $('#side-stats');
   if (top) top.innerHTML = html('top');
   if (side) side.innerHTML = html('side');
@@ -40,7 +39,7 @@ export function renderStats() {
 document.addEventListener('click', async (e) => {
   const b = e.target.closest('[data-sheet]'); if (!b) return;
   const V = await RV();
-  ({ streak: V.streakSheet, seeds: V.seedSheet, level: V.levelSheet })[b.dataset.sheet]?.();
+  ({ streak: V.streakSheet, km: V.kmSheet })[b.dataset.sheet]?.();
 });
 
 // ---------- More: Impact, About and Admin ----------
@@ -109,22 +108,19 @@ $('.skip').addEventListener('click', (e) => { e.preventDefault(); $('#main').foc
 // ---------- rewards from anywhere ----------
 // adding a plant or a tree (Find and the plant page call addToGarden)
 addEventListener('zm:added', (e) => { const p = plantById(e.detail); award(p && isTree(p) ? 'tree' : 'plant', { id: e.detail }); });
-// the stats bump, XP floats up from the level readout, and anything big (a quest, a badge, a level) gets its
-// celebration. The photo builds its own sequence, so it is left out here.
+// the stats update, and anything new (a sticker, a cancelled trip, something Pip unlocked) gets its celebration.
+// The photo builds its own sequence, so it is left out here; admin stays quiet (a toast), and so does onboarding,
+// which shows the first sticker itself.
 onReward(async (out, kind) => {
   renderStats();
-  if (!out || kind === 'check' || kind === 'wear') return;
-  const vis = [...$$('.st-lvl')].find((b) => b.offsetParent);
-  if (out.xp > 0 && kind !== 'photo') { floatGain(vis, `+${out.xp} XP`, 'sun'); pop(vis, { from: .8 }); }
-  if (kind === 'photo' || kind === 'chest' || kind === 'spend') return;
-  // browsing (learning about plants) and the admin tools: a finished quest is a small banner, not a full-screen stop.
-  // Badges and level-ups still get their moment, except in admin where everything stays quiet.
-  const quiet = location.hash.startsWith('#/admin') || (kind === 'learn' && !out.levelUp && !out.unlocked?.length);
-  if (quiet) {
-    const q = out.quests || [];
-    if (q.length) toast(`Quest done: ${q.map((x) => x.label).join(', ')}! +${q.reduce((a, x) => a + (x.xp || 0), 0)} XP`);
-    else if (out.unlocked?.length || out.levelUp) toast(out.levelUp ? `Level ${out.levelUp.to}: ${out.levelUp.title}!` : 'New badge unlocked!');
-    renderStats(); dispatchEvent(new Event('zm:rewards')); return;
+  if (!out || kind === 'check' || kind === 'wear' || kind === 'photo') return;
+  const got = (out.stickers?.length || 0) + (out.unlocks?.length || 0);
+  if (!got && !(out.km > 0)) return;
+  if (document.querySelector('.ob')) return;
+  if (location.hash.startsWith('#/admin')) {
+    if (out.km > 0) toast(`Trip cancelled: ${fmt(out.km)} km. Total ${fmt(out.kmTo)} km.`);
+    else if (got) toast(got > 1 ? `${got} new stickers` : 'New sticker');
+    dispatchEvent(new Event('zm:rewards')); return;
   }
   const V = await RV(), s = V.rewardScreens(out);
   if (s.length) { await celebration(s); renderStats(); dispatchEvent(new Event('zm:rewards')); }

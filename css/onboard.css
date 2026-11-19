@@ -90,7 +90,11 @@ html.ob-on .tabbar { visibility: hidden; }
 .ob-goal small { font: 600 1rem/1.25 var(--font3, 'Nunito', sans-serif); color: var(--o-ink2); }
 .ob-radio { flex: none; width: 22px; height: 22px; border-radius: 50%; border: 2px solid #8a958c; background: #fff; transition: border-color 120ms, box-shadow 120ms; }
 .on .ob-radio { border: 6px solid var(--o-leaf); background: #fff; }
-.ob-goal-lcd { justify-self: start; align-self: flex-start; min-width: 200px; }
+.ob-stamp { justify-self: start; display: inline-grid; place-items: center; min-height: 44px; min-width: 200px; padding: 6px 16px; border: 2px solid var(--leaf, #23774a); border-radius: 6px; color: var(--leaf, #23774a); font: 800 .9375rem/1 Nunito, sans-serif; letter-spacing: .1em; transform: rotate(-2deg); }
+.ob-say { display: inline-block; padding: 10px 16px; border: 1.5px solid #17221a; border-radius: 16px 16px 16px 4px; background: #fffdf7; font: 700 1.125rem/1.2 'Bricolage Grotesque', Nunito, sans-serif; color: #17221a; }
+.ob-stick { display: grid; justify-items: center; gap: 10px; margin-top: 4px; }
+.ob-stick svg { width: 132px; height: auto; }
+.ob-stick p { font-weight: 700; color: #4d5a50; }
 @media (min-width: 640px) { .ob-regs { grid-template-columns: repeat(2, 1fr); } }
 
 /* step 5: planted */

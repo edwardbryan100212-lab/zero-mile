@@ -43,7 +43,7 @@ export function spring(value = 0, { settle = .5 } = {}) {
 
 export const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-export function mountScene(el, { height = 300, layout = () => {}, draw = () => {}, still, settle = .55 } = {}) {
+export function mountScene(el, { height = 300, layout = () => {}, draw = () => {}, still, settle = .55, ahead = '200%' } = {}) {
   el.classList.add('scene');
   let stage = el.querySelector(':scope > .st');
   if (!stage) {
@@ -89,7 +89,7 @@ export function mountScene(el, { height = 300, layout = () => {}, draw = () => {
     imgs.forEach(im => { im.src = im.dataset.src; });
     start(); // draw positions at once; the field fades in when its pictures are decoded
     Promise.all(imgs.map(im => (im.decode ? im.decode() : Promise.resolve()).catch(() => {}))).then(() => el.classList.add('ok'));
-  }, { rootMargin: '200% 0px' }).observe(el);
+  }, { rootMargin: `${ahead} 0px` }).observe(el); // ahead: how far down the page to get ready (a scene with no pictures can start at once)
 
   addEventListener('resize', () => { if (!ready) return; measure(); RM ? showStill() : draw(fol.value); });
   return { stage, progress };

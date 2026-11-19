@@ -2,10 +2,10 @@
 // tomato, so it reads without script; this file guesses the visitor's country, fills in their real shop twins from
 // data/data.json through js/journey.js, runs the live twin picker, peels the hero sticker and plays the routes scene.
 import { esc, fmt, data, allPlants, plantById, state } from './core.js?v=9';
-import * as J from './journey.js?v=9';
+import * as J from './journey.js?v=1';
 import { produceIcon } from './produce.js?v=9';
 import { loadPhotos, creditLine } from './photos.js?v=9';
-import { mountScene, spring, seg, sm, easeIO, clamp, RM } from './scene.js?v=10';
+import { mountScene, spring, seg, sm, easeIO, clamp, RM } from './scene.js?v=11';
 
 const $ = (s, el = document) => el.querySelector(s);
 const $$ = (s, el = document) => [...el.querySelectorAll(s)];
@@ -179,7 +179,8 @@ function renderTrees() {
   const fruit = allPlants().filter((p) => p.group === 'tree' && J.journeyOf(p.id, S.region)).length;
   const wood = allPlants().filter((p) => p.group === 'tree' && !J.journeyOf(p.id, S.region)).length;
   const apple = j ? (j.home ? `, like the apple grown ${fmt(j.km)} km from ${destOf(j, S.region)} in ${shortPlace(j)}` : `, like the apple that reaches ${destOf(j, S.region)} from ${countryName(j.from.country)}`) : '';
-  bind('trees-line').textContent = `${fruit} fruit trees have a shop twin${apple}. These ${wood} woodland trees have none: nobody ships birch to eat, so they cancel no trip. Zero Mile counts them by the carbon a grown tree takes up, about 22 kg of CO₂ a year, one general figure from the European Environment Agency, because no tree-by-tree number exists. A sapling takes up far less.`;
+  const word = (n) => ['No', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve'][n] || String(n);
+  bind('trees-line').textContent = `${word(fruit)} fruit trees have a shop twin${apple}. These ${word(wood).toLowerCase()} woodland trees have none: nobody ships birch to eat, so they cancel no trip. Zero Mile counts them by the carbon a grown tree takes up, about 22 kg of CO₂ a year, one general figure from the European Environment Agency, because no tree-by-tree number exists. A sapling takes up far less.`;
 }
 
 // ---------- the scene: every twin route flies in to the home city, then cancels into one dot ----------
@@ -207,8 +208,9 @@ function buildTrips() {
   }).filter(Boolean);
   trip.total = trip.routes.reduce((s, r) => s + r.km, 0);
   const n = trip.routes.length;
-  // fly in nearest first; cancel farthest first, so the map closes in on home
-  trip.routes.forEach((r, i) => { r.inA = .04 + (i / n) * .3; r.outA = .5 + ((n - 1 - i) / n) * .36; });
+  // fly in mixed (a stride through the list, so long and short arcs arrive together); cancel farthest first, so the map closes in on home
+  const stride = n > 2 ? [37, 29, 23, 19, 17, 13, 11, 7].find((p) => n % p) || 1 : 1;
+  trip.routes.forEach((r, i) => { r.inA = .04 + (((i * stride) % n) / n) * .3; r.outA = .5 + ((n - 1 - i) / n) * .36; });
   bind('trips-odo').innerHTML = J.odometer(0, { digits: String(trip.total).length });
   bind('trips-count').textContent = 'cancelled by growing them at home';
   trip.phase = -1; trip.odoKm = -1; trip.line = '';
@@ -242,7 +244,8 @@ function drawTrips(f) {
   const k = Math.round(km);
   if (k !== trip.odoKm) { trip.odoKm = k; odoSet(k); }
   const done = trip.routes.filter((r) => f >= r.outA + .05).length;
-  const phase = f < .47 + (trip.phase === 1 ? -.012 : .012) ? 0 : 1;
+  // the caption turns once the first trip has really gone (with a little hysteresis, so it never flickers)
+  const phase = done === 0 || f < .55 + (trip.phase === 1 ? -.012 : .012) ? 0 : 1;
   const dest = DEST[S.region] || trip.routes[0]?.j?.to.name || NAME[S.region];
   const line = phase === 0
     ? `${n} shop twins travel to ${dest}. Grown at home, together they cancel ${fmt(trip.total)} km.`
@@ -255,7 +258,8 @@ const stillTrips = () => { drawTrips(.46); odoSet(trip.total); trip.odoKm = trip
 function scene() {
   const el = $('#cancel'); trip.el = el;
   trip.scene = mountScene(el, {
-    height: 460, settle: .55,
+    // the scene is drawn in code (no pictures to fetch), so it gets ready from the first screen
+    height: 460, settle: .55, ahead: '1000%',
     layout: () => buildTrips(),
     draw: drawTrips,
     still: stillTrips,

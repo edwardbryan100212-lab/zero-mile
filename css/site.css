@@ -113,7 +113,7 @@ section{position:relative}
 .trips-odo .odo-d{width:.62em}
 .trips-odo .odo-d+.odo-d{border-left:0}
 .trips-odo .odo-d.lead{color:rgba(23,34,26,.22)}
-.trips-odo .odo-col{transition:transform .45s cubic-bezier(.22,1,.36,1)}
+.trips-odo .odo-col{transition:transform .28s cubic-bezier(.22,1,.36,1)}
 .trips-odo .odo-u{font:800 .24em/1 var(--font);text-transform:none;letter-spacing:0}
 .odo-plain{font-variant-numeric:tabular-nums}
 html:not(.js) .trips .st{display:flex;flex-direction:column;justify-content:space-between;padding:96px var(--m) 48px;min-height:70svh}

@@ -179,7 +179,7 @@ export function stickOn(el, { delay = 0 } = {}) {
 // the odometer rolls from one km total to the next (js/journey.js odometerRoll when it is there)
 export async function rollOdo(el, from, to) {
   if (!el) return;
-  const J = await import('./journey.js?v=9');
+  const J = await import('./journey.js?v=1');
   if (typeof J.odometerRoll === 'function') { await J.odometerRoll(el.querySelector('.odo') || el, from, to); return; }
   const put = (v) => { el.innerHTML = J.odometer(v); };
   if (reduced() || from === to) { put(to); return; }
@@ -193,10 +193,16 @@ export async function rollOdo(el, from, to) {
 // the shop twin's route shrinks back into the home dot (routeSvg's cancel 0 → 1)
 export async function cancelRoute(box, id, { w = 320, h = 180, dur = 1300 } = {}) {
   if (!box) return;
-  const J = await import('./journey.js?v=9');
-  const put = (c) => { box.innerHTML = J.routeSvg(id, { w, h, cancel: c }); };
+  const J = await import('./journey.js?v=1');
+  if (typeof J.routeAnimate === 'function') { // the real map: the arc shrinks back into the home dot
+    if (!box.querySelector('svg')) box.innerHTML = J.routeSvg(id, { w, h, cancel: 0, crop: 'auto' });
+    if (!reduced()) await new Promise((r) => setTimeout(r, 450)); // let the trip be seen first
+    await J.routeAnimate(box.querySelector('svg'), { cancel: [0, 1], ms: dur });
+    return;
+  }
+  const put = (c) => { box.innerHTML = J.routeSvg(id, { w, h, cancel: c, crop: 'auto' }); };
   if (reduced()) { put(1); return; }
-  await new Promise((r) => setTimeout(r, 450)); // let the trip be seen first
+  await new Promise((r) => setTimeout(r, 450));
   await new Promise((done) => {
     const t0 = performance.now(); let last = 0;
     const step = (now) => {

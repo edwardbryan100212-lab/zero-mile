@@ -10,7 +10,7 @@
 // a retaken photo, re-watering the same plant or opening the same plant page twice earns nothing new.
 // Old saved state (xp, seeds, badges, quests, days[].q) still loads; it is simply not used.
 import { state, save, today, bestStreak, plantById, isTree } from './core.js?v=9';
-import { journeyOf, kmCancelled, journeyRanks } from './journey.js?v=9';
+import { journeyOf, kmCancelled, journeyRanks } from './journey.js?v=1';
 
 const R = () => {
   const r = (state.rewards ||= {});

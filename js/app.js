@@ -2,7 +2,7 @@
 // and Admin under More), the top bar of stats on a phone, the Mac/iPad sidebar, and the stickers that pop up anywhere.
 import { $, $$, esc, fmt, data, rise, ROOT, state, plantById, overallStreak, today, thumb, useSaverIfNeeded, toast, photoDays, isTree } from './core.js?v=9';
 import { initPress, enter, sheet, celebration } from './fun.js?v=9';
-import { kmCancelled, odometer } from './journey.js?v=9';
+import { kmCancelled, odometer } from './journey.js?v=1';
 import { icon } from './art.js?v=9';
 import { produceIcon } from './produce.js?v=9';
 import { award, check, onReward } from './rewards.js?v=9';
@@ -115,14 +115,15 @@ onReward(async (out, kind) => {
   renderStats();
   if (!out || kind === 'check' || kind === 'wear' || kind === 'photo') return;
   const got = (out.stickers?.length || 0) + (out.unlocks?.length || 0);
-  if (!got && !(out.km > 0)) return;
+  if (!got && !(out.km > 0 && !(kind === 'harvest' && location.hash.startsWith('#/plant/')))) return;
   if (document.querySelector('.ob')) return;
   if (location.hash.startsWith('#/admin')) {
     if (out.km > 0) toast(`Trip cancelled: ${fmt(out.km)} km. Total ${fmt(out.kmTo)} km.`);
     else if (got) toast(got > 1 ? `${got} new stickers` : 'New sticker');
     dispatchEvent(new Event('zm:rewards')); return;
   }
-  const V = await RV(), s = V.rewardScreens(out);
+  const onPlant = kind === 'harvest' && location.hash.startsWith('#/plant/'); // the plant page plays the cancel itself
+  const V = await RV(), s = V.rewardScreens(out, { trip: !onPlant });
   if (s.length) { await celebration(s); renderStats(); dispatchEvent(new Event('zm:rewards')); }
 });
 route();

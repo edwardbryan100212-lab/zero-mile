@@ -7,7 +7,7 @@ import {
 import { EASE, reduced, countAll, fillAll, confetti, haptic, helpBtn, bindHelp, pip, celebration, play, runFaces, pipPot } from './fun.js?v=9';
 import { art, icon } from './art.js?v=9';
 import { award, rewards, saversHeld, SAVER_MAX, journeyLabel, placeShort } from './rewards.js?v=9';
-import { kmCancelled, nextJourney, journeyOf, odometer, routeSvg, stickerSvg } from './journey.js?v=9';
+import { kmCancelled, nextJourney, journeyOf, odometer, routeSvg, stickerSvg } from './journey.js?v=1';
 import { stampDay } from './rewards-view.js?v=9';
 import * as Face from './face.js?v=9';
 import { produceIcon } from './produce.js?v=9';
@@ -194,7 +194,7 @@ export default async function garden(main) {
   const nextTrip = near ? `
     <section class="t-next c3" aria-labelledby="next-t">
       <div class="sec-head"><h2 id="next-t">Next trip to cancel</h2><a class="sec-link" href="#/plant/${near.p.id}">${esc(near.p.name)}</a></div>
-      <div class="tn-map">${routeSvg(near.p.id, { w: 320, h: 180 })}</div>
+      <div class="tn-map">${routeSvg(near.p.id, { w: 320, h: 180, crop: 'auto' })}</div>
       <p class="tn-line"><b>${esc(placeShort(near.j.from.place))}, ${esc(near.j.from.country)} → ${esc(near.j.to.name)}</b><span>${fmt(near.j.km)} km by ${esc(near.j.mode.replace('+', ' and '))}</span></p>
       <p class="tn-when">${near.left > 0 ? `Your ${esc(near.p.name.toLowerCase())} could be ready in about ${near.left} day${near.left === 1 ? '' : 's'}.` : `Your ${esc(near.p.name.toLowerCase())} may be ready to pick.`}
         ${near.j.sources[0]?.url ? `<a class="tn-src" href="${esc(near.j.sources[0].url)}" target="_blank" rel="noopener">Source</a>` : ''}</p>

@@ -3,7 +3,7 @@
 // the next real journey, and Pip's pots and hats unlocked by km. Also the two top-bar sheets (streak, km), the
 // date stamps used on Today, and the celebration screens built from what award() returned.
 import { $, $$, esc, fmt, today, overallStreak, bestStreak, photoDays, savedDays, plantById, state } from './core.js?v=9';
-import * as J from './journey.js?v=9';
+import * as J from './journey.js?v=1';
 import { rewards, MILESTONES, PIP_ITEMS, SAVER_MAX, saversHeld, isUnlocked, wear, worn, onReward, stickerBook, journeyLabel, placeShort } from './rewards.js?v=9';
 import { sheet, pip, hatArt, stickOn, rollOdo, cancelRoute, reduced, play } from './fun.js?v=9';
 
@@ -57,7 +57,7 @@ export function harvestScreen(out) {
   const twin = (out.stickers || []).some((s) => s.kind === 'twin' && s.id === out.id);
   return {
     tone: 'paper', sound: 'done', title: 'Trip cancelled',
-    art: `<div class="cele-route" data-route="${esc(out.id)}">${J.routeSvg(out.id, { w: 320, h: 180, cancel: 0 })}</div>`,
+    art: `<div class="cele-route" data-route="${esc(out.id)}">${J.routeSvg(out.id, { w: 320, h: 180, cancel: 0, crop: 'auto' })}</div>`,
     big: `<span class="cele-odo">${J.odometer(out.kmFrom)}</span>`,
     sub: `Your ${esc(j.name.toLowerCase())} didn’t travel ${fmtN(j.km)} km from ${esc(placeShort(j.from.place))}, ${esc(j.from.country)}.`,
     extra: twin ? `<div class="cele-extra cele-stick">${twinSticker(out.id, 120)}<p>New sticker: ${esc(j.name)}’s shop twin, cancelled</p></div>` : '',
@@ -70,14 +70,15 @@ export function harvestScreen(out) {
     },
   };
 }
-export function rewardScreens(out = {}) {
+// { trip: false } when the screen already played the cancel (the plant page does its own)
+export function rewardScreens(out = {}, { trip = true } = {}) {
   const s = [];
-  if (out.km > 0) s.push(harvestScreen(out));
+  if (out.km > 0 && trip) s.push(harvestScreen(out));
   for (const k of (out.stickers || []).filter((x) => x.kind === 'home')) {
     const p = plantById(k.id); if (!p) continue;
     s.push({ tone: 'paper', sound: 'badge', title: 'New sticker', sticker: homeSticker(k.id, 150, 1), big: esc(p.name), sub: 'Grown at home · 0 km. Your first harvest cancels its shop twin.' });
   }
-  for (const k of (out.stickers || []).filter((x) => x.kind === 'twin' && !(out.km > 0 && x.id === out.id))) {
+  for (const k of (out.stickers || []).filter((x) => x.kind === 'twin' && !(trip && out.km > 0 && x.id === out.id))) {
     const p = plantById(k.id); if (!p) continue;
     s.push({ tone: 'paper', sound: 'badge', title: 'New sticker', sticker: twinSticker(k.id, 150), big: `${esc(p.name)}’s twin`, sub: 'Its shop trip, cancelled.' });
   }
@@ -86,8 +87,12 @@ export function rewardScreens(out = {}) {
   }
   const trips = (out.stickers || []).filter((x) => x.kind === 'km');
   if (trips.length) s.push({ tone: 'paper', sound: 'badge', title: trips.length > 1 ? `${trips.length} journeys cancelled` : 'Journey cancelled', sticker: ticketHtml(trips.at(-1).j), big: esc(trips.at(-1).label), sub: trips.length > 1 ? `And ${trips.length - 1} shorter trip${trips.length > 2 ? 's' : ''}. Real journeys shop food makes, now cancelled by you.` : 'A real trip shop food makes, now cancelled by you.' });
-  for (const it of out.unlocks || []) {
-    s.push({ tone: 'paper', sound: 'level', title: 'Pip unlocked', sticker: pip('cheer', { size: 150, look: { pot: it.kind === 'pot' ? it : worn().pot, hat: it.kind === 'hat' ? it.id : worn().hat } }), big: esc(it.name), sub: `For ${fmtN(it.km)} km cancelled.`, cta: 'Wear it', alt: 'Not now', onContinue(el, next) { wear(it.kind, it.id); next(); } });
+  // several unlocks at once (a long trip): one screen for the newest, the others named under it
+  const un = out.unlocks || [], it = un.at(-1);
+  if (it) {
+    const also = un.slice(0, -1).map((x) => x.name);
+    s.push({ tone: 'paper', sound: 'level', title: 'Pip unlocked', sticker: pip('cheer', { size: 150, look: { pot: it.kind === 'pot' ? it : worn().pot, hat: it.kind === 'hat' ? it.id : worn().hat } }), big: esc(it.name),
+      sub: `For ${fmtN(it.km)} km cancelled.${also.length ? ` Also new: ${esc(also.join(', '))}.` : ''}`, cta: 'Wear it', alt: 'Not now', onContinue(el, next) { wear(it.kind, it.id); next(); } });
   }
   return s.filter(Boolean);
 }
@@ -146,7 +151,7 @@ export default async function stickersView(main) {
           <h2 id="odo-t">Km cancelled</h2>
           <div class="sb-odo-n">${J.odometer(km)}</div>
           ${next ? `<p class="sb-next">Next: <b>${esc(journeyLabel(next))}</b>, ${fmtN(next.km)} km</p>
-          <div class="sb-route">${J.routeSvg(nextId, { w: 320, h: 180 })}</div>
+          <div class="sb-route">${J.routeSvg(nextId, { w: 320, h: 180, crop: 'auto' })}</div>
           <p class="sb-left">${fmtN(Math.max(0, next.km - km))} km to go. Pick a harvest to cancel a trip.</p>` : '<p class="sb-next">Every journey in the data, cancelled.</p>'}
           <p class="sh-src"><a href="#/sources">How we count km</a></p>
         </section>

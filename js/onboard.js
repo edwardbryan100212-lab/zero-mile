@@ -7,7 +7,7 @@
 // - Welcome back: after 2 or more days away, Pip says hello once.
 import { $, $$, esc, data, state, save, today, dayDiff, addToGarden, plantById, overallStreak, photoDays, bestTrees, toast } from './core.js?v=9';
 import { EASE, reduced, pip, haptic, stickOn } from './fun.js?v=9';
-import { stickerSvg } from './journey.js?v=9';
+import { stickerSvg } from './journey.js?v=1';
 import { produceIcon } from './produce.js?v=9';
 
 // ---------- streak at risk (used by the Today hero in js/garden.js) ----------

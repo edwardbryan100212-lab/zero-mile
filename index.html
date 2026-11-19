@@ -3,16 +3,16 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Zero Mile · the grow-your-own garden game</title>
-<meta name="description" content="Grow food at home, snap it every day, keep your streak and earn badges. A free garden game for kids and grown-ups.">
+<title>Zero Mile · cancel the trip your food makes</title>
+<meta name="description" content="A free app for growing food at home, for all ages, with no account. Every plant has a shop twin that really travels to you; grow it, take a photo a day, and each harvest cancels that trip.">
 <meta name="theme-color" content="#f6f3ea">
 <meta name="color-scheme" content="light">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Zero Mile · grow it, snap it, eat it">
-<meta property="og:description" content="A free garden game: snap your plant every day, keep your streak and earn seeds and badges.">
+<meta property="og:title" content="Zero Mile · cancel the 721 km tomato">
+<meta property="og:description" content="Every plant you grow at home has a shop twin that really travels to you. Zero Mile shows the real route, and each harvest cancels it.">
 <meta property="og:image" content="https://edwardbryan100212-lab.github.io/zero-mile/img/site/og-card.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -20,18 +20,168 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Nunito:wght@600;800&family=Pixelify+Sans:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/scene.css?v=10">
-<link rel="stylesheet" href="css/site.css?v=10">
 <link rel="stylesheet" href="css/journey.css?v=1">
+<link rel="stylesheet" href="css/site.css?v=11">
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
 <header class="nav">
-  <a class="mark" href="./" aria-label="Zero Mile home"><img src="icons/icon.svg" alt="" width="34" height="34">Zero Mile</a>
-  <nav aria-label="Sections"><a href="#streak">How it works</a><a href="#app">The app</a><a href="#plants">Plants</a><a href="#why">Why grow</a><a href="#trees">Trees</a></nav>
-  <a class="btn btn-sm" href="app/">Start growing</a>
+  <a class="mark" href="./" aria-label="Zero Mile home"><img src="icons/icon.svg" alt="" width="30" height="30">Zero Mile</a>
+  <nav aria-label="Sections"><a href="#twin">Your twin</a><a href="#how">How it works</a><a href="#trees">Trees</a><a href="#numbers">Sources</a><a href="#grownups">Parents</a></nav>
+  <a class="btn btn-sm" href="app/">Open the app</a>
 </header>
-<main id="main" tabindex="-1"></main>
-<script type="module" src="js/site.js?v=10"></script>
+
+<main id="main" tabindex="-1">
+
+<section class="hero" id="top" aria-labelledby="hero-h">
+  <h1 id="hero-h"><span class="ln"><span>Cancel the</span></span> <span class="ln"><span data-bind="hero-line">721 km tomato.</span></span></h1>
+  <div class="hero-side hero-l">
+    <p class="hero-sub">Zero Mile is a free app for growing food at home. Take one photo of your plant a day, and every harvest cancels the trip its shop twin makes. For all ages, with no account.</p>
+    <a class="btn" href="app/">Open the app</a>
+  </div>
+  <figure class="hero-pic">
+    <img src="img/real/tomato-1.webp" width="512" height="640" alt="Plum tomatoes ripening on the vine, two red and one orange">
+    <div class="peel" aria-hidden="true"><div class="stk-home"></div><div class="stk-shop"></div></div>
+  </figure>
+  <div class="hero-side hero-r">
+    <p class="hero-fact" data-bind="hero-fact">The shop tomato in Ireland comes from Westland in the Netherlands, 721 km away by lorry and ferry.</p>
+    <label class="hero-where js-only">Your country
+      <select id="region-hero" aria-label="Your country">
+        <option value="IE">Ireland</option><option value="UK">United Kingdom</option><option value="US">United States</option>
+        <option value="DE">Germany</option><option value="HK">Hong Kong</option><option value="AU">Australia</option>
+      </select>
+    </label>
+  </div>
+</section>
+
+<section class="twin" id="twin" aria-labelledby="twin-h">
+  <div class="twin-top">
+    <h2 id="twin-h">Find your shop twin</h2>
+    <p>Pick where you live and something to grow. The shop version of every plant comes from a real place, taken from customs and farm statistics. Grow it at home and that trip never happens.</p>
+  </div>
+  <div class="picker js-only">
+    <div class="regions" role="radiogroup" aria-label="Country">
+      <button type="button" role="radio" data-region="IE" aria-checked="true">Ireland</button><button type="button" role="radio" data-region="UK" aria-checked="false">UK</button><button type="button" role="radio" data-region="US" aria-checked="false">US</button><button type="button" role="radio" data-region="DE" aria-checked="false">Germany</button><button type="button" role="radio" data-region="HK" aria-checked="false">Hong Kong</button><button type="button" role="radio" data-region="AU" aria-checked="false">Australia</button>
+    </div>
+    <div class="plants">
+      <div class="chips" role="radiogroup" aria-label="Plant"></div>
+      <label class="more">More plants <select id="plant-more" aria-label="More plants"></select></label>
+    </div>
+  </div>
+  <div class="twin-out" aria-live="polite">
+    <figure class="twin-map" data-bind="twin-map"></figure>
+    <div class="twin-facts">
+      <p class="twin-line" data-bind="twin-line">721 km to Dublin as the crow flies, by lorry and ferry.</p>
+      <p class="twin-more" data-bind="twin-more">58% of Ireland's tomato imports come from Westland in the Netherlands (2024).</p>
+      <p class="twin-src" data-bind="twin-src">Source: <a href="https://comtradeapi.un.org/public/v1/preview/C/A/HS?reporterCode=372&amp;period=2024&amp;cmdCode=070200&amp;flowCode=M" rel="noopener">UN Comtrade: IE imports of HS 070200 by partner, 2024</a></p>
+    </div>
+  </div>
+  <div class="specimens">
+    <div class="spec spec-shop"><p class="spec-num" data-bind="spec-num" style="--n:3">721</p><p class="spec-cap" data-bind="spec-shop">Shop tomato, from Westland, in km</p></div>
+    <div class="spec spec-home"><p class="spec-num" style="--n:3">0</p><p class="spec-cap" data-bind="spec-home">Your tomato, from the windowsill, in km</p></div>
+  </div>
+</section>
+
+<section class="trips" id="cancel" aria-labelledby="cancel-h">
+  <div class="st">
+    <div class="trips-map" data-bind="trips-map"></div>
+    <div class="trips-copy">
+      <h2 id="cancel-h">Every trip, cancelled</h2>
+      <p class="trips-line" data-bind="trips-line">63 shop twins travel to Dublin. Grown at home, together they cancel 89,216 km.</p>
+    </div>
+    <div class="trips-odo"><div data-bind="trips-odo"><span class="odo-plain">89,216</span></div><p data-bind="trips-count">km cancelled</p></div>
+  </div>
+</section>
+
+<section class="how" id="how" aria-labelledby="how-h">
+  <h2 id="how-h">How it works</h2>
+  <ol class="tiles">
+    <li class="tile t1">
+      <div class="tile-pic"><img src="img/real/basil-1.webp" width="640" height="480" alt="A basil plant growing in a garden bed" loading="lazy"></div>
+      <h3>First, plant it</h3>
+      <p>Add a plant: tomato, basil, strawberries or any of 75. Care today says when to sow and water where you live.</p>
+    </li>
+    <li class="tile t2">
+      <div class="tile-pic"><video muted loop playsinline preload="none" poster="img/site/tomato-seedlings-timelapse-poster.jpg" width="854" height="480" aria-label="Time-lapse of tomato seedlings coming up through the soil"><source src="img/site/tomato-seedlings-timelapse.webm" type="video/webm"></video></div>
+      <h3>Then, a photo a day</h3>
+      <p>Take today's photo. Day by day the photos add up to a time-lapse of your plant, like these tomato seedlings.</p>
+    </li>
+    <li class="tile t3">
+      <div class="tile-pic"><img src="img/real/tomato-2.webp" width="640" height="427" alt="A pile of ripe red tomatoes" loading="lazy"><div class="tile-stk" aria-hidden="true"></div></div>
+      <h3>Last, harvest cancels the trip</h3>
+      <p data-bind="how-3">Log a harvest and its shop twin stays home: 721 km from Westland, added to your km cancelled.</p>
+    </li>
+  </ol>
+</section>
+
+<section class="trees" id="trees" aria-labelledby="trees-h">
+  <div class="trees-top">
+    <h2 id="trees-h">Trees, kept honest</h2>
+    <p data-bind="trees-line">Eight fruit trees have a shop twin, like the apple that reaches Dublin from France. These twelve woodland trees have none: nobody ships birch to eat, so they cancel no trip. Zero Mile counts them by the carbon a grown tree takes up, about 22 kg of CO₂ a year, one general figure from the European Environment Agency, because no tree-by-tree number exists. A sapling takes up far less.</p>
+  </div>
+  <ul class="forest">
+    <li><img src="img/real/birch-1.webp" width="420" height="525" alt="A silver birch tree" loading="lazy"><b>Silver birch</b><span>Up to 30 m, no shop twin</span></li>
+    <li><img src="img/real/oak-1.webp" width="480" height="359" alt="A very old oak tree in a field" loading="lazy"><b>English oak</b><span>20 to 40 m, no shop twin</span></li>
+    <li><img src="img/real/rowan-1.webp" width="560" height="420" alt="A rowan tree with red berries" loading="lazy"><b>Rowan</b><span>Up to 15 m, no shop twin</span></li>
+    <li><img src="img/real/scots-pine-1.webp" width="640" height="427" alt="A Scots pine on a hillside" loading="lazy"><b>Scots pine</b><span>Up to 35 m, no shop twin</span></li>
+    <li><img src="img/real/beech-1.webp" width="640" height="480" alt="Beech trees in a forest clearing" loading="lazy"><b>Beech</b><span>Up to 40 m, no shop twin</span></li>
+    <li><img src="img/real/hazel-1.webp" width="420" height="315" alt="A hazel shrub in leaf" loading="lazy"><b>Hazel</b><span>4 to 8 m, no shop twin</span></li>
+    <li><img src="img/real/hawthorn-1.webp" width="560" height="373" alt="Hawthorn berries by a river" loading="lazy"><b>Hawthorn</b><span>4 to 8 m, no shop twin</span></li>
+    <li><img src="img/real/holly-1.webp" width="480" height="442" alt="Holly leaves with red berries" loading="lazy"><b>Holly</b><span>9 to 15 m, no shop twin</span></li>
+    <li><img src="img/real/alder-1.webp" width="560" height="420" alt="An alder tree beside water" loading="lazy"><b>Alder</b><span>12 to 28 m, no shop twin</span></li>
+    <li><img src="img/real/red-maple-1.webp" width="640" height="427" alt="Red maple leaves" loading="lazy"><b>Red maple</b><span>12 to 21 m, no shop twin</span></li>
+    <li><img src="img/real/golden-wattle-1.webp" width="480" height="320" alt="Golden wattle in flower" loading="lazy"><b>Golden wattle</b><span>4 to 8 m, no shop twin</span></li>
+    <li><img src="img/real/schima-1.webp" width="560" height="420" alt="A schima tree in flower" loading="lazy"><b>Schima</b><span>5 to 20 m, no shop twin</span></li>
+  </ul>
+</section>
+
+<section class="numbers" id="numbers" aria-labelledby="numbers-h">
+  <h2 id="numbers-h">Where the numbers come from</h2>
+  <p class="names">Where food comes from: <a href="https://comtradeplus.un.org/" rel="noopener">UN Comtrade</a>, <a href="https://ec.europa.eu/eurostat" rel="noopener">Eurostat</a>, <a href="https://www.fao.org/faostat/" rel="noopener">FAO</a>, <a href="https://www.ers.usda.gov/" rel="noopener">USDA</a>, <a href="https://www.gov.uk/government/organisations/department-for-environment-food-rural-affairs" rel="noopener">Defra</a>, <a href="https://www.horticulture.com.au/" rel="noopener">Hort Innovation</a> and <a href="https://www.afcd.gov.hk/" rel="noopener">Hong Kong's AFCD</a>. The trip: <a href="https://www.gov.uk/government/publications/greenhouse-gas-reporting-conversion-factors-2025" rel="noopener">DESNZ freight factors</a>. Growing it: <a href="https://ourworldindata.org/grapher/ghg-per-kg-poore" rel="noopener">Poore &amp; Nemecek</a>.</p>
+  <div class="method">
+    <div>
+      <h3>Where it comes from</h3>
+      <p data-bind="m-where">For each plant and country, the main supplier in the latest year: the import share from UN Comtrade or Eurostat, or the home-grown share from national statistics. That is 378 routes, each with its sources.</p>
+    </div>
+    <div>
+      <h3>How far</h3>
+      <p>A straight line from the growing area to the main city: Dublin, London, Berlin, Sydney, Hong Kong, and the centre of the US population. Roads run about 1.2 times longer (<a href="https://doi.org/10.1016/S0965-8564(01)00044-1" rel="noopener">Ballou and others, 2002</a>), so the km are, if anything, low.</p>
+    </div>
+    <div>
+      <h3>How much CO₂</h3>
+      <p>Each trip uses the 2025 DESNZ and Defra factors for lorry, ship, ferry, train and plane. Growing the food uses <a href="https://doi.org/10.1126/science.aaq0216" rel="noopener">Poore and Nemecek (2018)</a>. Transport is about a fifth of food emissions (<a href="https://www.nature.com/articles/s43016-022-00531-w" rel="noopener">Li and others, 2022</a>).</p>
+    </div>
+  </div>
+</section>
+
+<section class="grownups" id="grownups" aria-labelledby="grownups-h">
+  <div class="board">
+    <div class="tl tl-a"><h2 id="grownups-h"><span>For parents</span> <span>and teachers</span></h2></div>
+    <div class="tl tl-b"><p>Free</p></div>
+    <div class="tl tl-c"><img src="img/real/strawberry-1.webp" width="640" height="480" alt="Strawberries ripening on the plant" loading="lazy"></div>
+  </div>
+  <div class="tl-text">
+    <p>No account, no ads, nothing to buy. Zero Mile runs in the browser and keeps everything on the device: there is no sign-up and no email, and photos are never uploaded. Plants come with sowing times, care jobs and harvest days for Ireland, the UK, the US, Germany, Hong Kong and Australia. Every number has its source a tap away, so older children can check it while younger ones follow the sticker and the map. In a class, each child can grow one plant and the class can add up the trips it cancels. It installs from the browser like an app and keeps working offline.</p>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot" id="foot">
+  <div class="foot-top">
+    <p>Zero Mile is free and runs in your browser.</p>
+    <p>Every route and number is cited in the app.</p>
+    <a href="#top">Back to the top</a>
+  </div>
+  <a class="foot-name" href="app/">Zero Mile</a>
+  <div class="foot-meta">
+    <p><a href="app/">Open the app</a></p>
+    <details class="credits"><summary>Photo credits</summary><p data-bind="credits">Photos: “Solanum lycopersicum, Tomate 3” by Böhringer Friedrich, CC BY-SA 2.5; “Ocimum basilicum in Berkeley Cottage Garden” by Burkhard Mücke, CC BY-SA 4.0; “Solanum lycopersicum - Tomato flower” by André Karwath, CC BY-SA 2.5; “Fresh ripe tomatoes clustered together”, rawpixel, CC0; “Strawberries”, Wikimedia Commons, CC BY-SA 2.0; tree photos by Georgi Kunev, AnemoneProjectors, Eeno11, Gerhard Pils, Evgeniy Yurukov, Joadl, Steve Daniels, Evelyn Simak, Willow, rawpixel, Dguendel and Jacy Chen (CC BY, CC BY-SA, CC0). Time-lapse: “Germinacion 2” by Akronix, CC BY-SA 3.0. All via Wikimedia Commons or rawpixel.</p></details>
+    <p>2026</p>
+  </div>
+</footer>
+<script type="module" src="js/site.js?v=11"></script>
 </body>
 </html>

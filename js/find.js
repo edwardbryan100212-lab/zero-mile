@@ -33,7 +33,7 @@ export async function findView(main, q0 = '') {
     <div class="f3-sub" role="group" aria-label="Filter trees" id="tsub"${group === 'tree' ? '' : ' hidden'}>${TSUB.map(([k, t]) => `<button class="f3-pill f3-subp" data-t="${k}" aria-pressed="${k === 'all'}">${k === 'best' ? `Best for ${esc(D.regions[state.region]?.name || 'you')}` : t}</button>`).join('')}</div>
     <section class="c3 f3-tree" id="tree-band" aria-labelledby="tb-t"${group === 'all' && !q0 ? '' : ' hidden'}>
       ${treePic ? `<img class="f3-tree-pic" src="${treePic}" alt="" width="480" height="320" loading="lazy" decoding="async">` : ''}
-      <div class="f3-tree-t"><h2 id="tb-t">Plant a tree</h2><p>${nTrees} trees, with what grows well in ${esc(D.regions[state.region]?.name || 'your country')}. <span class="lcdc">+20 XP</span></p>
+      <div class="f3-tree-t"><h2 id="tb-t">Plant a tree</h2><p>${nTrees} trees, with what grows well in ${esc(D.regions[state.region]?.name || 'your country')}.</p>
       <button class="b3 b3-white" data-g="tree" data-band>See trees</button></div>
     </section>
     <p class="vh" role="status" id="count"></p>
@@ -196,18 +196,9 @@ const MODE_ICON = { road: 'lorry', 'road+ferry': 'lorry', sea: 'ship', 'sea+road
 const MODE_WORD = { road: 'by lorry', 'road+ferry': 'by lorry and ferry', sea: 'by ship', 'sea+road': 'by ship and lorry', air: 'by plane', 'rail+road': 'by train and lorry' };
 
 const reduceMotion = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
-// a small "+3 XP" note at the top of the plant page, on Pip's LCD
-function xpPop(r) {
-  const el = $('#xp-pop'); if (!el) return;
-  const bits = [r.xp ? `+${r.xp} XP` : '', r.unlocked?.length ? 'New badge' : '', r.quests?.length ? 'Quest done' : ''].filter(Boolean);
-  if (!bits.length) return;
-  el.innerHTML = bits.map((b) => `<span class="lcdc">${b}</span>`).join('');
-  el.classList.remove('on'); void el.offsetWidth; el.classList.add('on');
-  setTimeout(() => el.classList.remove('on'), 2600);
-}
-// "Grow this": the button settles into a done state with the XP on its LCD chip
-function celebrate(btn, xp) {
-  btn.classList.add('done'); btn.innerHTML = `${icon('sprout')}Planted <span class="lcdc">+${xp} XP</span>`;
+// "Grow this": the button settles into a done state
+function celebrate(btn) {
+  btn.classList.add('done'); btn.innerHTML = `${icon('sprout')}Planted`;
 }
 
 export async function plantView(main, id) {
@@ -252,7 +243,6 @@ export async function plantView(main, id) {
 
   main.innerHTML = `
   <div class="page pp s3 pp3">
-    <div class="xp-pop" id="xp-pop" role="status" aria-live="polite"></div>
     <div class="detail">
       <div class="pp-left">
         <div class="stage-card pp-stage" id="stage-box">
@@ -283,7 +273,7 @@ export async function plantView(main, id) {
           ${line ? `<p class="kid">${esc(line)}</p>` : ''}
         </header>
         <div class="acts">
-          <button class="b3 b3-wide grow3" id="grow">${inGarden() ? 'Open my garden' : isTree ? 'Plant this tree' : 'Grow this'}${inGarden() ? '' : ` <span class="lcdc">+${isTree ? 20 : 5} XP</span>`}</button>
+          <button class="b3 b3-wide grow3" id="grow">${inGarden() ? 'Open my garden' : isTree ? 'Plant this tree' : 'Grow this'}</button>
           ${hasRegion ? `<label class="sel3"><span class="vh">Where you live</span>${icon('pin')}<select id="region">${Object.entries(D.regions).map(([k, r]) => `<option value="${k}"${k === state.region ? ' selected' : ''}>${esc(r.name)}</option>`).join('')}</select></label>` : ''}
         </div>
         <div id="route"></div>
@@ -534,14 +524,11 @@ export async function plantView(main, id) {
     const had = inGarden();
     if (had) { location.hash = '#/'; return; }
     addToGarden(id); changed();
-    const res = award(isTree ? 'tree' : 'plant', { id }) || {};
+    award(isTree ? 'tree' : 'plant', { id });
     toast(isTree ? `${p.name} planted! Photo it each season.` : `${p.name} planted! Take its first photo.`);
-    celebrate($('#grow'), res.xp || (isTree ? 20 : 5));
+    celebrate($('#grow'));
     setTimeout(() => { location.hash = '#/'; }, reduceMotion() ? 300 : 1100);
   });
-  // learning about a plant earns a little XP (the engine caps it per day)
-  const learned = award('learn', { id }) || {};
-  if (learned.xp || learned.unlocked?.length || learned.quests?.length) xpPop(learned);
   $('#remove')?.addEventListener('click', async () => {
     if (!confirm(`Remove ${p.name} and its photos from this device?`)) return;
     const { removePlant } = await import('./garden.js?v=9');

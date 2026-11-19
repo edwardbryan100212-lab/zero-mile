@@ -47,7 +47,7 @@ function plantList(rows, real) {
   const head = `<div class="h3row"><h2 id="gm-t">Your plants</h2><span class="muted3">${mine.length}</span></div>`;
   if (!mine.length) return `<section class="c3 gm3" aria-labelledby="gm-t">${head}<p class="gm3-none">Nothing growing yet.</p><a class="b3 b3-white" href="#/find">Find a plant</a></section>`;
   return `<section class="c3 gm3" aria-labelledby="gm-t">${head}
-    <ul class="pl3">${mine.map(({ e, p, r }) => { const h = isTree(p) ? lastHeight(e) : null; const sub = isTree(p) ? esc(treeAge(e)) + (h ? `, ${fmt(h.cm)} cm` : '') : `Day ${Math.max(0, dayDiff(e.planted, today()))}`; return `<li><a href="#/plant/${p.id}">${produceIcon(p.id, { size: 48, cls: 'pl3-sym', group: p.group })}<span class="pl3-n"><b>${esc(p.name)}</b><small>${sub}</small></span><span class="pl3-v">${r?.picks ? `<b>${fmt(r.kg, 2)} kg</b><small>${fmt(r.miles)} mi skipped</small>` : '<small>No pick yet</small>'}</span></a></li>`; }).join('')}</ul>
+    <ul class="pl3">${mine.map(({ e, p, r }) => { const h = isTree(p) ? lastHeight(e) : null; const sub = isTree(p) ? esc(treeAge(e)) + (h ? `, ${fmt(h.cm)} cm` : '') : `Day ${Math.max(0, dayDiff(e.planted, today()))}`; return `<li><a href="#/plant/${p.id}">${produceIcon(p.id, { size: 48, cls: 'pl3-sym', group: p.group })}<span class="pl3-n"><b>${esc(p.name)}</b><small>${sub}</small></span><span class="pl3-v">${r?.picks ? `<b>${fmt(r.kg, 2)} kg</b><small>${fmt(r.miles)} km cancelled</small>` : '<small>No pick yet</small>'}</span></a></li>`; }).join('')}</ul>
   </section>`;
 }
 
@@ -74,7 +74,7 @@ export default async function impact(main) {
     const kg = (e.harvests || []).reduce((s, h) => s + h.g, 0) / 1000;
     const picks = (e.harvests || []).length;
     const tr = trip(p, state.region);
-    return { p, kg, picks, miles: tr ? Math.round(tr.crowMi * picks) : 0, co2g: tr ? Math.round(tr.co2Transport * kg * 1000) : 0, tr };
+    return { p, kg, picks, miles: tr ? Math.round(tr.crowKm * picks) : 0, co2g: tr ? Math.round(tr.co2Transport * kg * 1000) : 0, tr };
   }).filter(Boolean);
   // totals are the sums of the rounded rows shown below
   const tot = rows.reduce((a, r) => ({ kg: a.kg + Math.round(r.kg * 100) / 100, miles: a.miles + r.miles, co2g: a.co2g + r.co2g, picks: a.picks + r.picks }), { kg: 0, miles: 0, co2g: 0, picks: 0 });
@@ -98,7 +98,7 @@ export default async function impact(main) {
       ${helpBtn('count')}
     </header>
     <section class="c3 ct3-grid" aria-label="Your savings">
-      ${counter({ value: tot.miles, unit: 'mi', label: 'Food miles skipped', goal: goalFor(tot.miles, [100, 500, 1000, 5000, 10000]) })}
+      ${counter({ value: tot.miles, unit: 'km', label: 'Km cancelled', goal: goalFor(tot.miles, [100, 1000, 5000, 10000, 25000]) })}
       ${counter({ value: tot.co2g, unit: 'g CO2e', label: 'Travel CO2 skipped', goal: goalFor(tot.co2g, [100, 500, 1000, 5000]) })}
       ${counter({ value: +tot.kg.toFixed(2), dec: tot.kg < 10 ? 1 : 0, unit: 'kg', label: 'Food grown', goal: goalFor(tot.kg, [1, 5, 10, 25, 50]) })}
       ${counter({ value: trees.length, unit: trees.length === 1 ? 'tree' : 'trees', gunit: 'trees', label: 'Trees planted', goal: goalFor(trees.length, [1, 3, 5, 10, 25, 50]), help: helpBtn('trees', 'How the tree estimate works') })}
@@ -123,7 +123,7 @@ export default async function impact(main) {
 
   bindHelp(main, {
     count: { title: 'How we count', body: `<div class="help-rows">
-      <p>${icon('lorry')}<span><b>Food miles</b>: the straight line from where shop food is grown to ${esc(city)}, once per harvest you log.</span></p>
+      <p>${icon('lorry')}<span><b>Km cancelled</b>: the straight line from where shop food is grown to ${esc(city)}, once per harvest you log.</span></p>
       <p>${icon('co2')}<span><b>Travel CO2</b>: UK government freight factors for lorry, ship, rail or plane.</span></p>
       <p>${icon('apple')}<span><b>Food you grew</b>: the amounts you tap when you pick some.</span></p>
       <p>${icon('camera')}<span><b>Photos a week</b>: the days you snapped a plant, Monday to Sunday.</span></p></div>

@@ -45,7 +45,7 @@ document.addEventListener('click', async (e) => {
 // ---------- More: Impact, About and Admin ----------
 $('#more-btn').addEventListener('click', () => sheet({ title: 'More', body: `
   <ul class="more-list">
-    <li><a class="more-row" href="#/impact">${icon('impact')}<b>Impact</b><span>Food miles and CO₂</span>${icon('chevron', { size: 18, cls: 'more-go' })}</a></li>
+    <li><a class="more-row" href="#/impact">${icon('impact')}<b>Impact</b><span>Trips cancelled and CO₂</span>${icon('chevron', { size: 18, cls: 'more-go' })}</a></li>
     <li><a class="more-row" href="#/sources">${icon('about')}<b>About</b><span>Sources and settings</span>${icon('chevron', { size: 18, cls: 'more-go' })}</a></li>
     <li><a class="more-row" href="#/admin">${icon('admin')}<b>Admin</b><span>Demo tools</span>${icon('chevron', { size: 18, cls: 'more-go' })}</a></li>
   </ul>` }));

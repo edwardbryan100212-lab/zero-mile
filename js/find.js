@@ -479,14 +479,17 @@ export async function plantView(main, id) {
     if (!j) { box.innerHTML = ''; return; }
     const country = D.regions[reg]?.name || 'your country', home = homeLabel(j), place = placeLabel(j);
     const word = modeWord(j.mode), pn = p.name.toLowerCase();
-    const plural = /s$/.test(pn) ? pn : `${pn}${/(o|ch|sh)$/.test(pn) ? 'es' : 's'}`;
+    const fruit = pn.replace(/ (tree|bush|plant)$/, ''); // "apple tree" -> the shop sells apples
+    const mass = p.group === 'herb' || /^(lettuce|kale|spinach|rocket|swiss chard|chard|pak choi|rhubarb|garlic|broccoli|cauliflower|cabbage|sweetcorn)$/.test(fruit); // said as "shop basil", not "basils"
+    const plural = mass || /s$/.test(fruit) ? fruit : /[^aeiou]y$/.test(fruit) ? fruit.slice(0, -1) + 'ies' : `${fruit}${/(o|ch|sh)$/.test(fruit) ? 'es' : 's'}`;
     const area = String(j.from.place || '').split(',')[0].trim();
     const say = j.home
-      ? `Most shop ${esc(plural)} in ${esc(country)} are grown in ${esc(country)}${area && area !== j.from.country ? `, around <b>${esc(area)}</b>` : ''}. Even that trip is <b>${fmt(j.km)} km</b> to ${esc(home)}, ${esc(word)}.`
-      : `${j.sharePct != null ? `${fmt(j.sharePct)}% of the ${esc(plural)} ${esc(country)} buys from abroad come` : `Shop ${esc(plural)} in ${esc(country)} mostly come`} from <b>${esc(place)}</b>, ${esc(word)}: <b>${fmt(j.km)} km</b> to ${esc(home)}.`;
+      ? `Most shop ${esc(plural)} in ${esc(country)} ${mass ? 'is' : 'are'} grown in ${esc(country)}${area && area !== j.from.country ? `, around <b>${esc(area)}</b>` : ''}. Even that trip is <b>${fmt(j.km)} km</b> to ${esc(home)}, ${esc(word)}.`
+      : `${j.sharePct != null ? `${fmt(j.sharePct)}% of the ${esc(plural)} ${esc(country)} buys from abroad ${mass ? 'comes' : 'come'}` : `Shop ${esc(plural)} in ${esc(country)} mostly ${mass ? 'comes' : 'come'}`} from <b>${esc(place)}</b>, ${esc(word)}: <b>${fmt(j.km)} km</b> to ${esc(home)}.`;
     const yr = j.year ? ` (${j.year} figures)` : '';
     const srcs = j.sources.filter((s) => s?.url);
-    const links = srcs.map((s) => `<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.publisher || s.title)}</a>`).join(', ');
+    const seen = {}; // the same publisher twice (two UN Comtrade tables) gets a number, not a repeat
+    const links = srcs.map((s) => { const n = s.publisher || s.title; const k = (seen[n] = (seen[n] || 0) + 1); return `<a href="${esc(s.url)}" target="_blank" rel="noopener" title="${esc(s.title || n)}">${esc(n)}${k > 1 ? ` (${k})` : ""}</a>`; }).join(", ");
     const e = state.garden.find((x) => x.id === id);
     const day = e?.planted ? Math.max(0, dayDiff(e.planted, today())) : undefined;
     const mob = innerWidth < 600;

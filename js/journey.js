@@ -110,7 +110,7 @@ function makeView(paths, home, { w, h, crop, pad = 0 }) {
     k = Math.max(0.35, Math.cos(mid * rad));
     const xs = pts.map((p) => wrap(p.lon - lon0) * k), ys = pts.map((p) => -p.lat);
     let x0 = Math.min(...xs), x1 = Math.max(...xs), y0 = Math.min(...ys), y1 = Math.max(...ys);
-    const span = Math.max(x1 - x0, y1 - y0, 14);
+    const r = Math.max(x1 - x0, y1 - y0); const span = r < 3 ? Math.max(r, 7) : Math.max(r, 14, w / 40); // short home-country trips zoom in further
     const m = span * 0.32 + pad;
     x0 -= m; x1 += m; y0 -= m * 1.15; y1 += m * 1.15;
     if (x1 - x0 > 300) { k = 1; box = { ...world }; } else box = { x0, x1, y0, y1 };
@@ -138,7 +138,7 @@ function dotsPath(view, w, h) {
       if (isLand(lon0 + gx / k, lat)) d += `M${R2((gx - box.x0) * s)} ${R2((gy - box.y0) * s)}h0`;
     }
   }
-  return { d, r: Math.max(0.6, sp * 0.3), sp };
+  return { d, r: Math.max(0.6, sp * 0.28), sp };
 }
 
 // a route as projected points with a gentle lift so even a short straight trip reads as a journey arc
@@ -217,10 +217,10 @@ export function routesSvg(ids, { w = 640, h = 320, region = state.region, crop =
   const sw = Math.max(1.2, w / 320);
   const dd = dash(progress, cancel);
   const homeR = Math.max(4.5, w / 100);
-  let hx = 0, hy = 0, arcs = '';
+  let hx = 0, hy = 0, arcs = '', below = 0; // below: origins under home, so the home label goes on top
   js.forEach((j, i) => {
     const P = arcPoints(view, { lon: j.from.lon, lat: j.from.lat }, to);
-    [hx, hy] = P.at(-1);
+    [hx, hy] = P.at(-1); if (P[0][1] > hy) below++;
     const [sx, sy] = along(P, dd.a);
     arcs += `<g class="rt-arc" data-id="${esc(j.id)}" style="--i:${i}"><title>${esc(`${j.name}: ${placeLabel(j)}, ${fmt(j.km)} km`)}</title>
       <path class="rt-line" d="${pathD(P)}" pathLength="1000" stroke-width="${R2(sw)}" stroke-dasharray="${dd.arr}" stroke-dashoffset="${dd.off}"/>
@@ -232,7 +232,7 @@ export function routesSvg(ids, { w = 640, h = 320, region = state.region, crop =
     <path class="rt-land" d="${dots.d}" stroke-width="${R2(dots.r * 2)}"/>
     ${arcs}
     <circle class="rt-home" cx="${R2(hx)}" cy="${R2(hy)}" r="${R2(homeR)}"/>
-    ${labels ? `<g class="rt-labels">${label(hx, hy, homeLabel(js[0]), fs, w, h, 'below', 'rt-t rt-t-home')}</g>` : ''}
+    ${labels ? `<g class="rt-labels">${label(hx, hy, homeLabel(js[0]), fs, w, h, below > js.length / 2 ? 'above' : 'below', 'rt-t rt-t-home')}</g>` : ''}
   </svg>`;
 }
 

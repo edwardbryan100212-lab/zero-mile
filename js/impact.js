@@ -58,7 +58,7 @@ function cancelledMap(rows, city) {
   if (!done.length) return `<section class="c3 imp-map" aria-labelledby="cm-t">${head}
     <p class="imp-map-none">No trips cancelled yet. Each harvest you log cancels the shop version's real journey, and its route lands on this map.</p></section>`;
   const mob = innerWidth < 600;
-  const size = mob ? { w: 360, h: 260 } : { w: 760, h: 380 };
+  const size = mob ? { w: 360, h: 260 } : { w: 800, h: 330 };
   const km = kmCancelled();
   return `<section class="c3 imp-map" aria-labelledby="cm-t">${head}
     <div class="imp-map-odo">${odometer(km)}<span class="muted3">cancelled, ${done.reduce((s, x) => s + x.r.picks, 0)} trips</span></div>

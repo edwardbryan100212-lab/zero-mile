@@ -180,7 +180,7 @@ export default async function garden(main) {
         <button class="th-odo" type="button" data-sheet="km" aria-label="${fmt(km)} km cancelled. What is this?">${odometer(km)}</button>
         ${nx ? `<p class="th-next">Next: <b>${esc(journeyLabel(nx))}</b>, ${fmt(nx.km)} km</p>` : ''}
         ${fresh ? '<p class="th-lead">Every harvest cancels a real shop trip.</p>' : `
-        <div class="th-streak"><button class="th-k th-sk" type="button" data-sheet="streak" aria-label="${n} day streak. What is this?">${n}-day streak</button><div class="ds-row" role="group" aria-label="This week" id="dots"></div></div>`}
+        <div class="th-streak"><button class="th-k th-sk" type="button" data-sheet="streak" aria-label="${n} day streak. What is this?">${n ? `${n}-day streak` : "Start your streak"}</button><div class="ds-row" role="group" aria-label="This week" id="dots"></div></div>`}
         <div class="th-row">${cta}</div>
       </div>
     </section>`;

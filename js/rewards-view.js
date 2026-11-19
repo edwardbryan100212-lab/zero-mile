@@ -21,7 +21,7 @@ export function stampDay(d, { photos = photoDays(), kept = savedDays(), first = 
   const wd = x.toLocaleDateString('en-IE', { weekday: 'short' }).slice(0, 3).toUpperCase();
   const mo = x.toLocaleDateString('en-IE', { month: 'short' }).slice(0, 3).toUpperCase();
   const say = `${x.toLocaleDateString('en-IE', { weekday: 'long', day: 'numeric', month: 'long' })}${did ? ', photo taken' : sav ? ', saved by the watering can' : missed ? ', no photo' : isT ? ', today, no photo yet' : ''}`;
-  const cls = `ds${did ? ' did' : ''}${sav ? ' sav' : ''}${isT ? ' tdy' : ''}${missed ? ' miss' : ''}${fut ? ' fut' : ''}${small ? ' sm' : ''}`;
+  const cls = `ds${did ? ' did' : ''}${sav ? ' sav' : ''}${isT ? ' tdy' : ''}${missed ? ' miss' : ''}${fut ? ' fut' : ''}${first && d < first && !did && !sav ? ' pre' : ''}${small ? ' sm' : ''}`;
   const inner = `<span class="ds-wd" aria-hidden="true">${small ? wd.slice(0, 1) : wd}</span><b aria-hidden="true">${x.getDate()}</b>${small ? '' : `<span class="ds-mo" aria-hidden="true">${sav ? 'SAVED' : mo}</span>`}`;
   const style = did || sav ? ` style="--r:${tilt(d)}deg"` : '';
   if (missed && repair) return `<button type="button" class="${cls}" data-repair="${d}" aria-label="${esc(say)}. Add a photo from that day">${inner}</button>`;

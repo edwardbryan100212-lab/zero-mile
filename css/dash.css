@@ -495,3 +495,4 @@ svg.stk, svg.route, svg.stamp { stroke: none; } /* the global svg stroke (app-ui
 .cele-sticker > .tix { width: 220px; padding: 14px 16px; }
 .cele-sticker > .tix .tix-route { font-size: .9375rem; }
 .cele-sticker > .tix .tix-km { font-size: 1.5rem; }
+.ds.pre { opacity: .4; }

@@ -25,6 +25,7 @@ export async function data() {
 const REAL = new Set(['basil', 'mint', 'parsley', 'coriander', 'chives', 'rosemary', 'thyme', 'sage', 'dill', 'kale', 'spinach', 'rocket', 'swiss-chard', 'pak-choi', 'rhubarb']); // + low-poly herbs (js/herbs3d.js)
 // a plant can name its own picture in data.json (the trees added in round 3 use app/img/trees, rendered from js/trees3d.js)
 export const thumb = (id) => { const own = DATA?.plants.find((p) => p.id === id)?.thumb; return new URL(own || (REAL.has(id) ? `img/fruits/${id}.webp` : `img/plants/${id}.webp`), ROOT).href; };
+export const allPlants = () => DATA?.plants || [];
 export const plantById = (id) => DATA.plants.find((p) => p.id === id);
 
 // ---------- distance and footprint ----------

@@ -1,4 +1,72 @@
-# Zero Mile app: design system v2, "Garden LCD" (2026-11-18)
+# Zero Mile: design system v3, "The cancelled journey" (2026-11-20)
+
+## Owner's notes, round 5 (2026-11-20): "make it less generic, users say they've seen others make it before"
+
+Why it reads as seen-before: a streak with a sun icon, XP bar, levels with titles, a seed currency and a shop of
+hats, three daily quests, a badge grid, a tamagotchi LCD and a phone ad that says "Grow it. Snap it. Eat it." is the
+template of every habit app (language apps, focus-timer trees, plant-care apps). Nothing in it comes from Zero Mile.
+
+What only Zero Mile has: `data/data.json` knows, for every plant and six countries, **where the shop version really
+comes from** (`origins[region]`: `origin_place` such as "Westland, South Holland", lat/lon, `transport_mode`,
+`share_pct`, year, UN Comtrade and other cited sources) and `trip()` in `js/core.js` turns it into km and transport
+CO2. The name is the promise: zero miles. So:
+
+> **In Zero Mile, the real journey of the shop version becomes the thing you cancel.**
+> Every plant you grow has a twin: the tomato that would have come 721 km from Westland by road and ferry.
+> Each harvest cancels one of those trips. The app keeps the score in kilometres that never happened.
+
+Competitor test: no other grow-your-own app has per-country origin data, so the sentence fails for all of them.
+
+### The three devices (shared, in `js/journey.js`)
+1. **The produce sticker.** The small oval sticker on supermarket fruit ("Product of Spain", a 4-digit code) is the
+   real printed artefact of food miles. Zero Mile's own sticker reads "Grown at home · 0 km" with the plant's name and
+   the day number. Every shop twin has its sticker too ("Westland, NL · 721 km"). Stickers are the collectibles:
+   one per plant planted, one per first harvest, one per streak milestone. No badge grid of icon tiles.
+   `stickerSvg(id, { kind: 'home' | 'shop', size, day, label })`: an oval (or round for trees), flat fill in the
+   plant's produce colour (from `produce.js`), small bold condensed text on a curve or in lines, a tiny serial,
+   very slightly rotated in lists. Never glossy, no shadow at rest.
+2. **The route.** A real map line from `origin_lat/lon` to the region's `dest` drawn on a dotted world map made in
+   code (land mask from Natural Earth 110m, public domain, rasterised to dots at build time and stored in
+   `data/land.json`). The line is a great-circle arc in ink; origin dot terracotta; home dot leaf green. Label:
+   place, country, km, mode. `routeSvg(id, { w, h, progress, region })`; `progress` 0..1 draws the arc, and
+   `cancel` 0..1 shrinks it back into the home dot (used when a harvest is logged, and in the ad site scene).
+3. **The odometer.** One number replaces XP, levels and seeds: **km cancelled** = sum over harvests of the shop
+   twin's straight-line km (`kmCancelled()`), the same rule Impact already uses for miles. Shown as rolling
+   mechanical digits (tabular numerals, each digit rolls). Ranks are real journeys, not made-up titles:
+   "Dublin → Cork cancelled", "Westland → Dublin cancelled", "the width of Europe" (computed from the data, with the
+   route named). Kids get the picture, adults get the number.
+
+### What goes
+- XP, levels, level titles, the seed currency, the shop (pot colours, hats), daily bonus seeds. Pip's pot colours and
+  hats unlock with km milestones instead (no spending). The streak saver (watering can) stays, earned, not bought.
+- The three daily quests panel. Today's jobs are Care today (already real and useful).
+- LCD panels as the frame for everything game-like. Pip's pixel face stays only where Pip is: the pot (Today hero,
+  plant page, photo result). Everything else is paper, ink, the sticker, the route and the odometer.
+- The ad line "Grow it. Snap it. Eat it." and the phone-mockup / streak-pitch sections.
+
+### What stays
+Cream paper, ink, leaf and terracotta tokens, Bricolage Grotesque + Nunito, the real credited photos, produce
+symbols, the coloured nav icons, Care today, weather, sow, time-lapse, journal, photo check, sounds and haptics,
+the streak (days, shown as a row of date stamps, the kind printed on a delivery note, not suns).
+
+### Screens
+- **Today:** greeting; the hero is Pip's pot face beside the odometer ("1,442 km cancelled") and today's stamp row;
+  one action (Take today's photo). Then Care today, then the plants as stickers with day number, then "Next
+  journey to cancel": the plant closest to harvest with its route mini-map and km.
+- **Plant page:** under the 3D model, "Its shop twin": the route map large, the two stickers side by side (shop vs
+  home), mode, share and year with the source link. Logging a harvest plays `cancel` and the odometer rolls.
+- **Rewards → "Stickers":** the sticker book (a sheet with a backing-paper colour, stickers placed in rows,
+  unearned ones as the empty die-cut outline with a one-line how-to), the odometer with the next real journey to
+  cancel, Pip's unlocked pots and hats by km.
+- **Impact:** keeps its numbers, gains the map of every twin route you've cancelled (all arcs into home).
+- **Ad site:** hero = a real tomato photo wearing its real sticker for the visitor's country ("Westland, NL ·
+  721 km"), which peels away on scroll to the Zero Mile sticker "Your windowsill · 0 km". Live thing: pick your
+  country and a plant, see the real twin route, km, mode and source. Signature scene: the routes of all 75 plants
+  flying in to your city, then cancelling one by one to a single dot. Headline idea: "Cancel the 721 km tomato."
+
+---
+
+# Earlier: design system v2, "Garden LCD" (2026-11-18)
 
 The owner's latest direction (it replaces v1):
 - unslop the images

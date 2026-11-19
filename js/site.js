@@ -143,9 +143,9 @@ function renderTwin(animate = true) {
   if (!PICKS.includes(S.plant)) { const c = $('.chips [data-plant]'); if (c) c.tabIndex = 0; }
   $('#plant-more').value = PICKS.includes(S.plant) ? '' : S.plant;
 
-  const map = bind('twin-map');
+  const map = bind('twin-map'), mw = Math.max(320, Math.min(960, Math.round(map.clientWidth || 640)));
   map.innerHTML = j
-    ? `${J.routeSvg(S.plant, { w: 960, h: 540, region: S.region, progress: 1 })}<figcaption>${esc(p.name.replace(/ tree$/i, ''))}: ${esc(stickerLabel(j))} to ${esc(destOf(j, S.region))}, ${fmt(j.km)} km by ${MODE[j.mode] || j.mode}</figcaption>`
+    ? J.routeSvg(S.plant, { w: mw, h: Math.round(mw * 9 / 16), region: S.region, progress: 1, crop: 'auto' })
     : `<div class="no-route">${produceIcon(S.plant, { size: 120, group: p.group })}</div><figcaption>${esc(p.name)}: no shop route</figcaption>`;
   map.classList.toggle('none', !j);
   bind('twin-line').textContent = j ? kmLine(j, S.region) : (p.group === 'tree' ? `No shop twin for the ${lc(p.name)}.` : `No route for the ${noun(p)} in ${NAME[S.region]}.`);
@@ -183,81 +183,82 @@ function renderTrees() {
 }
 
 // ---------- the scene: every twin route flies in to the home city, then cancels into one dot ----------
-const trip = { el: null, ids: [], key: '', routes: [], total: 0, phase: -1, odoKm: -1 };
+const trip = { el: null, key: '', routes: [], total: 0, phase: -1, odoKm: -1, line: '' };
 function tripIds(region) {
   return allPlants().map((p) => J.journeyOf(p.id, region)).filter((j) => j && j.km > 0).sort((a, b) => a.km - b.km);
 }
-// one <svg> with one group per route. journey.js routesSvg(ids) when it exists; until then the single routes, merged.
-function tripsSvg(ids, region, w, h) {
-  if (typeof J.routesSvg === 'function') return J.routesSvg(ids, { w, h, region });
-  const inner = ids.map((id) => J.routeSvg(id, { w, h, region, progress: 1 }).replace(/^<svg[^>]*>|<\/svg>\s*$/g, '')).map((s, i) => `<g data-id="${ids[i]}">${s}</g>`).join('');
-  return `<svg class="routes" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" role="img" aria-label="Shop twin routes into ${esc(NAME[S.region])}">${inner}</svg>`;
-}
-// the two ends of a route's drawn line, in the svg's own units
+// the two ends of a route's drawn line (.rt-line), in the svg's own units
 function ends(g) {
-  const ln = g.matches('path,line,polyline') ? g : g.querySelector('path,line,polyline'); if (!ln) return null;
-  if (ln.tagName === 'line') return { line: ln, a: [+ln.getAttribute('x1'), +ln.getAttribute('y1')], b: [+ln.getAttribute('x2'), +ln.getAttribute('y2')] };
-  try { const L = ln.getTotalLength(), p0 = ln.getPointAtLength(0), p1 = ln.getPointAtLength(L); return { line: ln, a: [p0.x, p0.y], b: [p1.x, p1.y] }; } catch { return null; }
+  const ln = g.querySelector('.rt-line, path, line'); if (!ln) return null;
+  try { const L = ln.getTotalLength(), p0 = ln.getPointAtLength(0), p1 = ln.getPointAtLength(L); return { a: [p0.x, p0.y], b: [p1.x, p1.y] }; } catch { return null; }
 }
-function buildTrips(W, H) {
-  const js = tripIds(S.region), key = `${S.region}|${W}x${H}`;
+// every twin route of the region in one routesSvg; each arc is then moved by transform and opacity only
+function buildTrips() {
+  const box = bind('trips-map'), w = Math.round(box.clientWidth || innerWidth), h = Math.round(box.clientHeight || innerHeight);
+  const js = tripIds(S.region), key = `${S.region}|${w}x${h}`;
   if (key === trip.key) return; trip.key = key;
-  const box = bind('trips-map'); box.innerHTML = tripsSvg(js.map((j) => j.id), S.region, W, H);
-  const svg = $('svg', box); if (svg) { svg.setAttribute('preserveAspectRatio', 'xMidYMid meet'); svg.removeAttribute('width'); svg.removeAttribute('height'); }
-  const groups = $$('[data-id]', box);
-  const ends0 = groups.map(ends);
-  // home is the end the routes share
-  const homeOf = (e) => e.b;
-  trip.routes = groups.map((g, i) => {
-    const e = ends0[i], j = js.find((x) => x.id === g.dataset.id) || js[i];
-    if (!e) return null;
-    const home = homeOf(e);
-    // every route is drawn whole once and moved by transform and opacity only: it grows out of its origin, then shrinks into home
-    for (const el of $$('*', g)) el.style.transformBox = 'view-box';
-    return { g, j, km: j?.km || 0, a: e.a, h: home, homeDot: [...g.querySelectorAll('circle')].pop() };
+  box.innerHTML = J.routesSvg(js.map((j) => j.id), { w, h, region: S.region });
+  const svg = $('svg', box); if (svg) { svg.removeAttribute('width'); svg.removeAttribute('height'); }
+  trip.routes = $$('.rt-arc[data-id]', box).map((g) => {
+    const e = ends(g), j = js.find((x) => x.id === g.dataset.id); if (!e || !j) return null;
+    for (const el of g.children) el.style.transformBox = 'view-box';
+    const ln = $('.rt-line', g); if (ln) ln.setAttribute('vector-effect', 'non-scaling-stroke');
+    return { g, j, km: j.km, a: e.a, h: e.b };
   }).filter(Boolean);
   trip.total = trip.routes.reduce((s, r) => s + r.km, 0);
   const n = trip.routes.length;
   // fly in nearest first; cancel farthest first, so the map closes in on home
-  trip.routes.forEach((r, i) => { r.inA = .05 + (i / n) * .3; r.outA = .5 + ((n - 1 - i) / n) * .36; });
-  trip.phase = -1; trip.odoKm = -1;
+  trip.routes.forEach((r, i) => { r.inA = .04 + (i / n) * .3; r.outA = .5 + ((n - 1 - i) / n) * .36; });
+  bind('trips-odo').innerHTML = J.odometer(0, { digits: String(trip.total).length });
+  bind('trips-count').textContent = 'cancelled by growing them at home';
+  trip.phase = -1; trip.odoKm = -1; trip.line = '';
+}
+// set the odometer's digit columns directly (each a 0-9 strip moved by transform, css/journey.css)
+function odoSet(v) {
+  const o = $('.odo', bind('trips-odo')); if (!o) return;
+  const n = +o.dataset.digits || 6, k = Math.max(0, Math.round(v)), s = String(k).padStart(n, '0').slice(-n), lead = n - String(k).length;
+  $$('.odo-d', o).forEach((d, i) => { d.style.setProperty('--d', s[i]); d.classList.toggle('lead', i < lead); });
+  o.setAttribute('aria-label', `${fmt(k)} km cancelled`);
 }
 function drawTrips(f) {
   const n = trip.routes.length; let km = 0;
   for (const r of trip.routes) {
     const g = r.g, grow = easeIO(seg(f, r.inA, r.inA + .09)), c = easeIO(seg(f, r.outA, r.outA + .05));
     km += r.km * c;
-    // the arc grows from its origin to full length, then shrinks into the home dot
-    const s = c > 0 ? 1 - c : grow, o = c > 0 ? r.h : r.a;
-    const op = c > 0 ? 1 - sm(seg(c, .7, 1)) : sm(seg(grow, 0, .25));
-    for (const el of g.children) {
-      if (el === r.homeDot) continue;
-      el.style.transformOrigin = `${o[0]}px ${o[1]}px`;
-      el.style.transform = `scale(${s.toFixed(4)})`;
+    // the arc grows out of its origin until it reaches home, then shrinks back into the home dot
+    const sc = c > 0 ? 1 - c : grow, o = c > 0 ? r.h : r.a;
+    const op = c > 0 ? 1 - sm(seg(c, .75, 1)) : sm(seg(grow, 0, .2));
+    const key = `${c > 0 ? 1 : 0}${sc.toFixed(4)}`;
+    if (key !== g._k) {
+      g._k = key;
+      for (const el of g.children) {
+        if (el.tagName === 'title') continue;
+        el.style.transformOrigin = `${o[0].toFixed(1)}px ${o[1].toFixed(1)}px`;
+        el.style.transform = `scale(${sc.toFixed(4)})`;
+      }
     }
     if (Math.abs((g._o ?? -1) - op) > .004) { g.style.opacity = op.toFixed(3); g._o = op; }
   }
-  // one home dot stays at the end
-  trip.routes.forEach((r, i) => { if (r.homeDot) r.homeDot.style.opacity = i === n - 1 ? '1' : '0'; });
   const k = Math.round(km);
-  if (k !== trip.odoKm) { trip.odoKm = k; bind('trips-odo').innerHTML = J.odometer(k, { digits: String(trip.total).length }); }
-  const left = trip.routes.filter((r) => f < r.outA + .05).length;
-  const phase = f < .47 - (trip.phase === 1 ? .012 : -.012) ? 0 : 1;
+  if (k !== trip.odoKm) { trip.odoKm = k; odoSet(k); }
+  const done = trip.routes.filter((r) => f >= r.outA + .05).length;
+  const phase = f < .47 + (trip.phase === 1 ? -.012 : .012) ? 0 : 1;
   const dest = DEST[S.region] || trip.routes[0]?.j?.to.name || NAME[S.region];
   const line = phase === 0
     ? `${n} shop twins travel to ${dest}. Grown at home, together they cancel ${fmt(trip.total)} km.`
-    : `${left ? `${n - left} of ${n} cancelled.` : `All ${n} cancelled.`} One dot is left: your home.`;
+    : done < n ? `${done} of ${n} trips cancelled so far.` : `All ${n} cancelled. One dot is left: home.`;
   if (line !== trip.line) { trip.line = line; bind('trips-line').textContent = line; }
-  bind('trips-count').textContent = 'km cancelled';
   trip.phase = phase;
 }
+// reduced motion: every route in place, with the whole distance on the odometer
+const stillTrips = () => { drawTrips(.46); odoSet(trip.total); trip.odoKm = trip.total; };
 function scene() {
   const el = $('#cancel'); trip.el = el;
   trip.scene = mountScene(el, {
     height: 460, settle: .55,
-    layout: (W, H) => { buildTrips(Math.round(W), Math.round(H)); },
+    layout: () => buildTrips(),
     draw: drawTrips,
-    still: () => drawTrips(1),
+    still: stillTrips,
   });
 }
 
@@ -267,8 +268,7 @@ function setRegion(r) {
   S.region = r;
   try { localStorage.setItem(SITE_KEY, r); } catch { /* fine */ }
   renderHero(); renderTwin(); renderTrees();
-  const st = trip.el && $('.st', trip.el);
-  if (st) { trip.key = ''; buildTrips(Math.round(st.clientWidth || innerWidth), Math.round(st.clientHeight || innerHeight)); drawTrips(RM ? 1 : (trip.scene?.progress() ?? 0)); }
+  if (trip.scene) { trip.key = ''; buildTrips(); if (RM) stillTrips(); else drawTrips(trip.scene.progress()); }
 }
 
 // ---------- credits for every photo on the page ----------
@@ -287,7 +287,7 @@ function clip() {
 
 // ---------- pictures rise into place as their section arrives ----------
 function rise() {
-  const els = $$('.tile-pic, .forest li, .tl, .spec, .twin-map');
+  const els = $$('.tile-pic, .forest li, .tl-c, .spec, .twin-map');
   if (RM || !('IntersectionObserver' in window)) return;
   const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { rootMargin: '0px 0px -8% 0px' });
   els.forEach((el) => {

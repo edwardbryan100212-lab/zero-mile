@@ -97,16 +97,25 @@ section{position:relative}
 /* ---------- the scene: every route flies in, then cancels into one dot ---------- */
 .trips{margin-top:clamp(96px,13vw,200px);background:var(--leaf-t)}
 .trips .st{min-height:100svh}
-.trips-map{position:absolute;inset:0}
+.trips-map{position:absolute;inset:4% 2% 4% 30%}
 .trips-map>svg{width:100%;height:100%}
 .trips-copy{position:absolute;left:var(--m);top:clamp(72px,10svh,110px);z-index:2;max-width:520px;background:var(--leaf-t);padding:0 18px 14px 0}
 .trips-copy h2{font-size:var(--t-h2);margin-bottom:14px}
 .trips-line{font:700 var(--t-st)/1.2 var(--head);letter-spacing:-.015em;max-width:24ch}
 .trips-odo{position:absolute;left:var(--m);bottom:clamp(28px,6svh,64px);z-index:2;background:var(--leaf-t);padding:12px 18px 0 0}
-.trips-odo>div{font:800 clamp(52px,8vw,132px)/1 var(--head);letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+/* each odometer digit is a strip of ten digits (css/journey.css): the instrument is laid out small and scaled up as one piece */
+.trips-odo>div{font:800 20px/1 var(--head);letter-spacing:-.03em;font-variant-numeric:tabular-nums;transform:scale(var(--odo-k,5.4));transform-origin:0 100%;width:max-content}
+@media (max-width:1100px){.trips-odo>div{--odo-k:4}}
+@media (max-width:640px){.trips-odo>div{--odo-k:2.7}}
 .trips-odo p{font-weight:800;font-size:var(--t-sm)}
-.odo i{font-style:normal}
-.odo small{font-size:.22em;margin-left:.2em}
+.trips-odo .odo{font:inherit;gap:.12em}
+.trips-odo .odo-win{border:0;border-radius:0;background:none;padding:0}
+.trips-odo .odo-d{width:.62em}
+.trips-odo .odo-d+.odo-d{border-left:0}
+.trips-odo .odo-d.lead{color:rgba(23,34,26,.22)}
+.trips-odo .odo-col{transition:transform .45s cubic-bezier(.22,1,.36,1)}
+.trips-odo .odo-u{font:800 .24em/1 var(--font);text-transform:none;letter-spacing:0}
+.odo-plain{font-variant-numeric:tabular-nums}
 html:not(.js) .trips .st{display:flex;flex-direction:column;justify-content:space-between;padding:96px var(--m) 48px;min-height:70svh}
 html:not(.js) .trips-copy,html:not(.js) .trips-odo{position:static}
 
@@ -154,7 +163,8 @@ html:not(.js) .trips-copy,html:not(.js) .trips-odo{position:static}
 /* ---------- for parents and teachers: statement tiles ---------- */
 .board{display:grid;grid-template-columns:repeat(12,1fr);grid-template-rows:repeat(2,minmax(240px,38svh));gap:8px}
 .tl{position:relative;overflow:hidden;display:flex;align-items:flex-end;padding:20px}
-.tl-a{grid-column:1/9;grid-row:1/3;background:var(--ink);color:var(--paper)}
+.tl-a{grid-column:1/9;grid-row:1/3;background:var(--ink);color:var(--paper);flex-direction:column;align-items:flex-start;justify-content:space-between}
+.tl-note{font:800 var(--t-st)/1.2 var(--head);letter-spacing:-.01em;max-width:20ch}
 .tl-a h2{font-size:clamp(48px,7.2vw,118px);line-height:.88;letter-spacing:-.035em}
 .tl-a h2 span{display:block}
 .tl-b{grid-column:9/13;grid-row:1;background:var(--pot)}
@@ -230,30 +240,31 @@ html:not(.js) .trips-copy,html:not(.js) .trips-odo{position:static}
   .spec-home{background:var(--ink);padding:16px 16px 0;margin:0 calc(var(--m) * -1)}
   .spec-home .spec-cap{color:var(--paper)}
   .spec-home .spec-num{color:#7fd19f}
-  .trips-copy{right:var(--m);max-width:none}
+  .trips-copy{right:var(--m);max-width:none;padding-right:0}
+  .trips-map{inset:30% 0 24% 0}
   .how{display:block}
-  .how h2{font-size:34px;margin-bottom:28px}
+  .how h2{font-size:var(--t-h2);margin-bottom:28px}
   .tiles{display:grid;grid-template-columns:1fr;row-gap:28px}
   .t1,.t2,.t3{grid-column:1/-1}
   .t1 .tile-pic{height:52vw}.t2 .tile-pic{height:66vw}.t3 .tile-pic{height:84vw}
-  .tile h3{font-size:20px}
   .tile p{min-height:0}
   .trees-top p{grid-column:1/-1}
   .forest{grid-template-columns:repeat(3,1fr);gap:20px 8px}
   .forest span{display:none}
-  .forest b{font-size:14px}
   .method{grid-template-columns:1fr}
   .board{grid-template-columns:1fr 1fr;grid-template-rows:46svh auto;gap:6px}
   .tl-a{grid-column:1/-1;grid-row:1}
   .tl-a h2{font-size:12.4vw}
   .tl-b,.tl-c{grid-row:2;aspect-ratio:1}
   .tl-b{grid-column:1}.tl-c{grid-column:2}
-  .tl-b p{font-size:15vw}
+  .tl-b p{font-size:12.4vw}
   .tl-text{padding-top:28px}
-  .tl-text p{grid-column:1/-1;font-size:18px}
+  .tl-text p{grid-column:1/-1;font-size:var(--t-st)}
   .foot-top{grid-template-columns:1fr;row-gap:8px}
   .foot-top p,.foot-top a{grid-column:1/-1!important;justify-self:start!important}
   .foot-name{font-size:23vw}
   .foot-meta{grid-template-columns:1fr;row-gap:10px}
   .foot-meta>*{grid-column:1/-1!important;justify-self:start!important}
 }
+/* the Zero Mile sticker in the brand leaf, so it reads apart from the shop sticker on a red tomato */
+.stk-home ellipse:not([fill="none"]),.tile-stk ellipse:not([fill="none"]){fill:var(--leaf)}

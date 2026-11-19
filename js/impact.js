@@ -4,6 +4,7 @@ import { esc, fmt, data, plantById, trip, state, thumb, isTree, treeAge, treeCO2
 import { countAll, helpBtn, bindHelp } from './fun.js?v=9';
 import { icon } from './find.js?v=9';
 import { produceIcon } from './produce.js?v=9';
+import { journeyOf, routesSvg, odometer, kmCancelled, placeLabel, homeLabel } from './journey.js?v=1';
 
 // round goals that move on as you pass them
 const goalFor = (v, steps) => steps.find((s) => s > v) ?? Math.ceil((v + 1) / steps.at(-1)) * steps.at(-1);
@@ -50,6 +51,22 @@ function plantList(rows, real) {
   </section>`;
 }
 
+// every shop trip your harvests cancelled, as routes flying into home; an honest empty state before the first pick
+function cancelledMap(rows, city) {
+  const done = rows.filter((r) => r.picks).map((r) => ({ r, j: journeyOf(r.p.id) })).filter((x) => x.j);
+  const head = `<div class="h3row"><h2 id="cm-t">Trips you cancelled</h2><span class="muted3">into ${esc(done[0] ? homeLabel(done[0].j) : city)}</span></div>`;
+  if (!done.length) return `<section class="c3 imp-map" aria-labelledby="cm-t">${head}
+    <p class="imp-map-none">No trips cancelled yet. Each harvest you log cancels the shop version's real journey, and its route lands on this map.</p></section>`;
+  const mob = innerWidth < 600;
+  const size = mob ? { w: 360, h: 260 } : { w: 760, h: 380 };
+  const km = kmCancelled();
+  return `<section class="c3 imp-map" aria-labelledby="cm-t">${head}
+    <div class="imp-map-odo">${odometer(km)}<span class="muted3">cancelled, ${done.reduce((s, x) => s + x.r.picks, 0)} trips</span></div>
+    <div class="imp-map-box">${routesSvg(done.map((x) => x.r.p.id), { ...size, crop: 'auto' })}</div>
+    <ul class="imp-map-key">${done.map(({ r, j }) => `<li><i style="background:#c8673d"></i>${esc(r.p.name)} from ${esc(placeLabel(j))}, ${fmt(j.km)} km${r.picks > 1 ? ` × ${r.picks}` : ''}</li>`).join('')}</ul>
+  </section>`;
+}
+
 export default async function impact(main) {
   const D = await data();
   const rows = state.garden.map((e) => {
@@ -87,6 +104,7 @@ export default async function impact(main) {
       ${counter({ value: trees.length, unit: trees.length === 1 ? 'tree' : 'trees', gunit: 'trees', label: 'Trees planted', goal: goalFor(trees.length, [1, 3, 5, 10, 25, 50]), help: helpBtn('trees', 'How the tree estimate works') })}
     </section>
     ${tot.picks ? '' : '<p class="i3-hint">Log a harvest from Today and these fill in. <a href="#/">Go to Today</a></p>'}
+    ${cancelledMap(rows, city)}
     ${trees.length ? `<p class="i3-co2">${icon('co2')}<span>Your trees could take up about <b>${tKg} kg of CO2</b> a year once grown.</span></p>` : `<a class="c3 i3-tree" href="#/find/trees">${treePic ? `<img src="${treePic}" alt="" width="320" height="200" loading="lazy" decoding="async">` : ''}<span class="i3-tree-t"><b>Plant a tree</b><small>A grown tree takes up about ${fmt(ref)} kg of CO2 a year.</small></span><span class="b3 b3-white">Find a tree</span></a>`}
     <div class="i3-two">
       ${photoChart()}

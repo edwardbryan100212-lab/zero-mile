@@ -2,14 +2,14 @@
 // Source: Natural Earth 110m land (public domain, naturalearthdata.com) via the world-atlas@2 TopoJSON on jsDelivr.
 // Usage: node tools/build-land.mjs            (fetches once, writes data/land.json)
 //
-// Output: an equirectangular grid of COLS x ROWS cells (1 degree each), row 0 = 89.5N, col 0 = 179.5W.
+// Output: an equirectangular grid of COLS x ROWS cells (half a degree each), row 0 = 89.75N, col 0 = 179.75W.
 // Each row is run-length coded: [water, land, water, land, ...] cell counts that add up to COLS.
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const SRC = 'https://cdn.jsdelivr.net/npm/world-atlas@2.0.2/land-110m.json';
-const COLS = 360, ROWS = 180;
+const COLS = 720, ROWS = 360;
 const out = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'data', 'land.json');
 
 const topo = await (await fetch(SRC)).json();
@@ -70,7 +70,7 @@ const json = {
   source: 'Natural Earth 110m land (public domain), via world-atlas@2.0.2 land-110m.json',
   url: 'https://www.naturalearthdata.com/',
   cols: COLS, rows: ROWS,
-  note: 'Equirectangular 1-degree grid. Row 0 is 89.5N, column 0 is 179.5W. Each row: alternating water, land run lengths.',
+  note: 'Equirectangular half-degree grid. Row 0 is 89.75N, column 0 is 179.75W. Each row: alternating water, land run lengths.',
   r: rows,
 };
 fs.writeFileSync(out, JSON.stringify(json));

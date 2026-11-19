@@ -1,5 +1,6 @@
 // Find a plant (search + filters) and the plant page (3D model, the harvest up close, sowing months, miles, kcal, goodness, sources).
-import { $, $$, esc, fmt, data, plantById, trip, state, save, addToGarden, toast, ROOT, thumb, isTree, treeMonths, treeFit, FIT_WORD, fitsSmall, bestTrees, treeSeason, treeCO2, MONTH_NAMES, treeLine, treeMonthsGeneral } from './core.js?v=9';
+import { $, $$, esc, fmt, data, plantById, trip, state, save, addToGarden, toast, ROOT, thumb, isTree, treeMonths, treeFit, FIT_WORD, fitsSmall, bestTrees, treeSeason, treeCO2, MONTH_NAMES, treeLine, treeMonthsGeneral, logHarvest, today, dayDiff } from './core.js?v=9';
+import { journeyOf, routeSvg, routeAnimate, stickerSvg, odometer, odometerRoll, kmCancelled, placeLabel, homeLabel, modeWord } from './journey.js?v=1';
 import { award } from './rewards.js?v=9';
 
 const GROUPS = [['all', 'All'], ['veg', 'Veg'], ['fruit', 'Fruit'], ['herb', 'Herbs'], ['tree', 'Trees'], ['easy', 'Easy'], ['pot', 'In a pot'], ['now', 'Sow now']];
@@ -285,11 +286,11 @@ export async function plantView(main, id) {
           <button class="b3 b3-wide grow3" id="grow">${inGarden() ? 'Open my garden' : isTree ? 'Plant this tree' : 'Grow this'}${inGarden() ? '' : ` <span class="lcdc">+${isTree ? 20 : 5} XP</span>`}</button>
           ${hasRegion ? `<label class="sel3"><span class="vh">Where you live</span>${icon('pin')}<select id="region">${Object.entries(D.regions).map(([k, r]) => `<option value="${k}"${k === state.region ? ' selected' : ''}>${esc(r.name)}</option>`).join('')}</select></label>` : ''}
         </div>
+        <div id="route"></div>
         ${chips ? `<section class="c3 dg3" aria-labelledby="dg-t"><h2 id="dg-t">${isTree ? 'The tree' : 'Growing'} at a glance</h2><dl class="dg">${chips}</dl></section>` : ''}
         ${sow.length ? `<section class="c3 sow3" aria-labelledby="sow-t"><div class="h3row"><h2 id="sow-t">${isTree ? 'When to plant' : g.sow_months_north || south ? 'When to sow' : 'When to plant'}</h2><span class="muted3">${south ? 'Southern' : 'Northern'} hemisphere</span></div>
           <div class="cal3" role="img" aria-label="${isTree ? 'Plant' : 'Sow'} in: ${sow.map((m) => MONTH_NAMES[m - 1]).join(', ')}">${MONTHS.map((m, i) => `<i class="${sow.includes(i + 1) ? 'on' : ''}${i + 1 === now ? ' now' : ''}" style="--i:${i}" aria-hidden="true"><span class="m3">${m}</span><span class="m1">${m[0]}</span></i>`).join('')}</div>
           <p class="cal3-key">${sow.includes(now) ? `<b>${isTree ? 'Plant' : 'Sow'} it this month.</b> ` : ''}<span><i class="k-on"></i>${isTree ? 'Plant' : 'Sow'}</span><span><i class="k-now"></i>This month</span></p></section>` : ''}
-        <div id="route"></div>
         <details class="c3 more3">
           <summary>${icon('book')}<b>${isTree ? 'Tree guide' : 'Grow guide'}</b><span class="muted3">Tips and sources</span></summary>
           <div class="pp-more-in">
@@ -449,21 +450,11 @@ export async function plantView(main, id) {
     const reg = $('#region')?.value || state.region;
     const tr = trip(p, reg);
     const hv = p.home_vs_shop;
-    let h = '', r = '';
+    let h = '';
     if (tr) {
       const mode = tr.o.transport_mode || 'road', from = tr.o.origin_place || tr.o.origin_country;
       const co2 = (p.carbon?.kg_co2e_per_kg ?? 0) + tr.co2Transport;
       const word = MODE_WORD[mode] || '';
-      r = `<section class="c3 route3" aria-labelledby="rt-t">
-        <div class="h3row"><h2 id="rt-t">Food miles</h2><span class="muted3">${esc(tr.reg.dest.name)}</span></div>
-        <p class="rt-big"><b>${fmt(tr.crowMi)}</b> miles <span>for a shop ${esc(p.name.toLowerCase())}, ${esc(word)}</span></p>
-        <div class="rt-map" role="img" aria-label="From ${esc(from)} to ${esc(tr.reg.dest.name)}, ${fmt(tr.crowMi)} miles ${esc(word)}. Yours travels 0 miles.">
-          <div class="rt-row"><span class="rt-dot"></span><span class="rt-line"><i>${icon(MODE_ICON[mode] || 'lorry')}</i></span><span class="rt-dot end"></span></div>
-          <div class="rt-row rt-names"><small>${esc(from)}</small><small>${esc(tr.reg.dest.name)}</small></div>
-          <div class="rt-row rt-yours"><span class="rt-dot home"></span><span class="rt-zero">${icon('house')}Yours: 0 miles, from your garden</span></div>
-        </div>
-        <p class="rt-co2">${fmt(co2, 2)} kg CO2e per shop kilo: ${fmt(p.carbon?.kg_co2e_per_kg ?? 0, 2)} farming + ${fmt(tr.co2Transport, 2)} travel.</p>
-      </section>`;
       h += `<div class="st3 sky"><b>${fmt(co2, 2)} kg CO2e</b><span>for a shop kilo: ${fmt(p.carbon?.kg_co2e_per_kg ?? 0, 2)} farming + ${fmt(tr.co2Transport, 2)} travel, from ${esc(from)}${tr.o.origin_place ? ', ' + esc(tr.o.origin_country) : ''}${tr.o.source_type === 'domestic' ? ' (grown in the country)' : ''}.</span></div>`;
     } else if (hasRegion || p.carbon) {
       h += `<div class="st3"><b>Not sure yet</b><span>We couldn’t find a reliable source for where it comes from in ${esc(D.regions[reg]?.name || 'your country')}.</span></div>`;
@@ -477,7 +468,61 @@ export async function plantView(main, id) {
     const c = treeCO2(p);
     if (c) h += `<div class="st3 leaf"><b>About ${c[0] === c[1] ? fmt(c[0]) : `${fmt(c[0])}–${fmt(c[1])}`} kg</b><span>CO2 a grown-up tree takes from the air each year. An estimate from a typical figure; young trees take up less. ${esc(p.tree.note || '')}</span></div>`;
     $('#stats').innerHTML = h;
-    $('#route').innerHTML = r;
+    twin(reg);
+  }
+
+  // "Its shop twin": the real route of the shop version, its sticker beside yours, and (in your garden) the pick
+  // that cancels one trip: the route shrinks into home and the odometer rolls on.
+  function twin(reg) {
+    const box = $('#route'); if (!box) return;
+    const j = journeyOf(id, reg);
+    if (!j) { box.innerHTML = ''; return; }
+    const country = D.regions[reg]?.name || 'your country', home = homeLabel(j), place = placeLabel(j);
+    const word = modeWord(j.mode), pn = p.name.toLowerCase();
+    const plural = /s$/.test(pn) ? pn : `${pn}${/(o|ch|sh)$/.test(pn) ? 'es' : 's'}`;
+    const area = String(j.from.place || '').split(',')[0].trim();
+    const say = j.home
+      ? `Most shop ${esc(plural)} in ${esc(country)} are grown in ${esc(country)}${area && area !== j.from.country ? `, around <b>${esc(area)}</b>` : ''}. Even that trip is <b>${fmt(j.km)} km</b> to ${esc(home)}, ${esc(word)}.`
+      : `${j.sharePct != null ? `${fmt(j.sharePct)}% of the ${esc(plural)} ${esc(country)} buys from abroad come` : `Shop ${esc(plural)} in ${esc(country)} mostly come`} from <b>${esc(place)}</b>, ${esc(word)}: <b>${fmt(j.km)} km</b> to ${esc(home)}.`;
+    const yr = j.year ? ` (${j.year} figures)` : '';
+    const srcs = j.sources.filter((s) => s?.url);
+    const links = srcs.map((s) => `<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.publisher || s.title)}</a>`).join(', ');
+    const e = state.garden.find((x) => x.id === id);
+    const day = e?.planted ? Math.max(0, dayDiff(e.planted, today())) : undefined;
+    const mob = innerWidth < 600;
+    const big = mob ? { w: 360, h: 270 } : { w: 640, h: 400 };
+    const stk = mob ? 132 : 150;
+    const picks = (e?.harvests || []).length;
+    box.innerHTML = `<section class="c3 twin3" aria-labelledby="tw-t">
+      <div class="h3row"><h2 id="tw-t">Its shop twin</h2><span class="muted3">${fmt(j.km)} km</span></div>
+      <div class="twin-map" id="twin-map">${routeSvg(id, { ...big, crop: 'auto', region: reg })}</div>
+      <p class="twin-say">${say}</p>
+      <div class="twin-stk">
+        <figure>${stickerSvg(id, { kind: 'shop', size: stk, tilt: true })}<figcaption>The shop one</figcaption></figure>
+        <span class="twin-vs" aria-hidden="true">vs</span>
+        <figure>${stickerSvg(id, { kind: 'home', size: stk, day, tilt: true })}<figcaption>Yours</figcaption></figure>
+      </div>
+      ${links ? `<p class="twin-src">Source${srcs.length > 1 ? 's' : ''}${esc(yr)}: ${links}. The distance is a straight line.</p>` : ''}
+      ${e ? `<div class="twin-pick">
+        <p id="twin-msg" aria-live="polite">${picks ? `You have cancelled this trip ${picks === 1 ? 'once' : `${picks} times`}. Picked some more?` : 'Picked some? Each pick cancels one shop trip.'}</p>
+        <div class="twin-pick-row">${[100, 250, 500, 1000].map((g) => `<button class="b3 b3-white b3-sm" type="button" data-pick="${g}">${g < 1000 ? g + ' g' : '1 kg'}</button>`).join('')}</div>
+        <div class="twin-odo">${odometer(kmCancelled())}<span class="twin-odo-l">cancelled so far</span></div>
+      </div>` : ''}
+    </section>`;
+    $$('[data-pick]', box).forEach((b) => b.addEventListener('click', async () => {
+      const entry = state.garden.find((x) => x.id === id); if (!entry) return;
+      const before = kmCancelled();
+      logHarvest(entry, +b.dataset.pick);
+      changed();
+      const after = kmCancelled(), n = (entry.harvests || []).length;
+      $$('[data-pick]', box).forEach((x) => { x.disabled = true; });
+      $('#twin-msg').textContent = `Trip cancelled: ${fmt(j.km)} km from ${place} that never happened.`;
+      await routeAnimate($('#twin-map svg'), { cancel: [0, 1], ms: 1400 });
+      await odometerRoll(box, before, after);
+      try { award('harvest', { id }); } catch {} // after the cancel plays, so a celebration never hides it
+      $('#twin-msg').textContent = `You have cancelled this trip ${n === 1 ? 'once' : `${n} times`}. Picked some more?`;
+      $$('[data-pick]', box).forEach((x) => { x.disabled = false; });
+    }));
   }
   const guide = () => { const el = $('#guide'); if (el) el.innerHTML = treeGuide(p, D); };
   $('#region')?.addEventListener('change', (e) => { state.region = e.target.value; save(); stats(); guide(); });

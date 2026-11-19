@@ -1,0 +1,64 @@
+/* The cancelled journey (DESIGN.md v3): the route map, the produce sticker and the odometer from js/journey.js,
+   plus the plant page's "Its shop twin" section and Impact's map. Shared by the app and the ad site. */
+
+/* ---------- route maps ---------- */
+svg.route { stroke: none; fill: none; display: block; width: 100%; height: auto; max-width: 100%; overflow: visible; }
+.route .rt-land { fill: none; stroke: #17221a; stroke-opacity: .2; stroke-linecap: round; }
+.route .rt-line { fill: none; stroke: #17221a; stroke-linecap: round; stroke-linejoin: round; }
+.routes .rt-line { stroke-opacity: .72; }
+.route .rt-from { fill: #c8673d; stroke: #f6f3ea; stroke-width: 1.5; }
+.route .rt-home { fill: #23774a; stroke: #f6f3ea; stroke-width: 2; }
+.route .rt-t { font-family: 'Nunito', ui-rounded, system-ui, sans-serif; font-weight: 800; fill: #17221a;
+  paint-order: stroke; stroke: #f6f3ea; stroke-width: 3.5px; stroke-linejoin: round; }
+.route .rt-t-home { fill: #1b5e3a; }
+.route.is-cancelled .rt-t-from { text-decoration: line-through; }
+
+/* ---------- stickers ---------- */
+svg.stk { stroke: none; fill: none; display: inline-block; flex: none; vertical-align: middle; overflow: visible; }
+svg.stk-empty { color: var(--ink, #17221a); }
+
+/* ---------- the odometer: each digit a column of 0-9, moved with transform only ---------- */
+.odo { --h: 1.18em; display: inline-flex; align-items: baseline; gap: .3em; font: 700 1em/1 'Bricolage Grotesque', 'Nunito', system-ui, sans-serif;
+  font-variant-numeric: tabular-nums; color: var(--ink, #17221a); white-space: nowrap; }
+.odo-win { display: inline-flex; padding: .08em .1em; border: 1.5px solid currentColor; border-radius: .22em; background: var(--card, #fffdf7); }
+.odo-d { position: relative; display: block; width: .68em; height: var(--h); overflow: hidden; text-align: center; }
+.odo-d + .odo-d { border-left: 1px solid rgba(23, 34, 26, .14); }
+.odo-col { display: flex; flex-direction: column; transform: translateY(calc(var(--d, 0) * var(--h) * -1)); }
+.odo-col > span { display: block; height: var(--h); line-height: var(--h); }
+.odo-d.lead { color: rgba(23, 34, 26, .3); }
+.odo-rolling .odo-col { transition: transform 1.3s cubic-bezier(.3, 0, .15, 1); }
+.odo-rolling .odo-d:nth-last-child(2) .odo-col { transition-delay: .06s; }
+.odo-rolling .odo-d:nth-last-child(3) .odo-col { transition-delay: .12s; }
+.odo-rolling .odo-d:nth-last-child(4) .odo-col { transition-delay: .18s; }
+.odo-rolling .odo-d:nth-last-child(n+5) .odo-col { transition-delay: .24s; }
+.odo-still .odo-col { transition: none !important; }
+.odo-u { font: 800 .42em/1 'Nunito', ui-rounded, system-ui, sans-serif; letter-spacing: .04em; text-transform: uppercase; }
+@media (prefers-reduced-motion: reduce) { .odo-col { transition: none !important; } }
+
+/* ---------- plant page: "Its shop twin" ---------- */
+.twin3 .twin-map { margin: 12px -4px 0; border-radius: 12px; background: #f6f3ea; overflow: hidden; }
+.twin3 .twin-stk { display: flex; align-items: center; justify-content: center; gap: 10px; margin: 16px 0 6px; }
+.twin3 .twin-stk figure { margin: 0; display: grid; justify-items: center; gap: 6px; min-width: 0; }
+.twin3 .twin-stk figcaption { font: 700 .8125rem/1.2 var(--f-ui, 'Nunito', sans-serif); color: var(--ink-2, #4d5a50); text-align: center; }
+.twin3 .twin-vs { font: 800 .8125rem/1 var(--f-ui, 'Nunito', sans-serif); color: var(--ink-2, #4d5a50); text-transform: uppercase; letter-spacing: .06em; }
+.twin3 .twin-say { margin: 12px 0 0; font: 600 1rem/1.45 var(--f-ui, 'Nunito', sans-serif); color: var(--ink, #17221a); text-wrap: pretty; }
+.twin3 .twin-say b { font-weight: 800; }
+.twin3 .twin-src { margin: 8px 0 0; font: 600 .8125rem/1.4 var(--f-ui, 'Nunito', sans-serif); color: var(--ink-2, #4d5a50); }
+.twin3 .twin-src a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+.twin3 .twin-pick { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line, #e7e1d2); display: grid; gap: 10px; }
+.twin3 .twin-pick-row { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; max-width: 420px; }
+.twin3 .twin-pick-row .b3 { min-width: 0; padding-inline: 4px; justify-content: center; }
+.twin3 .twin-pick p { margin: 0; font: 700 .9375rem/1.3 var(--f-ui, 'Nunito', sans-serif); }
+.twin3 .twin-odo { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 1.75rem; }
+.twin3 .twin-odo span.twin-odo-l { font: 700 .875rem/1.25 var(--f-ui, 'Nunito', sans-serif); color: var(--ink-2, #4d5a50); }
+@media (max-width: 599px) {
+  .twin3 .twin-stk { gap: 6px; }
+  .twin3 .twin-odo { font-size: 1.5rem; }
+}
+
+/* ---------- Impact: every cancelled route ---------- */
+.imp-map .imp-map-box { margin-top: 12px; border-radius: 12px; background: #f6f3ea; overflow: hidden; }
+.imp-map .imp-map-none { margin: 12px 0 0; font: 600 .9375rem/1.4 var(--f-ui, 'Nunito', sans-serif); color: var(--ink-2, #4d5a50); }
+.imp-map .imp-map-key { display: flex; flex-wrap: wrap; gap: 6px 16px; margin: 10px 0 0; padding: 0; list-style: none; font: 700 .8125rem/1.3 var(--f-ui, 'Nunito', sans-serif); color: var(--ink-2, #4d5a50); }
+.imp-map .imp-map-key i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: -1px; }
+.imp-map .imp-map-odo { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 1.6rem; margin-top: 10px; }

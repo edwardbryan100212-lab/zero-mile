@@ -491,3 +491,7 @@ button.ds:active { background: var(--paper-2); }
   .cele-sticker > svg, .cele-sticker > .twin svg { width: 180px; }
 }
 svg.stk, svg.route, svg.stamp { stroke: none; } /* the global svg stroke (app-ui.css) must not outline sticker text */
+.sb-trips .tix { width: 100%; min-height: 96px; align-content: start; }
+.cele-sticker > .tix { width: 220px; padding: 14px 16px; }
+.cele-sticker > .tix .tix-route { font-size: .9375rem; }
+.cele-sticker > .tix .tix-km { font-size: 1.5rem; }

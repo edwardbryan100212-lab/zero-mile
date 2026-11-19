@@ -311,7 +311,7 @@ export function celebration(screens) {
     const snd = s.sound ?? TONE_SOUND[s.tone || 'leaf'];
     if (snd) setTimeout(() => play(snd), reduced() ? 0 : 90);
     s.onShow?.(inner, next);
-    go.focus({ preventScroll: true });
+    go.focus({ preventScroll: true, focusVisible: false });
   }
   const onKey = (e) => {
     if (e.key === 'Escape') { i = screens.length; finish(); }

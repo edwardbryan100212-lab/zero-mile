@@ -35,10 +35,10 @@ export async function mountSow(el, { full = false } = {}) {
       const L = sowList(m), total = L.sow.length + L.plant.length + L.trees.length;
       const hemi = SOUTH() ? 'southern' : 'northern', H = full ? 'h2' : 'h3';
       el.innerHTML = `<section class="ft sow-card" aria-labelledby="sow-h">
-        <header class="ft-head">${full ? '' : '<h2 id="sow-h">Sow now</h2>'}
+        <header class="ft-head">${full ? '<h1 class="ft-h1" id="sow-h">Sow this month</h1>' : '<h2 id="sow-h">Sow now</h2>'}
           <div class="sow-pick" role="group" aria-label="Month">
             <button type="button" class="sow-step" data-step="-1" aria-label="Previous month">${glyph('arrowL', 18)}</button>
-            <span class="sow-m lcd-num" ${full ? 'id="sow-h"' : ''} aria-live="polite">${MONTH_NAMES[m - 1].slice(0, 3).toUpperCase()}${m === now ? '' : '<i> +' + ((m - now + 12) % 12) + '</i>'}</span>
+            <span class="sow-m lcd-num" aria-live="polite">${MONTH_NAMES[m - 1].slice(0, 3).toUpperCase()}${m === now ? '' : '<i> +' + ((m - now + 12) % 12) + '</i>'}</span>
             <button type="button" class="sow-step" data-step="1" aria-label="Next month">${glyph('arrowR', 18)}</button>
           </div>
         </header>
@@ -55,7 +55,7 @@ export async function mountSow(el, { full = false } = {}) {
 
 // the route #/sow
 export default async function view(main) {
-  main.innerHTML = `<section class="ft-page ombre" data-tone="sage"><h1 class="ft-h1">Sow this month</h1><div class="sow-host"></div></section>`;
+  main.innerHTML = `<section class="ft-page ombre" data-tone="sage"><div class="sow-host"></div></section>`;
   await mountSow(main.querySelector('.sow-host'), { full: true });
   return {};
 }

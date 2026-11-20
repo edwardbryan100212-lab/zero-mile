@@ -280,7 +280,7 @@ export async function plantView(main, id) {
         ${chips ? `<section class="c3 dg3" aria-labelledby="dg-t"><h2 id="dg-t">${isTree ? 'The tree' : 'Growing'} at a glance</h2><dl class="dg">${chips}</dl></section>` : ''}
         ${sow.length ? `<section class="c3 sow3" aria-labelledby="sow-t"><div class="h3row"><h2 id="sow-t">${isTree ? 'When to plant' : g.sow_months_north || south ? 'When to sow' : 'When to plant'}</h2><span class="muted3">${south ? 'Southern' : 'Northern'} hemisphere</span></div>
           <div class="cal3" role="img" aria-label="${isTree ? 'Plant' : 'Sow'} in: ${sow.map((m) => MONTH_NAMES[m - 1]).join(', ')}">${MONTHS.map((m, i) => `<i class="${sow.includes(i + 1) ? 'on' : ''}${i + 1 === now ? ' now' : ''}" style="--i:${i}" aria-hidden="true"><span class="m3">${m}</span><span class="m1">${m[0]}</span></i>`).join('')}</div>
-          <p class="cal3-key">${sow.includes(now) ? `<b>${isTree ? 'Plant' : 'Sow'} it this month.</b> ` : ''}<span><i class="k-on"></i>${isTree ? 'Plant' : 'Sow'}</span><span><i class="k-now"></i>This month</span></p></section>` : ''}
+          <p class="cal3-key">${sow.includes(now) ? `<b>${isTree ? 'Plant' : 'Sow'} it this month</b> ` : ''}<span><i class="k-on"></i>${isTree ? 'Plant' : 'Sow'}</span><span><i class="k-now"></i>This month</span></p></section>` : ''}
         <details class="c3 more3">
           <summary>${icon('book')}<b>${isTree ? 'Tree guide' : 'Grow guide'}</b><span class="muted3">Tips and sources</span></summary>
           <div class="pp-more-in">

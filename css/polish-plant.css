@@ -1,1 +1,83 @@
-/* UI polish pass 2026-11-20: plant screens. Loaded last, so rules here override the older files. */
+/* UI polish pass 2026-11-20: plant screens. Loaded last, so rules here override the older files.
+   Find (#/find), the plant page (#/plant/<id>) with its care card, sow (#/sow) and time-lapse (#/timelapse). */
+
+/* ---------- Find: filter chips ---------- */
+/* phone: one swipeable row that snaps chip by chip and never drags the page sideways; 44px tap targets */
+.f3-pills, .f3-sub {
+  scroll-snap-type: x proximity; scroll-padding-inline: 16px; overscroll-behavior-x: contain;
+  touch-action: pan-x pan-y; -webkit-overflow-scrolling: touch;
+}
+.f3-pill { min-height: 44px; scroll-snap-align: start; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+.f3-subp { min-height: 44px; }
+.f3-sub { margin-top: -8px; }
+@media (max-width: 699px) {
+  .f3-sub { flex-wrap: nowrap; overflow-x: auto; margin: -8px -16px 0; padding: 0 16px; scrollbar-width: none; }
+  .f3-sub::-webkit-scrollbar { display: none; }
+  .f3-subp { flex: none; }
+  /* the row ends with the page gutter, so the last chip is not cut by the screen edge */
+  .f3-pills::after, .f3-sub::after { content: ''; flex: 0 0 8px; }
+}
+/* plant cards: a press shows, a hover only where there is a mouse */
+.find3 .fc { -webkit-tap-highlight-color: transparent; }
+.find3 .fc:active { transform: scale(.98); }
+.find3 .fc-name { overflow-wrap: anywhere; }
+
+/* ---------- plant page: stage controls at 44px ---------- */
+.pp3 .stage-top .back { min-height: 44px; }
+.pp3 .pp-seg { padding: 2px; }
+.pp3 .pp-seg button { min-height: 40px; }
+.pp3 .pp-flip { min-height: 44px; top: 66px; }
+.pp3 .stage-top .back, .pp3 .pp-seg button, .pp3 .pp-flip { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+/* the model credit: small and quiet, so it never reads as part of the plant */
+.pp3 .pp-stage .model-credit { font-size: .6875rem; padding: 2px 8px; border-radius: 6px; max-width: calc(100% - 24px); left: 12px; }
+
+/* its shop twin: the pick buttons are full 44px targets with a press state */
+.pp3 .twin-pick-row .b3 { min-height: 44px; }
+.pp3 .twin-pick-row .b3:active { transform: scale(.96); }
+
+/* ---------- care card on the plant page ---------- */
+.plant-care .care-gl:empty { visibility: hidden; }
+.plant-care .care-row { min-height: 48px; }
+.care-tick { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+@media not ((hover: hover) and (pointer: fine)) { .care-tick:hover:not(.care-info) { border-color: var(--f-ink2); } }
+.care-main > .gl:last-child { width: 18px; height: 18px; }
+.ft-deep > summary { min-height: 44px; }
+.journal h3 { margin-bottom: 8px; }
+
+/* ---------- full feature pages (#/sow, #/timelapse): line up with the other pages ---------- */
+.ft-page { max-width: 1200px; padding: 0 0 32px; display: grid; gap: 16px; align-content: start; }
+.ft-page > .ft-back { justify-self: start; margin: 0 0 -12px -4px; padding-right: 8px; }
+.ft-page .ft-h1 { margin: 4px 0 0; font-size: 2rem; line-height: 1.1; }
+@media (min-width: 1000px) { .ft-page .ft-h1 { font-size: 2.25rem; } }
+
+/* sow: the page is the card, so no box inside a box; the month picker sits on the title row */
+.ft-page .sow-card { background: none; border: 0; border-radius: 0; padding: 0; margin: 0; }
+.ft-page .sow-card > .ft-head { margin: 0 0 16px; align-items: center; flex-wrap: wrap; row-gap: 12px; }
+.ft-page .sow-card > .ft-head .ft-h1 { margin: 0; }
+.ft-page .sow-g + .sow-g { margin-top: 24px; }
+.ft-page .sow-gh { margin-bottom: 12px; font-size: 1.0625rem; }
+.ft-page .sow-chips { grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 8px; }
+.ft-page .sow-chip { background: var(--f-card); padding: 12px 8px; min-height: 112px; align-content: start; }
+.ft-page .sow-chip span { overflow-wrap: anywhere; }
+.ft-page .sow-card > .ft-deep { margin-top: 24px; }
+.sow-step { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+.sow-step:active, .sow-chip:active { transform: scale(.96); }
+.sow-chip:hover { transform: none; }
+@media (hover: hover) and (pointer: fine) { .sow-chip:hover { transform: translateY(-1px); } .sow-step:hover { border-color: var(--f-ink2); } }
+
+/* time-lapse: the photo is the bright moment, the controls sit under it at its width */
+.ft-page .tl-host { max-width: 560px; width: 100%; }
+.ft-page .tl-stage { margin: 0; max-width: none; }
+.tl-tool { min-height: 44px; }
+.tl-play:active, .tl-tool:active { transform: scale(.95); }
+.tl-scrub { height: 44px; }
+.tl-empty { gap: 12px; padding: 24px 16px; background: var(--f-card); border: 1px solid var(--f-line); border-radius: 18px; }
+.tl-empty p { max-width: 32ch; font-weight: 600; }
+
+/* time-lapse with no plant chosen: a list of the plants you are growing */
+.tl-pick { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.tl-pick a { display: grid; grid-template-columns: 48px minmax(0, 1fr) auto; align-items: center; gap: 12px; min-height: 64px; padding: 8px 16px 8px 8px; border-radius: 16px; background: var(--f-card); border: 1px solid var(--f-line); color: var(--f-ink); text-decoration: none; font-weight: 700; -webkit-tap-highlight-color: transparent; }
+.tl-pick img { width: 48px; height: 48px; border-radius: 12px; object-fit: contain; background: #e8efe0; padding: 4px; }
+.tl-pick small { color: var(--f-ink2); font-weight: 600; font-size: .875rem; }
+.tl-pick a:active { transform: scale(.98); }
+@media (hover: hover) and (pointer: fine) { .tl-pick a:hover { border-color: var(--f-leaf); } }

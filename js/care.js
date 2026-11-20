@@ -173,7 +173,7 @@ function rowHtml(j, { pic = true } = {}) {
     : j.act === 'snap' ? `<a class="care-tick care-go" href="#/snap/${esc(j.key.split(':')[0])}" data-snap="${esc(j.key.split(':')[0])}" aria-label="${esc(j.title)}: take the photo">${glyph('camera', 18)}</a>`
       : `<span class="care-tick care-info" aria-hidden="true">${glyph(j.icon, 18)}</span>`;
   const plantId = j.key.split(':')[0];
-  const img = j.key.startsWith('wx:') || (!pic && !tick && j.act !== 'snap') ? '' : pic ? produceIcon(plantId, { size: 36, cls: 'care-sym', group: plantById(plantId)?.group }) : `<span class="care-gl">${glyph(j.icon, 22)}</span>`;
+  const img = j.key.startsWith('wx:') ? '' : !pic && !tick && j.act !== 'snap' ? '<span class="care-gl" aria-hidden="true"></span>' : pic ? produceIcon(plantId, { size: 36, cls: 'care-sym', group: plantById(plantId)?.group }) : `<span class="care-gl">${glyph(j.icon, 22)}</span>`;
   return `<li class="care-row${j.done ? ' done' : ''}${j.wx ? ' wx' : ''}" data-key="${esc(j.key)}">
     ${lead}
     <button class="care-main" type="button" aria-expanded="false" aria-controls="${id}">${img}<span class="care-t">${esc(j.title)}${j.note ? ` <span class="care-note lcd-num">${esc(j.note)}</span>` : ''}</span>${glyph('chev', 18)}</button>
@@ -264,7 +264,7 @@ export async function mountPlantCare(el, id) {
         <details class="ft-deep tl-fold" ${pics ? '' : 'hidden'}><summary>Time-lapse <span class="ft-sub">${pics} photo${pics === 1 ? '' : 's'}</span></summary><div class="tl-host"></div></details>
         <div class="journal">
           <h3>Journal</h3>
-          <form class="j-add"><label class="sr" for="j-in-${esc(id)}">Add a note</label><input id="j-in-${esc(id)}" name="t" maxlength="200" autocomplete="off" placeholder="First flower, moved to the sill…"><button class="ft-btn" type="submit">${glyph('note', 16)}Add</button></form>
+          <form class="j-add"><label class="sr" for="j-in-${esc(id)}">Add a note</label><input id="j-in-${esc(id)}" name="t" maxlength="200" autocomplete="off" placeholder="First flower, new leaf…"><button class="ft-btn" type="submit">${glyph('note', 16)}Add</button></form>
           <ol class="j-list" aria-label="Notes"></ol>
         </div>
       </section>`;

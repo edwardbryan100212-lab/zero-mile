@@ -157,6 +157,14 @@ export default async function view(main, id) {
   await data();
   const p = plantById(id);
   main.innerHTML = `<section class="ft-page ombre" data-tone="mint"><a class="ft-back" href="#/plant/${esc(id)}">${glyph('arrowL', 18)}${esc(p?.name || 'Plant')}</a><h1 class="ft-h1">Time-lapse</h1><div class="tl-host"></div></section>`;
-  if (!p) { main.querySelector('.tl-host').innerHTML = '<p class="ft-muted">No plant here.</p>'; return {}; }
+  if (!p) {
+    // no plant in the link: pick one of the plants you are growing, or find one to grow
+    const back = main.querySelector('.ft-back'); back.href = '#/'; back.lastChild.textContent = 'Today';
+    const mine = state.garden.map((e) => ({ e, p: plantById(e.id) })).filter((x) => x.p);
+    main.querySelector('.tl-host').innerHTML = mine.length
+      ? `<ul class="tl-pick">${mine.map(({ p: q }) => { const n = photoCount(q.id); return `<li><a href="#/timelapse/${esc(q.id)}"><img src="${thumb(q.id)}" alt="" width="48" height="48"><span>${esc(q.name)}</span><small>${n ? `${n} photo${n === 1 ? '' : 's'}` : 'No photos yet'}</small></a></li>`; }).join('')}</ul>`
+      : `<div class="tl tl-empty"><p>Grow a plant and snap it each day to build a time-lapse.</p><a class="ft-btn" href="#/find">Find a plant</a></div>`;
+    return {};
+  }
   return mountTimelapse(main.querySelector('.tl-host'), id);
 }

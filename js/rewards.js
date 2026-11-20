@@ -48,8 +48,9 @@ function give(key, info, out) {
   R().stickers[key] = today();
   out?.stickers.push({ key, ...info });
 }
-// a short place name: "Westland, South Holland" → "Westland", "Rotterdam (re-export hub)" → "Rotterdam"
-export const placeShort = (place = '') => place.split(',')[0].replace(/\s*\(.*?\)\s*/g, ' ').trim();
+// a short place name: "Westland, South Holland" → "Westland", "Rotterdam (re-export hub)" → "Rotterdam",
+// "North Co. Dublin / Meath / Wexford" → "North Co. Dublin" (the first of several growing areas)
+export const placeShort = (place = '') => place.split(',')[0].split(' / ')[0].replace(/\s*\(.*?\)\s*/g, ' ').trim();
 const jName = (j) => `${placeShort(j.from.place)} → ${j.to.name}`;
 export const journeyLabel = jName;
 function syncAll(out) {

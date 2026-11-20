@@ -1,0 +1,49 @@
+/* UI pass 2026-11-20: loaded last in the app. Polish only, same look (DESIGN.md v3). */
+
+/* Number chips: the v2 black LCD chips (care count, care notes, sow months, coming up) become paper chips.
+   v3 keeps the LCD for Pip alone, and the pixel font made 5 read as S and 8 as B. */
+.lcd-num { font-family: var(--f-ui); font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: 0; }
+.ft-count, .sow-m, .sow-n, .care-note, .care-soon b {
+  background: var(--leaf-t); color: var(--leaf-dd); box-shadow: none; border-radius: 999px; }
+.ft-count { min-width: 30px; height: 28px; padding: 0 9px; font-size: 15px; }
+.care-note { font-size: 12px; padding: 3px 8px; vertical-align: 1px; }
+.care-soon b { font-weight: 800; padding: 4px 9px; }
+.sow-m { border-radius: 12px; }
+.sow-m i { opacity: .8; }
+.tl-chip { background: rgba(23, 34, 26, .82); color: #fff; box-shadow: none; border-radius: 999px; }
+.tl-chip b { font-weight: 800; }
+.wx-t b { font-weight: 800; }
+
+/* Today on a phone: the hero already shows the odometer, so the top bar keeps only the streak there */
+@media (max-width: 999px) {
+  body[data-view="garden"] .topbar .st-km { display: none; }
+}
+
+/* the toast floats over content: give it a soft shadow so it reads as a layer, not part of the page */
+.toast { box-shadow: 0 6px 20px rgba(23, 34, 26, .18); max-width: min(92vw, 420px); text-align: center; }
+
+/* Plant page on a phone: "Grow this" docks above the tab bar once the real button scrolls away */
+.grow-dock { position: fixed; left: 16px; right: 16px; z-index: 40;
+  bottom: calc(var(--tabs) + 12px + env(safe-area-inset-bottom, 0px));
+  display: flex; opacity: 0; transform: translateY(12px); pointer-events: none;
+  transition: opacity 200ms var(--ease), transform 200ms var(--ease); }
+.grow-dock.on { opacity: 1; transform: none; pointer-events: auto; }
+.grow-dock .b3 { flex: 1; min-height: 52px; box-shadow: 0 6px 20px rgba(23, 34, 26, .2); }
+@media (min-width: 1000px) { .grow-dock { display: none; } }
+@media (prefers-reduced-motion: reduce) { .grow-dock { transition: opacity 120ms linear; transform: none; } }
+
+/* Tab bar: labels share one baseline (the raised Photo button pushed its label 5px lower) */
+.tabbar a, .tabbar button { align-content: end; padding-bottom: 12px; }
+
+/* Stickers and Impact on a phone: those screens lead with the odometer, so the top bar keeps only the streak */
+@media (max-width: 999px) {
+  body[data-view="rewards"] .topbar .st-km, body[data-view="impact"] .topbar .st-km { display: none; }
+}
+
+/* Journey tickets: the "Cancelled" stamp sat on the first line of the route; give the route room under it */
+.tix:not(.empty) { padding-top: 18px; }
+
+/* Plant page on a Mac: the sticky 3D stage fills the window height instead of stopping at 58% */
+@media (min-width: 1000px) {
+  .pp3 .pp-left .stage-card { height: min(calc(100dvh - 56px), 720px); }
+}

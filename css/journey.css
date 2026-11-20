@@ -9,7 +9,7 @@ svg.route { stroke: none; fill: none; display: block; width: 100%; height: auto;
 .route .rt-from { fill: #c8673d; stroke: #f6f3ea; stroke-width: 1.5; }
 .route .rt-home { fill: #23774a; stroke: #f6f3ea; stroke-width: 2; }
 .route .rt-t { font-family: 'Nunito', ui-rounded, system-ui, sans-serif; font-weight: 800; fill: #17221a;
-  paint-order: stroke; stroke: #f6f3ea; stroke-width: 3.5px; stroke-linejoin: round; }
+  paint-order: stroke; stroke: #f6f3ea; stroke-width: 4.5px; stroke-linejoin: round; }
 .route .rt-t-home { fill: #1b5e3a; }
 .route.is-cancelled .rt-t-from { text-decoration: line-through; }
 
@@ -32,7 +32,9 @@ svg.stk-empty { color: var(--ink, #17221a); }
 .odo-rolling .odo-d:nth-last-child(4) .odo-col { transition-delay: .18s; }
 .odo-rolling .odo-d:nth-last-child(n+5) .odo-col { transition-delay: .24s; }
 .odo-still .odo-col { transition: none !important; }
-.odo-u { font: 800 .42em/1 'Nunito', ui-rounded, system-ui, sans-serif; letter-spacing: .04em; text-transform: uppercase; }
+.odo-u { font: 800 max(.5em, 12px)/1 'Nunito', ui-rounded, system-ui, sans-serif; letter-spacing: 0; }
+/* a small gap between thousands, like the spacing on a real odometer, so 089216 reads as 089 216 */
+.odo-d:nth-last-child(3n):not(:first-child) { margin-left: .14em; }
 @media (prefers-reduced-motion: reduce) { .odo-col { transition: none !important; } }
 
 /* ---------- plant page: "Its shop twin" ---------- */

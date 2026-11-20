@@ -91,7 +91,8 @@ function ctx() {
   try { ac = new AC(); master = ac.createGain(); master.gain.value = 1; master.connect(ac.destination); } catch { ac = null; }
   return ac;
 }
-const wake = () => { gestured = true; if (state.sound === false) return; const a = ctx(); if (a && a.state !== 'running') a.resume().catch(() => {}); };
+// only a real activation counts: Escape and a touch's pointerdown are not one, and an AudioContext made then is blocked
+const wake = () => { if (navigator.userActivation && !navigator.userActivation.isActive) return; gestured = true; if (state.sound === false) return; const a = ctx(); if (a && a.state !== 'running') a.resume().catch(() => {}); };
 for (const ev of ['pointerdown', 'keydown', 'touchend']) addEventListener(ev, wake, { capture: true, passive: true });
 
 // ---------- play(name): respects the switch, the cooldowns, and stays quiet until there has been a tap ----------

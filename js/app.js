@@ -76,7 +76,18 @@ async function route() {
     // first run: Pip's onboarding over Today; otherwise a "welcome back" after 2+ days away, and photo time
     if (!needsOnboarding()) { welcomeBack(); photoTimeNudge(); }
   }
-  const mod = await routes[key]();
+  let mod;
+  try { mod = await routes[key](); }
+  catch {
+    // offline and this screen's code was never saved on this device: say so instead of leaving the old screen up
+    if (my !== seq) return;
+    current?.unmount?.(); current = null;
+    $('#main').innerHTML = `<div class="page"><header class="page-head"><h1>Can’t open this yet</h1></header>
+      <section class="c3"><p>You seem to be offline, and this screen isn’t saved on this device yet. Open it once with a connection and it will work offline after that.</p>
+      <p><a class="b3" href="#/">Back to Today</a></p></section></div>`;
+    document.title = 'Offline · Zero Mile'; routed = true; renderSide();
+    return;
+  }
   if (my !== seq) return; // a newer navigation won
   current?.unmount?.();
   const main = $('#main');

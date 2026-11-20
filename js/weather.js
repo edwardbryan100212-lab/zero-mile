@@ -77,7 +77,7 @@ export async function forecast({ force = false } = {}) {
     const same = c && c.lat === at.lat && c.lon === at.lon;
     const fresh = same && Date.now() - c.at < TTL;
     const usable = (x) => x && x.days?.filter((d) => d.date >= today()).length ? { ...x, days: x.days.filter((d) => d.date >= today()).slice(0, 3) } : null;
-    if (fresh && !force) return { ...usable(c), place: at, cached: true };
+    if (fresh && !force && usable(c)) return { ...usable(c), place: at, cached: true };
     if (!navigator.onLine) return same ? (usable(c) && { ...usable(c), place: at, stale: true }) : null;
     inflight ||= (async () => {
       const u = new URL('https://api.open-meteo.com/v1/forecast');
@@ -96,8 +96,8 @@ export async function forecast({ force = false } = {}) {
         return out;
       } finally { clearTimeout(t); }
     })();
-    const got = await inflight.finally(() => { inflight = null; });
-    return { ...usable(got), place: at };
+    const got = usable(await inflight.finally(() => { inflight = null; }));
+    return got ? { ...got, place: at } : null;
   } catch {
     const c = readCache(), at = wxPlace();
     if (c && c.lat === at.lat && c.lon === at.lon) { const days = c.days.filter((d) => d.date >= today()).slice(0, 3); if (days.length) return { ...c, days, place: at, stale: true }; }

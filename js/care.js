@@ -210,8 +210,17 @@ function bind(root, jobs, rerender) {
 }
 
 // ---------- Today: Care today ----------
-let wxPromise = null;
-const getWx = (force) => (force || !wxPromise ? (wxPromise = forecast({ force })) : wxPromise);
+// one forecast shared by the screens for a few minutes (forecast() keeps its own 3-hour cache); a failed one is
+// not kept, so the weather comes back on the next screen once the connection does, without a reload
+let wxPromise = null, wxAt = 0;
+const getWx = (force) => {
+  if (force || !wxPromise || Date.now() - wxAt > 10 * 60e3) {
+    wxAt = Date.now();
+    const p = wxPromise = forecast({ force });
+    p.then((r) => { if (!r?.days?.length && wxPromise === p) wxPromise = null; }, () => { if (wxPromise === p) wxPromise = null; });
+  }
+  return wxPromise;
+};
 export async function mountCare(el) {
   if (!el) return;
   try {

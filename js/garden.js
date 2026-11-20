@@ -4,7 +4,7 @@ import {
   overallStreak, lastDays, photoDays, wateredToday, toggleWatered, logHarvest, harvestKg, logPhoto, stageName, thumb,
   isTree, isFruitTree, treeAge, treePhotoDue, logHeight, treeSeason, bestTrees, dailyPlants, MONTH_NAMES,
   savedDays, earnSaver } from './core.js?v=9';
-import { EASE, reduced, countAll, fillAll, confetti, haptic, helpBtn, bindHelp, pip, celebration, play, runFaces, pipPot } from './fun.js?v=9';
+import { EASE, reduced, countAll, fillAll, confetti, haptic, helpBtn, bindHelp, pip, celebration, play, runFaces, pipPot } from './fun.js?v=10';
 import { art, icon } from './art.js?v=9';
 import { award, rewards, saversHeld, SAVER_MAX, journeyLabel, placeShort } from './rewards.js?v=9';
 import { kmCancelled, nextJourney, journeyOf, odometer, routeSvg, stickerSvg } from './journey.js?v=1';

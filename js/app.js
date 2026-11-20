@@ -1,7 +1,7 @@
 // Zero Mile app: the router for the daily-use screens (Today, Find, Photo, Stickers (#/rewards), and Impact, About
 // and Admin under More), the top bar of stats on a phone, the Mac/iPad sidebar, and the stickers that pop up anywhere.
 import { $, $$, esc, fmt, data, rise, ROOT, state, plantById, overallStreak, today, thumb, useSaverIfNeeded, toast, photoDays, isTree } from './core.js?v=9';
-import { initPress, enter, sheet, celebration } from './fun.js?v=9';
+import { initPress, enter, sheet, celebration } from './fun.js?v=10';
 import { kmCancelled, odometer } from './journey.js?v=1';
 import { icon } from './art.js?v=9';
 import { produceIcon } from './produce.js?v=9';
@@ -9,13 +9,13 @@ import { award, check, onReward } from './rewards.js?v=9';
 import { needsOnboarding, onboard, welcomeBack, todayNudge, settingsRow, photoTimeNudge } from './onboard.js?v=9';
 
 const routes = {
-  '': () => import('./garden.js?v=9'),
-  garden: () => import('./garden.js?v=9'),
-  snap: () => import('./garden.js?v=9'),
-  find: () => import('./find.js?v=9'),
-  plant: () => import('./find.js?v=9'),
+  '': () => import('./garden.js?v=10'),
+  garden: () => import('./garden.js?v=10'),
+  snap: () => import('./garden.js?v=10'),
+  find: () => import('./find.js?v=10'),
+  plant: () => import('./find.js?v=10'),
   rewards: () => import('./rewards-view.js?v=9'),
-  impact: () => import('./impact.js?v=9'),
+  impact: () => import('./impact.js?v=10'),
   sources: () => import('./sources.js?v=9'),
   admin: () => import('./admin.js?v=9'),
   sow: () => import('./sow.js?v=9'),
@@ -102,7 +102,7 @@ async function route() {
   current = await mod[VIEW[key] || 'default'](main, decodeURIComponent(arg || ''));
   if (!key || key === 'garden') { if (needsOnboarding()) onboard(); else { todayNudge(main); const nb = $('.nudge3', main), cs = $('#care-slot', main) || $('.t-plants', main); if (nb && cs) cs.after(nb); } } // first run, or the reminder card (js/onboard.js)
   if (key === 'sources') settingsRow(main); // the reminder row in Settings
-  import('./care.js?v=9').then((c) => { if (my === seq) c.autoMount(main, key, decodeURIComponent(arg || '')); }).catch(() => {}); // care today, plant care (js/care.js)
+  import('./care.js?v=10').then((c) => { if (my === seq) c.autoMount(main, key, decodeURIComponent(arg || '')); }).catch(() => {}); // care today, plant care (js/care.js)
   enter(main.firstElementChild);
   window.scrollTo({ top: 0, behavior: 'instant' });
   document.title = (main.querySelector('h1')?.textContent || 'Today') + ' · Zero Mile';

@@ -538,7 +538,7 @@ export async function plantView(main, id) {
   });
   $('#remove')?.addEventListener('click', async () => {
     if (!confirm(`Remove ${p.name} and its photos from this device?`)) return;
-    const { removePlant } = await import('./garden.js?v=9');
+    const { removePlant } = await import('./garden.js?v=10');
     await removePlant(id); toast(`${p.name} removed.`); location.hash = '#/';
   });
   return { unmount() { v.onRender = null; v.dispose(); if (lb?.open) lb.close(); } };

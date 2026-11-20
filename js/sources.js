@@ -1,7 +1,7 @@
 // About: settings, how the numbers are worked out, and every citation.
 import { $, esc, fmt, data, ROOT, state, save, toast } from './core.js?v=9';
-import { setSound, setHaptics, play } from './sound.js?v=9';
-import { icon } from './find.js?v=9';
+import { setSound, setHaptics, play } from './sound.js?v=10';
+import { icon } from './find.js?v=10';
 
 // what the pictures are (check img/game/ before changing: AI game art must be credited if it comes back)
 const ART_NOTE = 'Plant photos in the app are real, open-licence pictures from Wikimedia Commons and Openverse, credited below. Pip, the icons and the drawings are made in code.';

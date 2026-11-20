@@ -4,7 +4,7 @@
 // "Reduce motion" makes every animation here an instant change.
 export const EASE = 'cubic-bezier(.22,1,.36,1)';
 export const SPRING = EASE; // v1 name: there is no spring any more
-import { play, buzz } from './sound.js?v=9';
+import { play, buzz } from './sound.js?v=10';
 export { play, buzz };
 const rm = matchMedia('(prefers-reduced-motion: reduce)');
 export const reduced = () => rm.matches;

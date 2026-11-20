@@ -1,7 +1,7 @@
 // Admin and demo tools (#/admin): set how many days a plant has been growing and add your own photos
 // on chosen days, for screenshots and adverts. Everything stays on this device, like the rest of the app.
 import { $, $$, esc, data, plantById, state, save, today, dayDiff, addToGarden, logPhoto, getPhoto, delPhoto, toast, stageName, overallStreak, logHarvest } from './core.js?v=9';
-import { icon } from './find.js?v=9';
+import { icon } from './find.js?v=10';
 import { award } from './rewards.js?v=9';
 
 const isoMinus = (n, from = today()) => { const d = new Date(from + 'T12:00'); d.setDate(d.getDate() - n); return today(d); };

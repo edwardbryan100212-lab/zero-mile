@@ -4,7 +4,7 @@
 // (the button is hidden where it doesn't). Photos come from IndexedDB (getPhoto, keys in the entry's log).
 // Used on the plant page (inside mountPlantCare), in a sheet (openTimelapse), and at #/timelapse/<id>.
 import { state, esc, getPhoto, dayDiff, plantById, data, thumb, MONTH_NAMES } from './core.js?v=9';
-import { glyph } from './weather.js?v=9';
+import { glyph } from './weather.js?v=10';
 
 const prettyDate = (iso) => { const d = new Date(iso + 'T12:00'); return `${d.getDate()} ${MONTH_NAMES[d.getMonth()].slice(0, 3)} ${d.getFullYear()}`; };
 const reduced = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -139,7 +139,7 @@ export async function openTimelapse(id) {
   try {
     await data();
     const p = plantById(id); if (!p) return;
-    const { sheet } = await import('./fun.js?v=9');
+    const { sheet } = await import('./fun.js?v=10');
     const s = sheet({ title: `${esc(p.name)} time-lapse`, body: '<div class="tl-host"></div>' });
     s.el.classList.add('tl-sheet');
     const m = await mountTimelapse(s.el.querySelector('.tl-host'), id);

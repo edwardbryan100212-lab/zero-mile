@@ -5,7 +5,7 @@
 import { $, $$, esc, fmt, today, overallStreak, bestStreak, photoDays, savedDays, plantById, state } from './core.js?v=9';
 import * as J from './journey.js?v=1';
 import { rewards, MILESTONES, PIP_ITEMS, SAVER_MAX, saversHeld, isUnlocked, wear, worn, onReward, stickerBook, journeyLabel, placeShort } from './rewards.js?v=9';
-import { sheet, pip, hatArt, stickOn, rollOdo, cancelRoute, reduced, play } from './fun.js?v=9';
+import { sheet, pip, hatArt, stickOn, rollOdo, cancelRoute, reduced, play } from './fun.js?v=10';
 
 const fmtN = (n) => Number(n).toLocaleString('en-IE');
 const dt = (d) => new Date(d + 'T12:00');

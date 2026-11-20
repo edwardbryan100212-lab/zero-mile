@@ -1,8 +1,8 @@
 // Your impact: what your own harvests have saved, worked out from the cited data. Big pictures and numbers first;
 // the explanations and citations sit behind the "?" buttons and on About and sources.
 import { esc, fmt, data, plantById, trip, state, thumb, isTree, treeAge, treeCO2, lastHeight, today, dayDiff } from './core.js?v=9';
-import { countAll, helpBtn, bindHelp } from './fun.js?v=9';
-import { icon } from './find.js?v=9';
+import { countAll, helpBtn, bindHelp } from './fun.js?v=10';
+import { icon } from './find.js?v=10';
 import { produceIcon } from './produce.js?v=9';
 import { journeyOf, routesSvg, odometer, kmCancelled, placeLabel, homeLabel } from './journey.js?v=1';
 

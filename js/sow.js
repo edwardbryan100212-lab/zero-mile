@@ -5,7 +5,7 @@
 //   mountSow(el)  a compact block (any screen)
 //   default view  the full page at #/sow
 import { state, esc, data, thumb, isTree, treeMonths, MONTH_NAMES } from './core.js?v=9';
-import { glyph } from './weather.js?v=9';
+import { glyph } from './weather.js?v=10';
 import { produceIcon } from './produce.js?v=9';
 
 const SOUTH = () => state.region === 'AU';

@@ -9,7 +9,7 @@
 // Saved per plant: entry.care = { kind: ['YYYY-MM-DD', …] } (jobs done) and entry.notes = [{ date, text }].
 // Everything fails safe: on any error the slot stays empty.
 import { state, save, esc, today, dayDiff, plantById, data, thumb, toggleWatered, wateredToday, isTree, treePhotoDue, stageName } from './core.js?v=9';
-import { glyph, forecast, conditions, stripHtml, placeHtml, useMyLocation, forgetLocation, WX_SOURCE, WX_RULES } from './weather.js?v=9';
+import { glyph, forecast, conditions, stripHtml, placeHtml, useMyLocation, forgetLocation, WX_SOURCE, WX_RULES } from './weather.js?v=10';
 import { mountTimelapse, photoCount } from './timelapse.js?v=9';
 import { produceIcon } from './produce.js?v=9';
 
@@ -201,7 +201,7 @@ function bind(root, jobs, rerender) {
       if (on) { try { const { award } = await import('./rewards.js?v=9'); award('water', { id: e.id }); } catch { /* rewards optional */ } }
       dispatchEvent(new Event('zm:garden'));
     } else { on = !doneToday(e, j.kind); markDone(e, j.kind, on); }
-    try { const { play, buzz } = await import('./sound.js?v=9'); if (on) { play(j.act === 'water' ? 'water' : 'done', { soft: true }); buzz(10); } else play('toggle', { soft: true }); } catch { /* sound optional */ }
+    try { const { play, buzz } = await import('./sound.js?v=10'); if (on) { play(j.act === 'water' ? 'water' : 'done', { soft: true }); buzz(10); } else play('toggle', { soft: true }); } catch { /* sound optional */ }
     const li = t.closest('.care-row'); li.classList.toggle('done', on); t.setAttribute('aria-pressed', String(on));
     t.setAttribute('aria-label', `${j.title}${on ? ', done' : ''}`);
     dispatchEvent(new CustomEvent('zm:care', { detail: { key: j.key, on } }));

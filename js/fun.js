@@ -284,7 +284,9 @@ export function celebration(screens) {
   let i = -1, done, stopFace = () => {};
   const p = new Promise((r) => { done = r; });
   celeOpen = p;
+  let finished = false;
   const finish = () => {
+    if (finished) return; finished = true; // a double tap on the last Continue must not end it twice (and unlock a queued one)
     removeEventListener('keydown', onKey); stopFace();
     const end = () => { bg.remove(); document.documentElement.classList.remove('cele-on'); celeOpen = null; opener?.focus?.({ preventScroll: true }); done(); };
     if (reduced()) return end();

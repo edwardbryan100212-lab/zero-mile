@@ -92,6 +92,7 @@ async function route() {
   current?.unmount?.();
   const main = $('#main');
   main.innerHTML = '';
+  document.body.dataset.from = document.body.dataset.view || ''; // where you came from (the plant page's back link)
   document.body.dataset.view = key || 'garden';
   const navKey = key === 'plant' ? 'find' : key || 'garden';
   $$('[data-nav]').forEach((a) => {

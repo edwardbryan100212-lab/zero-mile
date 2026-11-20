@@ -184,7 +184,7 @@ function bind(root, jobs, rerender) {
   root.addEventListener('click', async (ev) => {
     const loc = ev.target.closest('[data-wx]');
     if (loc) {
-      if (loc.dataset.wx === 'locate') { loc.disabled = true; loc.textContent = 'Finding…'; const ok = await useMyLocation(); if (!ok) { loc.textContent = 'Location off'; return; } }
+      if (loc.dataset.wx === 'locate') { loc.disabled = true; loc.textContent = 'Finding…'; const ok = await useMyLocation(); if (!ok) { loc.disabled = false; loc.textContent = 'Location off. Try again'; return; } }
       else forgetLocation();
       return rerender(true);
     }

@@ -111,7 +111,7 @@ export async function onboard() {
     const ph = await photoOf(id, p?.group === 'tree' ? 'tree' : 'plant').catch(() => null) || await photoOf(id, 'harvest').catch(() => null);
     pics[c.key] = ph?.src || '';
   }));
-  const pick = { grow: null, goal: state.goal || null, region: state.region };
+  const pick = { grow: null, goal: state.goal || 'regular', region: state.region }; // a sensible goal is ready, so Next is live
   const STEPS = ['hi', 'grow', 'goal', 'where', 'done'];
   let i = 0;
 

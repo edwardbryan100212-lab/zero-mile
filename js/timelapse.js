@@ -30,7 +30,7 @@ export async function mountTimelapse(el, id) {
     const e = state.garden.find((g) => g.id === id), p = plantById(id);
     if (!p) return fail();
     if (!e) {
-      el.innerHTML = `<div class="tl tl-empty"><img src="${thumb(id)}" alt="" width="72" height="72"><p>Grow ${esc(p.name.toLowerCase())} and snap it each day to build a time-lapse.</p><a class="ft-btn" href="#/plant/${esc(id)}">Open ${esc(p.name)}</a></div>`;
+      el.innerHTML = `<div class="tl tl-empty"><img src="${thumb(id)}" alt="" width="72" height="72"><p>Snap your ${esc(p.name.toLowerCase())} each day and the photos build a time-lapse.</p><a class="ft-btn" href="#/plant/${esc(id)}">Open ${esc(p.name)}</a></div>`;
       return { unmount() {} };
     }
     const log = [...e.log].filter((l) => l.key).sort((a, b) => (a.date < b.date ? -1 : 1));

@@ -62,7 +62,7 @@ export async function findView(main, q0 = '') {
     clearTimeout(countT); countT = setTimeout(() => { const c = $('#count'); if (c) c.textContent = `${hits.length} plant${hits.length === 1 ? '' : 's'}`; }, 300);
     if (!hits.length) {
       const treeMiss = group === 'tree' && tsub !== 'all';
-      const msg = treeMiss ? 'No trees match here' : `No “${esc($('#q').value) || 'plants'}” yet`;
+      const msg = treeMiss ? 'No trees match here' : `Nothing called “${esc($('#q').value) || 'that'}” here yet. Try another name.`;
       list.innerHTML = `<div class="f3-none"><p>${msg}</p><button class="b3 b3-white" type="button" id="reset">Show all plants</button></div>`;
       $('#reset').addEventListener('click', () => {
         $('#q').value = ''; tsub = 'all';
@@ -215,7 +215,9 @@ export async function plantView(main, id) {
   Object.values(p.origins || {}).forEach((o) => add(o.sources));
   if (p.fdc?.url) add([{ title: `FoodData Central: ${p.fdc.description || p.name}`, publisher: 'USDA', url: p.fdc.url }]);
   const inGarden = () => state.garden.some((e) => e.id === id);
-  const fact = (k, v) => (v == null || v === '' ? '' : `<div><dt>${k}</dt><dd>${v}</dd></div>`);
+  // the back link returns to the screen you came from: [href, label, screen-reader name]
+  const back = ({ garden: ['#/', 'Today', 'Today'], rewards: ['#/rewards', 'Stickers', 'Stickers'], impact: ['#/impact', 'Impact', 'Impact'] })[document.body.dataset.from] || ['#/find', 'Plants', 'all plants'];
+  const fact =(k, v) => (v == null || v === '' ? '' : `<div><dt>${k}</dt><dd>${v}</dd></div>`);
   const hasRegion = Object.keys(p.origins || {}).length > 0 || (isTree && !!p.tree?.regions);
   const photos = await import('./photos.js?v=9').then((m) => m.photosFor(id)).catch(() => []);
   const t = p.tree || {};
@@ -251,7 +253,7 @@ export async function plantView(main, id) {
           <div class="pp-hots" id="hots"></div>
           ${photos[0] ? `<figure class="pp-face" id="face" aria-hidden="true"><img src="${esc(photos[0].src)}" alt="A real ${esc(p.name.toLowerCase())} ${isTree ? 'tree' : 'plant'}"><figcaption>${esc(photos[0].author || '')}, ${esc(photos[0].license)}</figcaption></figure>` : ''}
           <div class="stage-top">
-            <a class="back" href="#/find" aria-label="Back to all plants"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>Plants</a>
+            <a class="back" href="${back[0]}" aria-label="Back to ${back[2]}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>${back[1]}</a>
             <div class="seg pp-seg" role="group" aria-label="What to show"><span class="pp-pill" aria-hidden="true"></span><button aria-pressed="true" data-mode="plant">Plant</button><button aria-pressed="false" data-mode="harvest" id="harvest-btn">Harvest</button></div>
           </div>
           ${photos[0] ? `<button class="pp-flip" id="flip" aria-pressed="false"><span class="pp-flip-in">${icon('camera', 'a')}${icon('cube', 'b')}</span><span class="pp-flip-t">Real photo</span></button>` : ''}
@@ -536,10 +538,22 @@ export async function plantView(main, id) {
     celebrate($('#grow'));
     setTimeout(() => { location.hash = '#/'; }, reduceMotion() ? 300 : 1100);
   });
+  // phone: "Grow this" sits below the 3D stage and photos, so a copy docks above the tab bar until the real one
+  // scrolls into view (hidden again once planted; css/polish-ui.css hides it on a Mac)
+  let dockIO = null;
+  if (!inGarden() && 'IntersectionObserver' in window) {
+    const dock = document.createElement('div');
+    dock.className = 'grow-dock';
+    dock.innerHTML = `<button class="b3" type="button" tabindex="-1" aria-hidden="true">${isTree ? 'Plant this tree' : 'Grow this'}</button>`;
+    dock.firstElementChild.addEventListener('click', () => { dock.remove(); $('#grow')?.click(); });
+    main.append(dock);
+    dockIO = new IntersectionObserver(([en]) => dock.classList.toggle('on', !en.isIntersecting && en.boundingClientRect.top > 0 && !inGarden()), { rootMargin: '0px 0px -96px 0px' }); // behind the tab bar counts as out of view
+    dockIO.observe($('#grow'));
+  }
   $('#remove')?.addEventListener('click', async () => {
     if (!confirm(`Remove ${p.name} and its photos from this device?`)) return;
     const { removePlant } = await import('./garden.js?v=10');
     await removePlant(id); toast(`${p.name} removed.`); location.hash = '#/';
   });
-  return { unmount() { v.onRender = null; v.dispose(); if (lb?.open) lb.close(); } };
+  return { unmount() { v.onRender = null; v.dispose(); if (lb?.open) lb.close(); dockIO?.disconnect(); } };
 }

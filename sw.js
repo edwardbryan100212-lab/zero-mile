@@ -1,5 +1,5 @@
 // Offline support for the ad site (/) and the app (/app/): files are cached on first visit so Zero Mile works without a connection.
-const V = 'zeromile-v15';
+const V = 'zeromile-v16';
 const SHELL = [
   // ad site
   './', 'index.html', 'css/site.css?v=13', 'css/scene.css?v=11', 'js/site.js?v=12', 'js/scene.js?v=11', 'css/journey.css?v=2', 'js/journey.js?v=1', 'data/land.json?v=2',

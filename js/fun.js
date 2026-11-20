@@ -113,10 +113,11 @@ export function sheet({ title, body, label = 'Close' }) {
     box.animate(phone ? [{ transform: 'translateY(100%)' }, { transform: 'none' }] : [{ opacity: 0, transform: 'translateY(8px) scale(.97)' }, { opacity: 1, transform: 'none' }], { duration: phone ? 320 : 220, easing: EASE });
   }
   let closed = false;
-  const close = () => {
+  // away: the back button or a link moved to another screen, which keeps the focus
+  const close = (away = false) => {
     if (closed) return; closed = true;
-    removeEventListener('keydown', onKey);
-    const done = () => { bg.remove(); opener?.focus?.({ preventScroll: true }); };
+    removeEventListener('keydown', onKey); removeEventListener('hashchange', onHash);
+    const done = () => { bg.remove(); if (!away) opener?.focus?.({ preventScroll: true }); };
     if (reduced()) return done();
     bg.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 180, easing: EASE, fill: 'forwards' });
     box.animate(phone ? [{ transform: 'none' }, { transform: 'translateY(100%)' }] : [{ opacity: 1 }, { opacity: 0, transform: 'scale(.98)' }], { duration: 180, easing: EASE, fill: 'forwards' }).onfinish = done;
@@ -131,9 +132,11 @@ export function sheet({ title, body, label = 'Close' }) {
     }
   };
   addEventListener('keydown', onKey);
-  bg.querySelector('.sheet-x').addEventListener('click', close);
+  const onHash = () => close(true);
+  addEventListener('hashchange', onHash);
+  bg.querySelector('.sheet-x').addEventListener('click', () => close());
   bg.addEventListener('click', (e) => { if (e.target === bg) close(); });
-  box.addEventListener('click', (e) => { if (e.target.closest('a[href^="#"]')) close(); });
+  box.addEventListener('click', (e) => { if (e.target.closest('a[href^="#"]')) close(true); });
   bg.querySelector('.sheet-x').focus();
   return { el: box, close };
 }

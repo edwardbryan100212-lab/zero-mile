@@ -4,7 +4,7 @@
    Token fallbacks are inlined so this file works before or after tokens.css moves to v2. */
 @import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Pixelify+Sans:wght@500;700&display=swap');
 
-.ob, .nudge3, .rem3-set, .wb, .d-hero.at-risk {
+.ob, .nudge3, .rem3-set, .wb {
   --o-paper: var(--paper, #f6f3ea); --o-card: var(--card, #fffdf7); --o-line: var(--line2, #e7e1d2);
   --o-ink: #17221a; --o-ink2: #4d5a50; --o-leaf: #23774a; --o-leaf-d: #1b5e3a; --o-tint: #e3f1e8;
   --o-lcd: #0c110d; --o-px: #62f27e; --o-px-dim: #1f5a2b;
@@ -17,12 +17,13 @@
   border-radius: 14px; cursor: pointer; touch-action: manipulation; user-select: none; -webkit-user-select: none;
   transition: transform 90ms var(--ease, ease), box-shadow 90ms var(--ease, ease), background-color 120ms; }
 .obtn { color: #fff; background: var(--o-leaf); border: 0; border-bottom: 2px solid var(--o-leaf-d); }
-.obtn:hover { background: #206e45; }
+@media (hover: hover) and (pointer: fine) { .obtn:hover { background: #206e45; } }
 .obtn:active { transform: translateY(2px); border-bottom-width: 0; }
 .obtn-2, .obtn.obtn-2 { color: var(--o-ink); background: var(--o-card); border: 1.5px solid var(--o-ink); }
-.obtn-2:hover { background: #fff; }
+@media (hover: hover) and (pointer: fine) { .obtn-2:hover { background: #fff; } }
 .obtn-q { min-height: 44px; padding: 0 12px; color: var(--o-ink2); background: none; border: 0; }
-.obtn-q:hover { color: var(--o-ink); text-decoration: underline; text-underline-offset: 3px; }
+.obtn-q:active { color: var(--o-ink); }
+@media (hover: hover) and (pointer: fine) { .obtn-q:hover { color: var(--o-ink); text-decoration: underline; text-underline-offset: 3px; } }
 .obtn-sq { width: 44px; min-height: 44px; padding: 0; }
 .obtn-xl { width: 100%; min-height: 56px; font-size: 1.0625rem; }
 .obtn[aria-disabled="true"] { background: #b9c6bc; color: #17221a; border-bottom-color: #9faea3; cursor: not-allowed; }
@@ -66,7 +67,7 @@ html.ob-on .tabbar { visibility: hidden; }
 .ob-card, .ob-goal, .ob-reg { position: relative; font: inherit; color: var(--o-ink); cursor: pointer; text-align: left; touch-action: manipulation;
   background: var(--o-card); border: 1px solid var(--o-line); border-radius: 18px; outline: 1px solid transparent; outline-offset: -2px;
   transition: transform 90ms var(--ease, ease), border-color 120ms, outline-color 120ms, background-color 120ms; }
-.ob-card:hover, .ob-goal:hover, .ob-reg:hover { border-color: #cfc6b1; }
+@media (hover: hover) and (pointer: fine) { .ob-card:hover, .ob-goal:hover, .ob-reg:hover { border-color: #cfc6b1; } }
 .ob-card:active, .ob-goal:active, .ob-reg:active { transform: translateY(1px); }
 .ob .on { border-color: var(--o-leaf); outline-color: var(--o-leaf); background: #f4faf5; }
 .ob-card { display: grid; gap: 8px; padding: 6px 6px 12px; }
@@ -90,7 +91,7 @@ html.ob-on .tabbar { visibility: hidden; }
 .ob-goal small { font: 600 1rem/1.25 var(--font3, 'Nunito', sans-serif); color: var(--o-ink2); }
 .ob-radio { flex: none; width: 22px; height: 22px; border-radius: 50%; border: 2px solid #8a958c; background: #fff; transition: border-color 120ms, box-shadow 120ms; }
 .on .ob-radio { border: 6px solid var(--o-leaf); background: #fff; }
-.ob-stamp { justify-self: start; display: inline-grid; place-items: center; min-height: 44px; min-width: 200px; padding: 6px 16px; border: 2px solid var(--leaf, #23774a); border-radius: 6px; color: var(--leaf, #23774a); font: 800 .9375rem/1 Nunito, sans-serif; letter-spacing: .1em; transform: rotate(-2deg); }
+.ob-stamp { align-self: flex-start; justify-self: start; display: inline-grid; place-items: center; min-height: 44px; min-width: 200px; padding: 6px 16px; border: 2px solid var(--leaf, #23774a); border-radius: 6px; color: var(--leaf, #23774a); font: 800 .9375rem/1 Nunito, sans-serif; letter-spacing: .1em; transform: rotate(-2deg); }
 .ob-say { display: inline-block; padding: 10px 16px; border: 1.5px solid #17221a; border-radius: 16px 16px 16px 4px; background: #fffdf7; font: 700 1.125rem/1.2 'Bricolage Grotesque', Nunito, sans-serif; color: #17221a; }
 .ob-stick { display: grid; justify-items: center; gap: 10px; margin-top: 4px; }
 .ob-stick svg { width: 132px; height: auto; }
@@ -121,18 +122,7 @@ html.ob-on .tabbar { visibility: hidden; }
 /* Settings: the same block as a row */
 .rem3-set { display: block; }
 
-/* ---------- streak at risk: the hero becomes Pip's LCD screen ---------- */
-.d-hero.at-risk { background-color: var(--o-lcd); color: var(--o-px); border: 6px solid #262b27; box-shadow: inset 0 0 28px rgba(98, 242, 126, .14);
-  background-image: linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
-  background-size: 4px 4px; }
-.d-hero.at-risk .fluted { display: none; }
-.d-hero.at-risk .hero-num, .d-hero.at-risk .hero-num em, .d-hero.at-risk h1 { color: var(--o-px); }
-.d-hero.at-risk .hero-num b { font-family: var(--o-pixel); font-weight: 700; color: var(--o-px); }
-.d-hero.at-risk .hero-num em { font-family: var(--o-pixel); font-style: normal; font-weight: 500; }
-.d-hero.at-risk .bubble { white-space: normal; max-width: 170px; text-align: center; line-height: 1.2; background: transparent; color: var(--o-px);
-  border: 2px solid var(--o-px); border-radius: 10px; font-family: var(--o-pixel); font-weight: 500; letter-spacing: .02em; }
-.d-hero.at-risk .bubble::after { background: var(--o-lcd); border-color: var(--o-px); }
-.d-hero.at-risk .pulse3 { color: var(--o-lcd); background: var(--o-px); border-color: #3fd25e; text-transform: none; }
+/* ---------- streak at risk: the photo button pulses (the hero itself is .t-hero.at-risk in css/dash.css) ---------- */
 .pulse3 { animation: pulse3 1.2s steps(2, jump-none) infinite; }
 @keyframes pulse3 { 0%, 100% { opacity: 1; } 50% { opacity: .72; } }
 .pulse3:active { animation: none; }
@@ -147,11 +137,3 @@ html.ob-on .tabbar { visibility: hidden; }
 .wb-in span { display: grid; gap: 2px; }
 .wb-in b { font: 700 1.25rem/1.1 var(--o-head); }
 .wb-in small { font: 600 1rem/1.2 var(--font3, 'Nunito', sans-serif); color: var(--o-ink2); }
-/* the rest of the hero, in pixels: square green dots, a dim sun, Pip in its own colours */
-.d-hero.at-risk .hero-pip { color: var(--o-ink); }
-.d-hero.at-risk .hero-num .art { filter: grayscale(1) brightness(.55) sepia(1) hue-rotate(70deg) saturate(3); opacity: .7; }
-.d-hero.at-risk .hero-num > span { background: none; }
-.d-hero.at-risk .dot { color: var(--o-px); font-family: var(--o-pixel); font-weight: 500; }
-.d-hero.at-risk .dot i { border-radius: 4px; border: 2px solid var(--o-px-dim); background: transparent; }
-.d-hero.at-risk .dot.done i { background: var(--o-px); border-color: var(--o-px); }
-.d-hero.at-risk .dot.kept i { background: var(--o-px-dim); border-color: var(--o-px); }

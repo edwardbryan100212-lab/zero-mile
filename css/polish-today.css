@@ -1,1 +1,92 @@
-/* UI polish pass 2026-11-20: today screens. Loaded last, so rules here override the older files. */
+/* UI polish pass 2026-11-20: today screens. Loaded last, so rules here override the older files.
+   Covers Today (#/ and #/garden), the shell (phone top bar, Mac sidebar, tab bar, the More sheet) and onboarding. */
+
+/* ---------- the km unit next to every odometer in the shell and the hero: lowercase, never below 12px ---------- */
+.tbs .odo-u, .side-stats .odo-u, .th-odo .odo-u { text-transform: none; letter-spacing: 0; font-weight: 800; color: var(--ink-2); }
+.tbs .odo-u, .side-stats .odo-u { font-size: 12px; }
+.th-odo .odo-u { font-size: max(12px, .4em); }
+
+/* ---------- phone top bar: brand left, the two stats right, on one line and one height ---------- */
+.topbar .stats3 { gap: 0; align-items: center; }
+.topbar .tbs { gap: 6px; }
+.topbar .st-km { gap: 4px; }
+.topbar .st-km .odo { gap: 4px; }
+
+/* ---------- Mac sidebar: the stats box as two equal rows on one left edge ---------- */
+.side-stats { gap: 0; padding: 4px; }
+.side-stats .tbs { min-height: 44px; gap: 10px; }
+.side-stats .st-km .odo { gap: 4px; }
+.side-label { padding-top: 4px; }
+
+/* ---------- tab bar: a press state on every tab ---------- */
+.tabbar a:active, .tabbar button:active { color: var(--ink); }
+
+/* ---------- the More sheet (phone): one list of rows, icon column, label and hint, chevron ---------- */
+.more-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+.more-row { display: grid; grid-template-columns: 24px minmax(0, 1fr) 18px; grid-template-rows: auto auto; column-gap: 16px; row-gap: 2px; align-items: center;
+  min-height: 64px; padding: 12px; border-radius: 12px; text-decoration: none; color: var(--ink); transition: background-color 120ms ease; }
+.more-row > .ico:first-child { grid-row: 1 / span 2; width: 24px; height: 24px; color: var(--leaf); }
+.more-row b { grid-column: 2; font: 650 1.0625rem/1.25 var(--f-head); }
+.more-row span { grid-column: 2; font-size: .9375rem; line-height: 1.3; color: var(--ink-2); }
+.more-row .more-go { grid-column: 3; grid-row: 1 / span 2; width: 18px; height: 18px; color: var(--ink-2); }
+.more-row:active { background: var(--paper-2); }
+@media (hover: hover) and (pointer: fine) { .more-row:hover { background: var(--paper-2); } }
+.more-list li + li .more-row { position: relative; }
+.more-list li + li .more-row::before { content: ''; position: absolute; left: 52px; right: 12px; top: -2px; height: 1px; background: var(--line); }
+
+/* ---------- Today: section heads line up the title and its link on one centre line ---------- */
+.today .sec-head { align-items: center; min-height: 44px; }
+.today .sec-head h2 .ico { width: 24px; height: 24px; flex: none; }
+.today .sec-link { display: inline-flex; align-items: center; gap: 4px; min-height: 44px; }
+.today .sec-link .ico { width: 18px; height: 18px; }
+
+/* ---------- Today hero: sentence-case labels, a calmer next-trip line ---------- */
+.th-k { font: 700 .875rem/1.25 var(--f-ui); letter-spacing: 0; text-transform: none; color: var(--ink-2); }
+.th-sk { min-height: 44px; font-size: .9375rem; color: var(--ink); }
+.th-next { font-size: .9375rem; line-height: 1.35; font-weight: 600; }
+.th-next b { font-weight: 700; }
+.th-streak { gap: 4px; margin-top: 4px; }
+.th-row .b3:active { transform: translateY(1px); }
+
+/* ---------- Today, fresh garden: "Easy in a pot" cards stack picture over text on a phone, so names and days never wrap mid-range ---------- */
+@media (max-width: 639px) {
+  .today .pcards .pcard.pc-pick { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto; gap: 8px; padding: 16px; }
+  .today .pcards .pcard.pc-pick { align-content: start; }
+  .today .pc-pick .pc-media { display: grid; place-items: center; width: 48px; height: 48px; overflow: hidden; }
+  .today .pc-pick .pc-sym svg { width: 48px; height: 48px; }
+  .today .pc-pick .pc-body { display: grid; gap: 2px; }
+  .today .pc-pick .pc-sub { font-size: .875rem; line-height: 1.3; }
+  .today .pc-pick .nw { white-space: nowrap; }
+}
+
+/* ---------- Today, your plants: equal cards, the Add tile never left alone in a row on a phone ---------- */
+.pst-a:active b { text-decoration: underline; text-underline-offset: 3px; }
+.pst-add a:active { background: var(--paper-2); }
+.pst-add { border-radius: var(--r-card); }
+@media (max-width: 639px) {
+  .psts .pst-add:nth-child(odd) { grid-column: 1 / -1; }
+  .psts .pst-add:nth-child(odd) a { min-height: 64px; grid-auto-flow: column; justify-content: center; gap: 12px; padding: 12px 16px; }
+  .psts .pst-add:nth-child(odd) a span { display: none; }
+}
+
+/* ---------- Today: the reminder card under the care list ---------- */
+@media (max-width: 559px) {
+  .tgrid > .nudge3 { padding: 12px 52px 16px 16px; }
+  .tgrid > .nudge3 .rem3 { gap: 12px; }
+  .tgrid > .nudge3 .rem3-t { min-height: 44px; }
+  .tgrid > .nudge3 .rem3-row { width: 100%; margin-left: 0; max-width: none; }
+  .tgrid > .nudge3 .nudge3-x { top: 12px; translate: none; }
+}
+
+/* ---------- Today on the Mac: the side column ends with the cards, no hanging gap ---------- */
+@media (min-width: 1000px) {
+  .today .t-links { align-content: start; }
+}
+
+/* ---------- onboarding on a wide screen: the step sits in the middle, its button right under it, no dead band ---------- */
+@media (min-width: 900px) and (min-height: 640px) {
+  .ob-step { justify-content: center; padding-bottom: 48px; }
+  .ob-step .ob-foot { margin-top: 16px; position: static; background: none; }
+  .ob-hi, .ob-done { flex: 0 1 auto; }
+  .ob-s-grow .ob-head { text-align: center; }
+}

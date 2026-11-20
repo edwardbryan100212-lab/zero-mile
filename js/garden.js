@@ -223,7 +223,7 @@ export default async function garden(main) {
       ${fresh ? `
       <section class="t-plants" aria-labelledby="easy-t">
         <div class="sec-head"><h2 id="easy-t">${icon('sprout', { size: 24, color: true })}Easy in a pot</h2><a class="sec-link" href="#/find">See all</a></div>
-        <ul class="pcards">${easy.map((p) => `<li class="pcard c3 pc-pick"><a class="pc-media" href="#/plant/${p.id}" tabindex="-1" aria-hidden="true">${media(p.id)}</a><div class="pc-body"><a class="pc-name" href="#/plant/${p.id}"><b>${esc(p.name)}</b></a><span class="pc-sub">${esc(p.grow?.days_to_harvest ? `Ready in ${p.grow.days_to_harvest[0]}–${p.grow.days_to_harvest[1]} days` : 'Easy to grow')}</span></div></li>`).join('')}</ul>
+        <ul class="pcards">${easy.map((p) => `<li class="pcard c3 pc-pick"><a class="pc-media" href="#/plant/${p.id}" tabindex="-1" aria-hidden="true">${media(p.id)}</a><div class="pc-body"><a class="pc-name" href="#/plant/${p.id}"><b>${esc(p.name)}</b></a><span class="pc-sub">${p.grow?.days_to_harvest ? `Ready in <span class="nw">${p.grow.days_to_harvest[0]}–${p.grow.days_to_harvest[1]} days</span>` : 'Easy to grow'}</span></div></li>`).join('')}</ul>
       </section>` : `
       <section class="t-plants" aria-labelledby="plants-t">
         <div class="sec-head"><h2 id="plants-t">Your plants</h2><a class="sec-link" href="#/find">${icon('plus', { size: 18, color: true })}Add</a></div>

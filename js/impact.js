@@ -61,7 +61,7 @@ function cancelledMap(rows, city) {
   const size = mob ? { w: 360, h: 260 } : { w: 800, h: 330 };
   const km = kmCancelled();
   return `<section class="c3 imp-map" aria-labelledby="cm-t">${head}
-    <div class="imp-map-odo">${odometer(km)}<span class="muted3">cancelled, ${done.reduce((s, x) => s + x.r.picks, 0)} trips</span></div>
+    <div class="imp-map-odo">${odometer(km)}<span class="muted3">cancelled, ${((n) => `${n} trip${n === 1 ? '' : 's'}`)(done.reduce((s, x) => s + x.r.picks, 0))}</span></div>
     <div class="imp-map-box">${routesSvg(done.map((x) => x.r.p.id), { ...size, crop: 'auto' })}</div>
     ${tripKey(done)}
   </section>`;
@@ -108,7 +108,7 @@ export default async function impact(main) {
       ${counter({ value: tot.miles, unit: 'km', label: 'Km cancelled', goal: goalFor(tot.miles, [100, 1000, 5000, 10000, 25000]) })}
       ${tot.co2g >= 1000 ? counter({ value: +(tot.co2g / 1000).toFixed(1), dec: tot.co2g < 10000 ? 1 : 0, unit: 'kg CO2e', label: 'Travel CO2 skipped', goal: goalFor(tot.co2g / 1000, [5, 10, 25, 50, 100]) }) : counter({ value: tot.co2g, unit: 'g CO2e', label: 'Travel CO2 skipped', goal: goalFor(tot.co2g, [100, 500, 1000]) })}
       ${counter({ value: +tot.kg.toFixed(2), dec: tot.kg < 10 ? 1 : 0, unit: 'kg', label: 'Food grown', goal: goalFor(tot.kg, [1, 5, 10, 25, 50]) })}
-      ${counter({ value: trees.length, unit: trees.length === 1 ? 'tree' : 'trees', gunit: 'trees', label: 'Trees planted', goal: goalFor(trees.length, [1, 3, 5, 10, 25, 50]), help: helpBtn('trees', 'How the tree estimate works') })}
+      ${counter({ value: trees.length, unit: trees.length === 1 ? 'tree' : 'trees', gunit: goalFor(trees.length, [1, 3, 5, 10, 25, 50]) === 1 ? 'tree' : 'trees', label: 'Trees planted', goal: goalFor(trees.length, [1, 3, 5, 10, 25, 50]), help: helpBtn('trees', 'How the tree estimate works') })}
     </section>
     ${tot.picks ? '' : '<p class="i3-hint">Log a harvest from Today and these fill in. <a href="#/">Go to Today</a></p>'}
     ${cancelledMap(rows, city)}

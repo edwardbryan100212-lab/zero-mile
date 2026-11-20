@@ -6,7 +6,8 @@ import { buildPlant, disposeTree, ground, LOOKS } from './plants3d.js';
 
 const reduce = matchMedia('(prefers-reduced-motion: reduce)');
 
-export function createViewer(host, { controls = false, spin = true, background = null, groundKind = 'soil', fov = 32 } = {}) {
+export function createViewer(host, { controls = false, spin = true, background = null, groundKind = 'soil', fov = 32, insets = null } = {}) {
+  // insets(): { top, bottom } in px covered by buttons over the canvas; the model is framed in the clear space between them
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: !background, powerPreference: 'low-power' });
   renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -61,19 +62,31 @@ export function createViewer(host, { controls = false, spin = true, background =
     W = Math.max(1, r.width); H = Math.max(1, r.height);
     renderer.setSize(W, H, false);
     renderer.domElement.style.width = '100%'; renderer.domElement.style.height = '100%';
-    cam.aspect = W / H; cam.updateProjectionMatrix();
+    cam.aspect = W / H; offset(); cam.updateProjectionMatrix();
     kick();
   }
 
   // Frame the camera on whatever is in the stage
-  let target = new THREE.Vector3(), dist = 1;
+  let target = new THREE.Vector3(), dist = 1, clear = 1;
+  // shift the picture so its centre is the centre of the clear space (setViewOffset keeps the hotspot projection right)
+  function offset() {
+    const i = insets?.() || { top: 0, bottom: 0 };
+    const top = Math.max(0, Math.min(H * .4, i.top || 0)), bottom = Math.max(0, Math.min(H * .4, i.bottom || 0));
+    clear = Math.max(.5, (H - top - bottom) / H);
+    if (top || bottom) cam.setViewOffset(W, H, 0, (bottom - top) / 2, W, H); else cam.clearViewOffset();
+  }
   function frame(obj, { pad = 1.15 } = {}) {
-    // measure without the pivot's animation so a frame taken mid-pop is still right
-    const ps = pivot.scale.x, pr = pivot.rotation.y; pivot.scale.setScalar(1); pivot.rotation.y = 0; pivot.updateMatrixWorld(true);
-    const box = new THREE.Box3().setFromObject(obj);
-    pivot.scale.setScalar(ps); pivot.rotation.y = pr; pivot.updateMatrixWorld(true);
+    // measure without the pivot's animation or the idle spin, so a frame taken mid-pop or mid-turn is still right
+    const ps = pivot.scale.x, pr = pivot.rotation.y, sr = stage.rotation.y; pivot.scale.setScalar(1); pivot.rotation.y = 0; stage.rotation.y = 0; pivot.updateMatrixWorld(true);
+    let box = new THREE.Box3().setFromObject(obj);
+    if (obj === stage && !box.isEmpty()) { // put the model's middle on the turning axis, so it spins in place instead of swinging round
+      const c = box.getCenter(new THREE.Vector3());
+      if (Math.abs(c.x) > 1e-4 || Math.abs(c.z) > 1e-4) { stage.children.forEach((ch) => { ch.position.x -= c.x; ch.position.z -= c.z; }); stage.updateMatrixWorld(true); box = new THREE.Box3().setFromObject(obj); }
+    }
+    pivot.scale.setScalar(ps); pivot.rotation.y = pr; stage.rotation.y = sr; pivot.updateMatrixWorld(true);
     const size = box.getSize(new THREE.Vector3()), centre = box.getCenter(new THREE.Vector3());
-    const r = Math.max(size.y * .55, Math.hypot(size.x, size.z) * .5 / Math.min(1, Math.max(.6, cam.aspect)));
+    offset();
+    const r = Math.max(size.y * .55 / clear, Math.hypot(size.x, size.z) * .5 / Math.min(1, Math.max(.6, cam.aspect)));
     dist = (r * pad) / Math.tan(THREE.MathUtils.degToRad(fov / 2));
     target.copy(centre);
     const ang = .35;
@@ -92,6 +105,7 @@ export function createViewer(host, { controls = false, spin = true, background =
     if (extra) { stage.remove(extra); extra = null; }
     plant = buildPlant(id, t);
     stage.add(plant);
+    { const sr = stage.rotation.y; stage.rotation.y = 0; stage.updateMatrixWorld(true); const c = new THREE.Box3().setFromObject(plant).getCenter(new THREE.Vector3()); plant.position.x -= c.x; plant.position.z -= c.z; stage.rotation.y = sr; } // the plant's middle over the soil disc
     if (extraObject) { extra = typeof extraObject === 'function' ? extraObject(new THREE.Box3().setFromObject(plant)) : extraObject; stage.add(extra); }
     else {
       const box = new THREE.Box3().setFromObject(plant); const sz = box.getSize(new THREE.Vector3());

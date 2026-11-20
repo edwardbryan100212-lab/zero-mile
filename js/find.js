@@ -306,7 +306,13 @@ export async function plantView(main, id) {
   </div>`;
 
   const [{ createViewer }, M] = await Promise.all([import('./viewer.js?v=9'), import('./models.js?v=9').catch(() => null), import('./trees3d.js?v=9')]);
-  const v = createViewer($('#plant-stage'), { controls: true });
+  const v = createViewer($('#plant-stage'), { controls: true, insets: () => { // keep the model clear of the buttons on top and the Grow card below
+    const h = $('#plant-stage')?.getBoundingClientRect(); if (!h?.height) return { top: 0, bottom: 0 };
+    let top = 0, bottom = 0;
+    for (const el of [$('#stage-box .stage-top'), $('#flip')]) { const r = el?.getBoundingClientRect(); if (r?.height) top = Math.max(top, r.bottom - h.top); }
+    for (const el of [$('#grow-ui'), $('#harvest-ui')]) { const r = !el?.hidden && el?.getBoundingClientRect(); if (r?.height) bottom = Math.max(bottom, h.bottom - r.top); }
+    return { top, bottom };
+  } });
   let F = null;
   try { F = await import('./fruit3d.js'); if (!F.showHarvest) F = null; } catch { F = null; }
   const credit = $('#credit');

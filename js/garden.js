@@ -29,6 +29,7 @@ const ICON = {
   check: icon('check', { size: 20, cls: 'gi' }),
   plus: icon('plus', { size: 20, cls: 'gi' }),
   more: icon('more', { size: 20, cls: 'gi' }),
+  album: '<svg class="ico gi" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path fill-rule="evenodd" d="M5 4h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zm0 2v9.2l3.6-3.6a1 1 0 0 1 1.4 0l3.2 3.2 1.7-1.7a1 1 0 0 1 1.4 0L19 15.8V6H5z"/><circle cx="15.5" cy="9" r="1.6"/></svg>', // a picture from the phone's photos
 };
 
 // the season word for a month where you live (seasons are flipped south of the equator)
@@ -339,6 +340,8 @@ export async function snapView(main, id) {
         <div class="snap-actions">
           <label class="b3 b3-wide b3-xl" for="photo" id="snap-btn">${ICON.photo}Take a photo</label>
           <input id="photo" class="vh" type="file" accept="image/*" capture="environment">
+          <label class="b3 b3-white b3-wide snap-lib" for="photo-lib">${ICON.album}Choose a photo</label>
+          <input id="photo-lib" class="vh" type="file" accept="image/*">
         </div>
       </div>
       <div class="snap-col">
@@ -395,7 +398,8 @@ export async function snapView(main, id) {
     stopFace(); stopFace = runFaces(fb);
   }
   $('#smart').addEventListener('change', async (e) => { state.smartAI = e.target.checked; save(); if (state.smartAI) (await import('./analyze.js?v=2')).loadSmart().catch(() => toast('Couldn’t download the smart check. The colour check still works.')); });
-  $('#photo').addEventListener('change', async (e) => {
+  // the camera, or a photo already on the device (both go through the same check and timeline)
+  const onPhoto = async (e) => {
     const file = e.target.files?.[0]; e.target.value = '';
     if (!file) return;
     const frame = $('#frame');
@@ -417,7 +421,9 @@ export async function snapView(main, id) {
     show(r.res);
     chips(); timeline();
     if (!(await photoParty(r, plantById(entry.id)))) { const b = $('#snap-btn').getBoundingClientRect(); burst(b.left + b.width / 2, b.top); haptic(12); toast('Photo saved to your timeline.'); }
-  });
+  };
+  $('#photo').addEventListener('change', onPhoto);
+  $('#photo-lib').addEventListener('change', onPhoto);
   chips(); ghost(); timeline();
   return { unmount() { stopFace(); freeURLs(); } };
 }

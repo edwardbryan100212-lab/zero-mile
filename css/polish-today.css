@@ -90,3 +90,7 @@
   .ob-hi, .ob-done { flex: 0 1 auto; }
   .ob-s-grow .ob-head { text-align: center; }
 }
+
+/* Photo: Take a photo, with Choose a photo (from the phone's photos) under it */
+.snap-actions { display: grid; gap: 8px; }
+.snap-actions .snap-lib { min-height: 48px; }

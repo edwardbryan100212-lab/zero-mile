@@ -289,9 +289,9 @@ function clip() {
   new IntersectionObserver(([e]) => { if (e.isIntersecting) { v.play().catch(() => {}); } else v.pause(); }, { rootMargin: '10% 0px' }).observe(v);
 }
 
-// ---------- pictures rise into place as their section arrives ----------
+// ---------- pictures (never text) rise into place as their section arrives ----------
 function rise() {
-  const els = $$('.tile-pic, .forest li, .tl-c, .spec, .twin-map');
+  const els = $$('.tile-pic, .tl-c, .twin-map');
   if (RM || !('IntersectionObserver' in window)) return;
   const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { rootMargin: '0px 0px -8% 0px' });
   els.forEach((el) => {

@@ -245,7 +245,10 @@ export async function mountCare(el) {
           : '<p class="care-none"><a href="#/find">Add a plant</a> for daily care.</p>'}
         <details class="ft-deep"><summary>Weather and sources</summary>${placeHtml(fc)}<a class="ft-link" href="#/sow">${glyph('seed', 16)}What to sow this month</a></details>
       </section>`;
-      el.querySelector('[data-more]')?.addEventListener('click', (ev) => { el.querySelectorAll('.care-row[hidden]').forEach((r) => { r.hidden = false; }); ev.currentTarget.remove(); });
+      el.querySelector('[data-more]')?.addEventListener('click', (ev) => {
+        const rows = [...el.querySelectorAll('.care-row[hidden]')]; rows.forEach((r) => { r.hidden = false; });
+        ev.currentTarget.remove(); rows[0]?.querySelector('button, a')?.focus(); // keep the keyboard focus on the first job it showed
+      });
       el.__jobs = () => [...lines, ...all()];
       if (!el.__careBound) { el.__careBound = true; bind(el, () => el.__jobs?.() || [], (f) => draw(f)); }
     };

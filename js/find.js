@@ -519,7 +519,8 @@ export async function plantView(main, id) {
       await routeAnimate($('#twin-map svg'), { cancel: [0, 1], ms: 1400 });
       await odometerRoll(box, before, after);
       try { award('harvest', { id }); } catch {} // after the cancel plays, so a celebration never hides it
-      $('#twin-msg').textContent = `You have cancelled this trip ${n === 1 ? 'once' : `${n} times`}. Picked some more?`;
+      if (!box.isConnected) return; // left the page while the trip was cancelling
+      $('#twin-msg', box).textContent = `You have cancelled this trip ${n === 1 ? 'once' : `${n} times`}. Picked some more?`;
       $$('[data-pick]', box).forEach((x) => { x.disabled = false; });
     }));
   }

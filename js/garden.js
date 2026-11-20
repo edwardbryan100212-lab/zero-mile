@@ -253,7 +253,7 @@ export default async function garden(main) {
     if (!(await photoParty(r, plantById(entry.id)))) toast('Added to your journal.');
     dispatchEvent(new HashChangeEvent('hashchange')); // the router redraws Today
   });
-  const onRw = () => { const o = $('.th-odo', main); if (o) o.innerHTML = odometer(kmCancelled()); };
+  const onRw = () => { const o = $('.th-odo', main); if (o) { const k = kmCancelled(); o.innerHTML = odometer(k); o.setAttribute('aria-label', `${fmt(k)} km cancelled. What is this?`); const nx = nextJourney(k), t = $('.th-next', main); if (t) { if (nx) t.innerHTML = `Next: <b>${esc(journeyLabel(nx))}</b>, ${fmt(nx.km)} km`; else t.remove(); } } };
   addEventListener('zm:rewards', onRw);
 
   // your plants as their home stickers: name, day and a small log button (a harvest cancels its shop twin's trip)

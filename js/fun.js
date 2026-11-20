@@ -169,7 +169,8 @@ export function floatGain(anchor, text, tone = 'sun') {
 // Transform only, 320 ms, no overshoot. Reduced motion: it is simply there.
 export function stickOn(el, { delay = 0 } = {}) {
   if (!el || reduced()) return null;
-  const r = getComputedStyle(el).getPropertyValue('--r').trim() || '0deg';
+  // --r is also a corner radius elsewhere (18px): only an angle counts as the sticker's tilt
+  const v = getComputedStyle(el).getPropertyValue('--r').trim(), r = /^-?[\d.]+(deg|turn|rad|grad)$/.test(v) ? v : '0deg';
   return el.animate([
     { transform: `translateY(-10px) scale(1.14) rotate(${r})` },
     { transform: `translateY(1px) scale(.985) rotate(${r})`, offset: .7 },

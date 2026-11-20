@@ -1,1 +1,106 @@
 /* UI polish pass 2026-11-20: more screens. Loaded last, so rules here override the older files. */
+/* Stickers (#/rewards), the streak and km sheets, Impact, About and Admin. */
+
+/* ---------- sheets: room between blocks, scroll stays inside, clear of the home bar ---------- */
+.fun-sheet { overscroll-behavior: contain; }
+.fun-sheet .sheet { overscroll-behavior: contain; padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px)); }
+.fun-sheet .sheet-body { display: grid; gap: 16px; min-width: 0; }
+.fun-sheet .sheet-body > * { margin: 0; }
+.fun-sheet .sh-big { align-items: baseline; }
+.fun-sheet .sh-big span { font-size: 1rem; }
+.fun-sheet .sh-say { font-size: 1rem; line-height: 1.5; }
+.fun-sheet .sh-say + .sh-say { margin-top: -8px; } /* two sentences of one thought read as one paragraph */
+.fun-sheet .sh-facts dd { font-variant-numeric: tabular-nums; }
+.fun-sheet .sh-next { line-height: 1.45; }
+.fun-sheet .sh-src { text-align: center; line-height: 1.6; }
+.fun-sheet .sh-src a { display: inline-block; padding: 4px 0; }
+.fun-sheet .b3-wide { width: 100%; }
+
+/* ---------- Stickers ---------- */
+/* phone: three stickers a row so a full book is a book, not a scroll */
+@media (max-width: 599px) {
+  .sb-row:not(.sb-trips) { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px 8px; }
+  .sb-row:not(.sb-trips) .sb-cell svg { width: 92px; }
+  .sb-row:not(.sb-trips) .sb-how { font-size: .75rem; }
+  .sb-trips { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px 12px; }
+}
+/* tickets in a row are all the same size, km on one line at the foot */
+.sb-trips .sb-cell { justify-items: stretch; }
+.sb-trips .tix { width: auto; min-height: 92px; grid-template-rows: 1fr auto; align-items: start; }
+.sb-trips .sb-how { justify-self: center; font-variant-numeric: tabular-nums; }
+.tix-km { white-space: nowrap; }
+.tix-route { overflow-wrap: anywhere; }
+/* Mac: the km card and Pip's card stack at the top of the right column, not spread down the book */
+@media (min-width: 1000px) {
+  .sb-grid { grid-template-rows: auto 1fr; }
+  .sb-pip { align-self: start; }
+}
+.sb-odo-n .odo { font-variant-numeric: tabular-nums; }
+.sb-items .si .b3-sm { min-height: 44px; min-width: 76px; }
+.si-art { min-width: 44px; min-height: 44px; }
+.si-art:active { transform: scale(.96); }
+.si-lock { font-variant-numeric: tabular-nums; }
+
+/* ---------- Impact ---------- */
+.ct3-n { font-size: clamp(1.625rem, 7.4vw, 2rem); }
+@media (min-width: 900px) { .ct3-n { font-size: 2rem; } }
+.ct3-goal { min-height: 2.4em; } /* goals line up across the strip even when one wraps */
+.i3-co2 { padding: 0 4px; line-height: 1.45; }
+.i3-co2 .ic { flex: none; }
+/* the trips key: name and origin left, km right in one tabular column */
+.imp-key { list-style: none; margin: 12px 0 0; padding: 0; display: grid; }
+.imp-key li { display: grid; grid-template-columns: 10px minmax(0, 1fr) auto; gap: 12px; align-items: center; min-height: 52px; padding: 8px 0; border-top: 1px solid var(--edge, #e7e1d2); }
+.imp-key li > i { width: 10px; height: 10px; border-radius: 50%; background: var(--pot, #c8673d); }
+.ik-n, .ik-v { display: grid; gap: 2px; min-width: 0; }
+.ik-n b { font: 700 .9375rem/1.25 var(--f-ui); color: var(--ink); }
+.ik-n small, .ik-v small { font: 600 .8125rem/1.3 var(--f-ui); color: var(--ink-2); }
+.ik-v { justify-items: end; text-align: right; font-variant-numeric: tabular-nums; }
+.ik-v b { font: 800 .9375rem/1.25 var(--f-ui); color: var(--ink); white-space: nowrap; }
+.ik-v small { white-space: nowrap; }
+.imp-key-more { margin-top: 0; }
+.imp-key-more summary { display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; border-top: 1px solid var(--edge, #e7e1d2); font: 700 .9375rem/1.2 var(--f-ui); color: var(--leaf-t, #1d6a41); cursor: pointer; list-style: none; }
+.imp-key-more summary::-webkit-details-marker { display: none; }
+.imp-key-more summary::after { content: ''; width: 7px; height: 7px; border: solid currentColor; border-width: 0 2px 2px 0; transform: translateY(-2px) rotate(45deg); transition: transform 150ms ease; }
+.imp-key-more[open] summary::after { transform: translateY(2px) rotate(-135deg); }
+.imp-key-more summary:active { background: var(--well, #efeadd); }
+.imp-key-more > .imp-key { margin-top: 0; }
+@media (min-width: 900px) {
+  .imp-key { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 32px; }
+}
+.imp-map .imp-map-box svg { display: block; width: 100%; height: auto; }
+/* photos a week sits above the plants, which get two columns on a Mac */
+@media (min-width: 900px) {
+  .i3-two { grid-template-columns: minmax(0, 1fr); }
+  .gm3 .pl3 { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 32px; }
+  .gm3 .pl3 li + li { border-top: 0; }
+  .gm3 .pl3 li { border-top: 1px solid var(--edge); }
+}
+.pl3 a:active { background: var(--well); }
+.i3-more { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+@media (min-width: 900px) { .i3-more { grid-template-columns: repeat(2, minmax(0, 220px)); } }
+.i3-more .b3 { width: 100%; justify-content: center; }
+
+/* ---------- About ---------- */
+/* numbers sit on one line across the strip, whatever their labels wrap to */
+.ab3-nums li { grid-template-rows: 1fr auto; align-content: end; }
+.ab3-nums span { align-self: start; }
+/* reminder row: one icon like every other row, a quiet button, the controls under the text on a phone */
+.s3 .rem3-set .rem3-t .li { display: none; }
+.s3 .rem3-set .rem3-row .obtn { min-height: 44px; padding: 0 16px; border-radius: var(--r-ctl); background: var(--card); color: var(--ink); border: 1px solid var(--ink); border-bottom-width: 2px; font: 700 1rem/1 var(--f-ui); box-shadow: none; }
+.s3 .rem3-set .rem3-row .obtn:active { background: var(--well); }
+@media (hover: hover) and (pointer: fine) { .s3 .rem3-set .rem3-row .obtn:hover { background: var(--well); } }
+.s3 .rem3-set .rem3.done [data-rem-go] { background: var(--leaf-s); border-color: var(--leaf); color: var(--leaf-t); }
+.s3 .rem3-set .rem3-t span { white-space: nowrap; }
+@media (max-width: 599px) {
+  .s3 .rem3-set .rem3-row { width: 100%; padding-left: 34px; }
+  .s3 .rem3-set .rem3-row .obtn { flex: 1; }
+}
+.s3 .rem3-set .rem3-sel select { font-size: 1rem; }
+
+/* ---------- Admin ---------- */
+.s3 .ad3-clear[hidden] { display: none; }
+.ad3 input, .ad3 select { font-size: 16px; } /* no zoom on focus in Safari */
+.ad3-days { display: flex; align-items: center; gap: 12px; }
+.ad3-days .rng3 { flex: 1; min-width: 0; min-height: 44px; }
+.ad3-unit { font-weight: 700; color: var(--ink-2); }
+.ad3 .ad-pick:active { background: var(--well); }

@@ -63,8 +63,15 @@ function cancelledMap(rows, city) {
   return `<section class="c3 imp-map" aria-labelledby="cm-t">${head}
     <div class="imp-map-odo">${odometer(km)}<span class="muted3">cancelled, ${done.reduce((s, x) => s + x.r.picks, 0)} trips</span></div>
     <div class="imp-map-box">${routesSvg(done.map((x) => x.r.p.id), { ...size, crop: 'auto' })}</div>
-    <ul class="imp-map-key">${done.map(({ r, j }) => `<li><i style="background:#c8673d"></i>${esc(r.p.name)} from ${esc(placeLabel(j))}, ${fmt(j.km)} km${r.picks > 1 ? ` × ${r.picks}` : ''}</li>`).join('')}</ul>
+    ${tripKey(done)}
   </section>`;
+}
+
+function tripKey(done) {
+  const all = [...done].sort((a, b) => b.j.km * b.r.picks - a.j.km * a.r.picks);
+  const li = ({ r, j }) => `<li><i aria-hidden="true"></i><span class="ik-n"><b>${esc(r.p.name)}</b><small>from ${esc(placeLabel(j))}</small></span><span class="ik-v"><b>${fmt(j.km * r.picks)} km</b>${r.picks > 1 ? `<small>${fmt(j.km)} km × ${r.picks}</small>` : ''}</span></li>`;
+  const SHOW = 6;
+  return `<ul class="imp-key">${all.slice(0, SHOW).map(li).join('')}</ul>${all.length > SHOW ? `<details class="imp-key-more"><summary>All ${all.length} trips</summary><ul class="imp-key">${all.slice(SHOW).map(li).join('')}</ul></details>` : ''}`;
 }
 
 export default async function impact(main) {
@@ -73,8 +80,8 @@ export default async function impact(main) {
     const p = plantById(e.id); if (!p) return null;
     const kg = (e.harvests || []).reduce((s, h) => s + h.g, 0) / 1000;
     const picks = (e.harvests || []).length;
-    const tr = trip(p, state.region);
-    return { p, kg, picks, miles: tr ? Math.round(tr.crowKm * picks) : 0, co2g: tr ? Math.round(tr.co2Transport * kg * 1000) : 0, tr };
+    const tr = trip(p, state.region); // km from the same journey the odometer uses
+    return { p, kg, picks, miles: journeyOf(p.id) ? journeyOf(p.id).km * picks : tr ? Math.round(tr.crowKm * picks) : 0, co2g: tr ? Math.round(tr.co2Transport * kg * 1000) : 0, tr };
   }).filter(Boolean);
   // totals are the sums of the rounded rows shown below
   const tot = rows.reduce((a, r) => ({ kg: a.kg + Math.round(r.kg * 100) / 100, miles: a.miles + r.miles, co2g: a.co2g + r.co2g, picks: a.picks + r.picks }), { kg: 0, miles: 0, co2g: 0, picks: 0 });
@@ -99,7 +106,7 @@ export default async function impact(main) {
     </header>
     <section class="c3 ct3-grid" aria-label="Your savings">
       ${counter({ value: tot.miles, unit: 'km', label: 'Km cancelled', goal: goalFor(tot.miles, [100, 1000, 5000, 10000, 25000]) })}
-      ${counter({ value: tot.co2g, unit: 'g CO2e', label: 'Travel CO2 skipped', goal: goalFor(tot.co2g, [100, 500, 1000, 5000]) })}
+      ${tot.co2g >= 1000 ? counter({ value: +(tot.co2g / 1000).toFixed(1), dec: tot.co2g < 10000 ? 1 : 0, unit: 'kg CO2e', label: 'Travel CO2 skipped', goal: goalFor(tot.co2g / 1000, [5, 10, 25, 50, 100]) }) : counter({ value: tot.co2g, unit: 'g CO2e', label: 'Travel CO2 skipped', goal: goalFor(tot.co2g, [100, 500, 1000]) })}
       ${counter({ value: +tot.kg.toFixed(2), dec: tot.kg < 10 ? 1 : 0, unit: 'kg', label: 'Food grown', goal: goalFor(tot.kg, [1, 5, 10, 25, 50]) })}
       ${counter({ value: trees.length, unit: trees.length === 1 ? 'tree' : 'trees', gunit: 'trees', label: 'Trees planted', goal: goalFor(trees.length, [1, 3, 5, 10, 25, 50]), help: helpBtn('trees', 'How the tree estimate works') })}
     </section>

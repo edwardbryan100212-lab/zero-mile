@@ -76,6 +76,7 @@ export default async function admin(main, arg) {
     urls.forEach(URL.revokeObjectURL); urls = [];
     const e = entry(), ul = $('#ad-list');
     const log = [...(e?.log || [])].sort((a, b) => (a.date < b.date ? 1 : -1));
+    $('#ad-clear').hidden = !log.length; // nothing to remove
     if (!log.length) { ul.innerHTML = '<li class="ad3-none">No photos of this plant yet.</li>'; return; }
     ul.innerHTML = log.map((l) => `<li data-date="${l.date}"><img alt="" width="88" height="88"><b>${esc(l.date)}<small>${esc(l.mood || '')}</small></b><button class="ad3-x" data-del="${l.date}" aria-label="Remove photo from ${l.date}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></li>`).join('');
     for (const li of $$('li[data-date]', ul)) {

@@ -10,6 +10,8 @@ import { sheet, pip, hatArt, stickOn, rollOdo, cancelRoute, reduced, play } from
 const fmtN = (n) => Number(n).toLocaleString('en-IE');
 const dt = (d) => new Date(d + 'T12:00');
 const dateShort = (d) => dt(d).toLocaleDateString('en-IE', { day: 'numeric', month: 'short' });
+// Brussels sprouts’ twin, Tomato’s twin
+const poss = (name) => `${name}${/s$/i.test(name) ? '’' : '’s'}`;
 const tilt = (key) => { let h = 0; for (const c of String(key)) h = (h * 31 + c.charCodeAt(0)) | 0; return ((Math.abs(h) % 9) - 4) * .75; };
 
 // ---------- the date stamps (Today hero, streak sheet) ----------
@@ -60,7 +62,7 @@ export function harvestScreen(out) {
     art: `<div class="cele-route" data-route="${esc(out.id)}">${J.routeSvg(out.id, { w: 320, h: 180, cancel: 0, crop: 'auto' })}</div>`,
     big: `<span class="cele-odo">${J.odometer(out.kmFrom)}</span>`,
     sub: `Your ${esc(j.name.toLowerCase())} didn’t travel ${fmtN(j.km)} km from ${esc(placeShort(j.from.place))}, ${esc(j.from.country)}.`,
-    extra: twin ? `<div class="cele-extra cele-stick">${twinSticker(out.id, 120)}<p>New sticker: ${esc(j.name)}’s shop twin, cancelled</p></div>` : '',
+    extra: twin ? `<div class="cele-extra cele-stick">${twinSticker(out.id, 120)}<p>New sticker: ${esc(poss(j.name))} shop twin, cancelled</p></div>` : '',
     onShow(el) {
       const box = $('.cele-route', el), odo = $('.cele-odo', el), st = $('.cele-stick .twin', el);
       if (st) st.style.visibility = 'hidden';
@@ -80,7 +82,7 @@ export function rewardScreens(out = {}, { trip = true } = {}) {
   }
   for (const k of (out.stickers || []).filter((x) => x.kind === 'twin' && !(trip && out.km > 0 && x.id === out.id))) {
     const p = plantById(k.id); if (!p) continue;
-    s.push({ tone: 'paper', sound: 'badge', title: 'New sticker', sticker: twinSticker(k.id, 150), big: `${esc(p.name)}’s twin`, sub: 'Its shop trip, cancelled.' });
+    s.push({ tone: 'paper', sound: 'badge', title: 'New sticker', sticker: twinSticker(k.id, 150), big: `${esc(poss(p.name))} twin`, sub: 'Its shop trip, cancelled.' });
   }
   for (const k of (out.stickers || []).filter((x) => x.kind === 'streak')) {
     s.push({ tone: 'paper', sound: 'streak', title: `${k.n}-day streak`, sticker: stampSvg(k.n, { size: 150 }), big: 'Stamped', sub: `${k.n} days of photos in a row.` });
@@ -125,7 +127,7 @@ export function kmSheet() {
     <p class="sh-say">Every time you pick your own, that trip doesn’t happen. We add up the km of the trips you cancelled.</p>
     ${next ? `<p class="sh-next">Next: <b>${esc(journeyLabel(next))}</b>, ${fmtN(next.km)} km</p>` : ''}
     <a class="b3 b3-wide b3-white" href="#/rewards">See your stickers</a>
-    <p class="sh-src">${src?.url ? `Source: <a href="${esc(src.url)}" target="_blank" rel="noopener">${esc(src.publisher || src.title)}</a> · ` : ''}<a href="#/sources">How we count km</a></p>` });
+    <p class="sh-src">${src?.url ? `Source: <a href="${esc(src.url)}" target="_blank" rel="noopener">${esc(src.publisher || src.title)}</a><br>` : ''}<a href="#/sources">How we count km</a></p>` });
 }
 // v2 names
 export const seedSheet = kmSheet;
@@ -140,7 +142,7 @@ export default async function stickersView(main) {
     const cell = (inner, how, cls = '', x = {}) => `<li class="sb-cell${cls}"${x.date === today() ? ' data-new' : ''}${x.date ? ` style="--r:${tilt(x.key)}deg"` : ''}>${inner}${how ? `<span class="sb-how">${esc(how)}</span>` : ''}</li>`;
     const plantsRow = B.plants.length ? B.plants.map((x) => {
       if (x.kind === 'home') return cell(x.date ? homeSticker(x.id, 96) : emptySticker(x.id, 96), x.date ? x.name : `Plant ${x.name.toLowerCase()}`, x.date ? '' : ' off', x);
-      return cell(x.date ? twinSticker(x.id, 96) : emptySticker(x.id, 96), x.date ? `${x.name}’s twin` : x.how, x.date ? '' : ' off', x);
+      return cell(x.date ? twinSticker(x.id, 96) : emptySticker(x.id, 96), x.date ? `${poss(x.name)} twin` : x.how, x.date ? '' : ' off', x);
     }).join('') : cell(emptySticker('tomato', 96), 'Plant something to get its sticker', ' off');
     const earned = Object.keys(rewards().stickers).length;
     main.innerHTML = `

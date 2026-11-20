@@ -634,12 +634,13 @@ function pipScreen(mood) {
   const layer = (pix, cls, hidden) => {
     let full = '', half = '';
     for (const [x, y, l] of pix) { const r = `M${(ox + x * c).toFixed(2)} ${(oy + y * c).toFixed(2)}h${px}v${px}h-${px}z`; if (l === 1) full += r; else half += r; }
-    return `<g class="${cls}"${hidden ? ' opacity="0"' : ''}><path d="${full}" fill="${LCD.on}"/>${half ? `<path d="${half}" fill="${LCD.on}" opacity=".4"/>` : ''}</g>`;
+    // stroke="none": the global svg stroke (app-ui.css) would outline each 1.5-unit pixel in ink and hide the face
+    return `<g class="${cls}" stroke="none"${hidden ? ' opacity="0"' : ''}><path d="${full}" fill="${LCD.on}"/>${half ? `<path d="${half}" fill="${LCD.on}" opacity=".4"/>` : ''}</g>`;
   };
   const A = facePixels(mood, 0, false, { frame: 0, blink: false });
   const B = facePixels(mood, 0, false, { frame: 1, blink: false });
   const Kp = facePixels(mood, 0, false, { frame: 0, blink: true });
-  return `<defs><pattern id="${gid}" x="${ox}" y="${oy}" width="${c}" height="${c}" patternUnits="userSpaceOnUse"><rect width="${px}" height="${px}" fill="${LCD.on}" opacity=".07"/></pattern></defs>` +
+  return `<defs><pattern id="${gid}" x="${ox}" y="${oy}" width="${c}" height="${c}" patternUnits="userSpaceOnUse"><rect width="${px}" height="${px}" fill="${LCD.on}" stroke="none" opacity=".07"/></pattern></defs>` +
     `<rect x="33" y="58.5" width="54" height="40" rx="11" fill="#1f2620"/>` +
     `<rect x="37" y="62" width="46" height="33" rx="7" fill="${LCD.screen}"/><rect x="37" y="62" width="46" height="33" rx="7" fill="url(#${gid})"/>` +
     layer(A, 'pip-fa') + layer(B, 'pip-fb', true) + layer(Kp, 'pip-fk', true);

@@ -491,12 +491,14 @@ export async function plantView(main, id) {
     const e = state.garden.find((x) => x.id === id);
     const day = e?.planted ? Math.max(0, dayDiff(e.planted, today())) : undefined;
     const mob = innerWidth < 600;
+    // the route draws itself in the first time it scrolls into view (not with reduce motion)
+    const drawIn = 'IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches;
     const big = mob ? { w: 360, h: 270 } : { w: 640, h: 400 };
     const stk = mob ? 132 : 150;
     const picks = (e?.harvests || []).length;
     box.innerHTML = `<section class="c3 twin3" aria-labelledby="tw-t">
       <div class="h3row"><h2 id="tw-t">Its shop twin</h2><span class="muted3">${fmt(j.km)} km</span></div>
-      <div class="twin-map" id="twin-map">${routeSvg(id, { ...big, crop: 'auto', region: reg })}</div>
+      <div class="twin-map" id="twin-map">${routeSvg(id, { ...big, crop: 'auto', region: reg, detail: true, progress: drawIn ? 0 : 1 })}</div>
       <p class="twin-say">${say}</p>
       <div class="twin-stk">
         <figure>${stickerSvg(id, { kind: 'shop', size: stk, tilt: true })}<figcaption>The shop one</figcaption></figure>
@@ -510,6 +512,16 @@ export async function plantView(main, id) {
         <div class="twin-odo">${odometer(kmCancelled())}<span class="twin-odo-l">cancelled so far</span></div>
       </div>` : ''}
     </section>`;
+    const msvg = $('#twin-map svg', box);
+    if (drawIn && msvg) {
+      msvg.classList.add('is-pending');
+      const io = new IntersectionObserver(async ([en]) => {
+        if (!en.isIntersecting) return; io.disconnect();
+        await routeAnimate(msvg, { progress: [0, 1], ms: 1300 });
+        msvg.classList.remove('is-pending');
+      }, { threshold: 0.5 });
+      io.observe(msvg);
+    }
     $$('[data-pick]', box).forEach((b) => b.addEventListener('click', async () => {
       const entry = state.garden.find((x) => x.id === id); if (!entry) return;
       const before = kmCancelled();

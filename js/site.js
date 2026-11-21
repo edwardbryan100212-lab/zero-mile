@@ -145,7 +145,7 @@ function renderTwin(animate = true) {
 
   const map = bind('twin-map'), mw = Math.max(320, Math.min(960, Math.round(map.clientWidth || 640)));
   map.innerHTML = j
-    ? J.routeSvg(S.plant, { w: mw, h: Math.round(mw * 9 / 16), region: S.region, progress: 1, crop: 'auto' })
+    ? J.routeSvg(S.plant, { w: mw, h: Math.round(mw * 9 / 16), region: S.region, progress: 1, crop: 'auto', detail: true })
     : `<div class="no-route">${produceIcon(S.plant, { size: 120, group: p.group })}</div><figcaption>${esc(p.name)}: no shop route</figcaption>`;
   map.classList.toggle('none', !j);
   bind('twin-line').textContent = j ? kmLine(j, S.region) : (p.group === 'tree' ? `No shop twin for the ${lc(p.name)}.` : `No route for the ${noun(p)} in ${NAME[S.region]}.`);

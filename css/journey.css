@@ -64,3 +64,15 @@ svg.stk-empty { color: var(--ink, #17221a); }
 .imp-map .imp-map-key { display: flex; flex-wrap: wrap; gap: 6px 16px; margin: 10px 0 0; padding: 0; list-style: none; font: 700 .8125rem/1.3 var(--f-ui, 'Nunito', sans-serif); color: var(--ink-2, #4d5a50); }
 .imp-map .imp-map-key i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: -1px; }
 .imp-map .imp-map-odo { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 1.6rem; margin-top: 10px; }
+
+/* the plant page's big twin map (routeSvg detail): lit land at each end, a distance chip, a ring for local trips */
+.route .rt-glow { fill: none; stroke-linecap: round; }
+.route .rt-glow-from { stroke: #c8673d; stroke-opacity: .62; }
+.route .rt-glow-home { stroke: #23774a; stroke-opacity: .55; }
+.route .rt-glow.far { stroke-opacity: .28; }
+.route .rt-ring { fill: #23774a; fill-opacity: .1; stroke: #23774a; stroke-width: 2; stroke-dasharray: 5 5; }
+.route .rt-chip rect { fill: #17221a; }
+.route .rt-chip text { font-family: 'Nunito', ui-rounded, system-ui, sans-serif; font-weight: 800; fill: #fffdf7; }
+.route .rt-chip { transition: opacity .4s cubic-bezier(.22,1,.36,1); }
+.route.is-pending .rt-chip, .route.is-cancelled .rt-chip { opacity: 0; }
+.route.is-local .rt-arc { opacity: 0; } /* inside the ring: the trip is too short to draw */

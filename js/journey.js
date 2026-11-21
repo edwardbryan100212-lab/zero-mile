@@ -55,6 +55,15 @@ export function placeLabel(j) {
   if (!first || first === j.from.country) return j.from.country || '';
   return `${first}, ${j.from.country}`;
 }
+// Map labels are shorter still: the first place before a "/" ("North Co. Dublin / Meath" -> "North Co. Dublin"),
+// and no country when the twin is grown in your own country
+export function mapPlace(j) {
+  if (!j) return '';
+  let first = String(j.from.place || '').replace(/\s*\([^)]*\)/g, '').split(/[,/]/)[0].trim();
+  first = first.charAt(0).toUpperCase() + first.slice(1);
+  if (!first || first === j.from.country) return j.from.country || '';
+  return j.home ? first : `${first}, ${j.from.country}`;
+}
 export const homeLabel = (j) => { const n = String(j?.to.name || ''); const m = n.match(/\(([^)]+)\)/); return (m ? m[1] : n).replace(/^the /i, ''); };
 
 // ---------- the land mask (data/land.json, made by tools/build-land.mjs) ----------
@@ -110,8 +119,8 @@ function makeView(paths, home, { w, h, crop, pad = 0 }) {
     k = Math.max(0.35, Math.cos(mid * rad));
     const xs = pts.map((p) => wrap(p.lon - lon0) * k), ys = pts.map((p) => -p.lat);
     let x0 = Math.min(...xs), x1 = Math.max(...xs), y0 = Math.min(...ys), y1 = Math.max(...ys);
-    const r = Math.max(x1 - x0, y1 - y0); const span = r < 3 ? Math.max(r, 7) : Math.max(r, 14, w / 40); // short home-country trips zoom in further
-    const m = span * 0.32 + pad;
+    const r = Math.max(x1 - x0, y1 - y0); const span = r < 3 ? Math.max(r, 9) :Math.max(r, 10, w / 48); // short home-country trips zoom in further
+    const m = span * 0.22 + pad;
     x0 -= m; x1 += m; y0 -= m * 1.15; y1 += m * 1.15;
     if (x1 - x0 > 300) { k = 1; box = { ...world }; } else box = { x0, x1, y0, y1 };
   } else box = { ...world };
@@ -125,20 +134,27 @@ function makeView(paths, home, { w, h, crop, pad = 0 }) {
 }
 
 // the dotted land: one path of zero-length round-capped segments, a regular grid on screen
-function dotsPath(view, w, h) {
+// glow: [{ x, y, r, cls }] tints the dots near a point (the origin warm, home green), in two bands
+function dotsPath(view, w, h, glow = []) {
   const { box, s, k, lon0 } = view;
   const across = Math.min(180, Math.max(40, w / 5.2));
   const step = Math.max(0.5, (box.x1 - box.x0) / across); // projected degrees between dots
   const sp = step * s; // px between dots
   let d = '';
+  const tint = glow.map(() => ['', '']);
   const ox = ((box.x0 % step) + step) % step, oy = ((box.y0 % step) + step) % step;
   for (let gy = box.y0 - oy + step / 2; gy < box.y1; gy += step) {
     const lat = -gy; if (lat < -58) continue; // leave Antarctica off: no shop food comes from there
     for (let gx = box.x0 - ox + step / 2; gx < box.x1; gx += step) {
-      if (isLand(lon0 + gx / k, lat)) d += `M${R2((gx - box.x0) * s)} ${R2((gy - box.y0) * s)}h0`;
+      if (!isLand(lon0 + gx / k, lat)) continue;
+      const px = (gx - box.x0) * s, py = (gy - box.y0) * s, m = `M${R2(px)} ${R2(py)}h0`;
+      const gi = glow.findIndex((g) => Math.hypot(px - g.x, py - g.y) < g.r);
+      if (gi < 0) d += m; else tint[gi][Math.hypot(px - glow[gi].x, py - glow[gi].y) < glow[gi].r * 0.55 ? 0 : 1] += m;
     }
   }
-  return { d, r: Math.max(0.6, sp * 0.28), sp };
+  const r = Math.max(0.6, sp * 0.28);
+  const tints = glow.map((g, i) => tint[i].map((td, b) => (td ? `<path class="rt-glow ${g.cls}${b ? ' far' : ''}" d="${td}" stroke-width="${R2(r * 2)}"/>` : '')).join('')).join('');
+  return { d, r, sp, tints };
 }
 
 // a route as projected points with a gentle lift so even a short straight trip reads as a journey arc
@@ -176,31 +192,53 @@ const MODE_WORD = { road: 'by lorry', 'road+ferry': 'by lorry and ferry', sea: '
 export const modeWord = (m) => MODE_WORD[m] || (m ? `by ${String(m).replace('+', ' and ')}` : '');
 
 // ---------- routeSvg: one twin route ----------
-export function routeSvg(id, { w = 320, h = 180, progress = 1, cancel = 0, region = state.region, crop = false } = {}) {
+let GID = 0;
+// detail: the big map on the plant page; the land near each end lights up in its colour, the line runs from
+// the origin's colour to home's, and a chip on the line gives the distance and how it travels.
+// A twin grown within a few km of home draws a ring round home instead of two dots on top of each other.
+export function routeSvg(id, { w = 320, h = 180, progress = 1, cancel = 0, region = state.region, crop = false, detail = false } = {}) {
   const j = journeyOf(id, region); if (!j) return '';
   const fs = Math.max(9, Math.min(15, w / 24));
   const from = { lon: j.from.lon, lat: j.from.lat }, to = { lon: j.to.lon, lat: j.to.lat };
   const view = makeView([greatCircle(from, to)], to, { w, h, crop, pad: crop === 'auto' ? 1.5 : 0 });
-  const dots = dotsPath(view, w, h);
   const P = arcPoints(view, from, to);
   const [ox, oy] = P[0], [hx, hy] = P.at(-1);
   const dd = dash(progress, cancel);
   const [sx, sy] = along(P, dd.a);
-  const sw = Math.max(1.6, w / 200);
+  const sw = detail ? Math.max(2.6, w / 140) : Math.max(1.6, w / 200);
   const homeR = Math.max(4, w / 90) * (1 + dd.a * 0.35);
+  const gap = Math.hypot(ox - hx, oy - hy), local = gap < homeR * 3.5;
+  const ringR = local ? Math.max(homeR * 3.2, w / 14) : 0;
+  const glowR = Math.max(26, w * 0.1);
+  const dots = dotsPath(view, w, h, detail ? (local ? [{ x: hx, y: hy, r: ringR * 1.9, cls: 'rt-glow-home' }] : [{ x: ox, y: oy, r: glowR, cls: 'rt-glow-from' }, { x: hx, y: hy, r: glowR, cls: 'rt-glow-home' }]) : []);
   const fromAbove = oy <= hy;
-  const place = placeLabel(j), home = homeLabel(j);
-  const aria = `${j.name}: the shop twin comes from ${place} to ${home}, ${fmt(j.km)} km ${modeWord(j.mode)}${dd.a >= 1 ? ', cancelled' : ''}.`;
-  return `<svg class="route${dd.a >= 1 ? ' is-cancelled' : ''}" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" role="img" aria-label="${esc(aria)}" data-id="${esc(id)}" preserveAspectRatio="xMidYMid meet">
-    <path class="rt-land" d="${dots.d}" stroke-width="${R2(dots.r * 2)}"/>
+  const place = mapPlace(j), home = homeLabel(j);
+  const aria = `${j.name}: the shop twin comes from ${placeLabel(j)} to ${home}, ${fmt(j.km)} km ${modeWord(j.mode)}${dd.a >= 1 ? ', cancelled' : ''}.`;
+  const gid = `rtg${++GID}`;
+  const stroke = detail && !local ? ` style="stroke:url(#${gid})"` : ''; // a style, so the stylesheet's ink stroke does not win
+  let chip = '';
+  if (detail && !local) {
+    const cf = Math.max(11, Math.min(14, w / 28)), text = `${fmt(j.km)} km`; // how it travels is in the sentence under the map
+    const cw = text.length * cf * 0.56 + cf * 1.6, ch = cf * 2;
+    const [mx, my] = along(P, 0.5);
+    const cx = Math.min(w - cw / 2 - 4, Math.max(cw / 2 + 4, mx)), cy = Math.min(h - ch / 2 - 4, Math.max(ch / 2 + 4, my));
+    chip = `<g class="rt-chip" aria-hidden="true"><rect x="${R2(cx - cw / 2)}" y="${R2(cy - ch / 2)}" width="${R2(cw)}" height="${R2(ch)}" rx="${R2(ch / 2)}"/><text x="${R2(cx)}" y="${R2(cy + cf * 0.36)}" text-anchor="middle" font-size="${R2(cf)}">${esc(text)}</text></g>`;
+  }
+  // labels sit clear of the ring on a local trip
+  const lab = (x, y, t, where, cls) => label(x, local ? y + (where === 'above' ? -ringR + fs * 0.3 : ringR - fs * 0.5) : y, t, fs, w, h, where, cls);
+  return `<svg class="route${detail ? ' route-detail' : ''}${local ? ' is-local' : ''}${dd.a >= 1 ? ' is-cancelled' : ''}" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" role="img" aria-label="${esc(aria)}" data-id="${esc(id)}" preserveAspectRatio="xMidYMid meet">
+    ${stroke ? `<defs><linearGradient id="${gid}" gradientUnits="userSpaceOnUse" x1="${R2(ox)}" y1="${R2(oy)}" x2="${R2(hx)}" y2="${R2(hy)}"><stop offset="0" stop-color="#c8673d"/><stop offset="1" stop-color="#23774a"/></linearGradient></defs>` : ''}
+    <path class="rt-land" d="${dots.d}" stroke-width="${R2(dots.r * 2)}"/>${dots.tints}
+    ${local ? `<circle class="rt-ring" cx="${R2(hx)}" cy="${R2(hy)}" r="${R2(ringR)}"/>` : ''}
     <g class="rt-arc" data-id="${esc(id)}">
-      <path class="rt-line" d="${pathD(P)}" pathLength="1000" stroke-width="${R2(sw)}" stroke-dasharray="${dd.arr}" stroke-dashoffset="${dd.off}"/>
+      <path class="rt-line" d="${pathD(P)}" pathLength="1000" stroke-width="${R2(sw)}" stroke-dasharray="${dd.arr}" stroke-dashoffset="${dd.off}"${stroke}/>
       <circle class="rt-from" cx="${R2(sx)}" cy="${R2(sy)}" r="${R2(homeR * 0.8)}" opacity="${dd.a >= 1 ? 0 : 1}"/>
     </g>
     <circle class="rt-home" cx="${R2(hx)}" cy="${R2(hy)}" r="${R2(homeR)}"/>
+    ${chip}
     <g class="rt-labels">
-      <g class="rt-lab-from" opacity="${R2(1 - dd.a * 0.55)}">${label(ox, oy, place, fs, w, h, fromAbove ? 'above' : 'below', 'rt-t rt-t-from')}</g>
-      ${label(hx, hy, home, fs, w, h, fromAbove ? 'below' : 'above', 'rt-t rt-t-home')}
+      <g class="rt-lab-from" opacity="${R2(1 - dd.a * 0.55)}">${lab(ox, oy, place, fromAbove ? 'above' : 'below', 'rt-t rt-t-from')}</g>
+      ${lab(hx, hy, home, fromAbove ? 'below' : 'above', 'rt-t rt-t-home')}
     </g>
   </svg>`;
 }

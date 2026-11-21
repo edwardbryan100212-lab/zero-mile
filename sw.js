@@ -1,8 +1,8 @@
 // Offline support for the ad site (/) and the app (/app/): files are cached on first visit so Zero Mile works without a connection.
-const V = 'zeromile-v16';
+const V = 'zeromile-v17';
 const SHELL = [
   // ad site
-  './', 'index.html', 'css/site.css?v=13', 'css/scene.css?v=11', 'js/site.js?v=12', 'js/scene.js?v=11', 'css/journey.css?v=2', 'js/journey.js?v=1', 'data/land.json?v=2',
+  './', 'index.html', 'css/site.css?v=13', 'css/scene.css?v=11', 'js/site.js?v=12', 'js/scene.js?v=11', 'css/journey.css?v=3', 'js/journey.js?v=1', 'data/land.json?v=2',
   // app shell and styles
   'app/', 'app/index.html', 'css/tokens.css?v=12', 'css/app-ui.css?v=12', 'css/screens.css?v=12', 'css/dash.css?v=12', 'css/features.css?v=12', 'css/onboard.css?v=12',
   'css/plantpics.css?v=12', 'css/polish-today.css?v=3', 'css/polish-plant.css?v=2', 'css/polish-more.css?v=2', 'css/polish-ui.css?v=1',

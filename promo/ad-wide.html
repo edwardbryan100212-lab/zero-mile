@@ -264,7 +264,8 @@ $('#l2-sun').innerHTML = pxIcon('sun'); $('#l2-num').innerHTML = pxNum(1);
 $('#l2-dots').innerHTML = Array.from({ length: 7 }, () => '<i></i>').join('');
 $('#l3-plant').innerHTML = pxIcon('g0');
 $('#l4-truck').innerHTML = pxIcon('truck'); $('#l4-num').innerHTML = pxNum(721);
-const lit = (id) => document.querySelectorAll('.lstep').forEach((s) => s.classList.toggle('lit', s.id === id));
+// the old step goes dark before the next lights, so two never flicker over each other
+const lit = async (id) => { const was = document.querySelector('.lstep.lit'); if (was) { was.classList.remove('lit'); await wait(480); } document.getElementById(id).classList.add('lit'); };
 
 // ---------- F. the app ----------
 const app = $('#app'), A = () => app.contentDocument, W = () => app.contentWindow;
@@ -292,63 +293,66 @@ window.ready = Promise.all([
 window.marks = {};
 const mark = (k) => { window.marks[k] = performance.now(); };
 
+// ?short gives the ~60 s cut for Reels/TikTok: one twin answer, no 721 vs 0 screen, quicker routes, tighter holds
+const SH = new URLSearchParams(location.search).has('short'), h = (full, short) => (SH ? short : full);
 window.play = async () => {
   const t0 = performance.now(); mark('start');
   // A. hero: the headline rises, the photo opens, the shop sticker slaps on, then flips to yours
-  show('s-hero'); await wait(1700);
-  $('#hero-stk').classList.add('slap'); await wait(1900);
-  $('#hero-stk').classList.add('flip'); await wait(2300);
+  show('s-hero'); await wait(h(1700, 1500));
+  $('#hero-stk').classList.add('slap'); await wait(h(1900, 1500));
+  $('#hero-stk').classList.add('flip'); await wait(h(2300, 1700));
   // B. shop twin: three answers, each with time to read
-  show('s-twin'); await wait(900); await twin(TWINS[0]); await wait(3000);
-  for (const id of TWINS.slice(1, 3)) { const b = $(`#chips [data-id="${id}"]`); dot(b, '#tap-page'); await wait(340); await twin(id); await wait(3000); }
+  show('s-twin'); await wait(900); await twin(TWINS[0]); await wait(h(3000, 2600));
+  for (const id of TWINS.slice(1, h(3, 2))) { const b = $(`#chips [data-id="${id}"]`); dot(b, '#tap-page'); await wait(340); await twin(id); await wait(h(3000, 2600)); }
   // C. 721 against 0
-  show('s-spec'); await wait(3800);
+  if (!SH) { show('s-spec'); await wait(3800); }
   // D. every trip flies into Dublin, then each is cancelled, longest first
-  mark('trips'); show('s-trips'); await wait(1200);
+  mark('trips'); show('s-trips'); await wait(h(1200, 900));
   const as = arcs();
-  as.forEach((g, i) => setTimeout(() => routeAnimate(g, { progress: [0, 1], ms: 1400 }), i * 55));
-  await wait(as.length * 55 + 1500);
-  say(`Grown at home, together they cancel ${fmt(TOTAL)} km.`); await wait(1400);
+  as.forEach((g, i) => setTimeout(() => routeAnimate(g, { progress: [0, 1], ms: 1400 }), i * h(55, 32)));
+  await wait(as.length * h(55, 32) + h(1500, 1200));
+  say(`Grown at home, together they cancel ${fmt(TOTAL)} km.`); await wait(h(1400, 900));
   odometerRoll($('#trips-odo'), 0, TOTAL);
-  as.forEach((g, i) => setTimeout(() => routeAnimate(g, { progress: 1, cancel: [0, 1], ms: 1300 }), i * 70));
-  await wait(as.length * 70 + 1500);
-  say(`All ${ALL.length} cancelled. One dot is left: home.`); await wait(2600);
+  as.forEach((g, i) => setTimeout(() => routeAnimate(g, { progress: 1, cancel: [0, 1], ms: 1300 }), i * h(70, 40)));
+  await wait(as.length * h(70, 40) + h(1500, 1200));
+  say(`All ${ALL.length} cancelled. One dot is left: home.`); await wait(h(2600, 2000));
   // E. how it works on Pip's LCD; everything moves in pixel steps (the music drops its drums here)
   mark('lcd'); show('s-lcd'); await wait(700);
-  lit('l0'); await wait(2200);
-  lit('l1'); await wait(2600);
-  lit('l2'); await wait(600);
+  await lit('l0'); await wait(h(2200, 1600));
+  await lit('l1'); await wait(h(2600, 2000));
+  await lit('l2'); await wait(600);
   const dts = document.querySelectorAll('#l2-dots i');
-  for (let d = 1; d <= 7; d++) { $('#l2-num').innerHTML = pxNum(d); dts.forEach((x, k) => x.classList.toggle('on', k < d)); await wait(260); }
-  await wait(1500);
-  lit('l3'); await wait(700);
-  for (const g of ['g1', 'g2', 'g3']) { $('#l3-plant').innerHTML = pxIcon(g); await wait(650); }
-  await wait(1300);
-  lit('l4'); await wait(1300);
+  for (let d = 1; d <= 7; d++) { $('#l2-num').innerHTML = pxNum(d); dts.forEach((x, k) => x.classList.toggle('on', k < d)); await wait(h(260, 200)); }
+  await wait(h(1500, 1100));
+  await lit('l3'); await wait(700);
+  for (const g of ['g1', 'g2', 'g3']) { $('#l3-plant').innerHTML = pxIcon(g); await wait(h(650, 500)); }
+  await wait(h(1300, 900));
+  await lit('l4'); await wait(h(1300, 1000));
   for (const v of [600, 480, 350, 220, 100, 0]) { $('#l4-num').innerHTML = pxNum(v); await wait(170); }
-  $('#l4-truck').innerHTML = pxIcon('truck', 240, 'dim'); await wait(2000);
-  lit('l5'); await wait(2200);
+  $('#l4-truck').innerHTML = pxIcon('truck', 240, 'dim'); await wait(h(2000, 1600));
+  if (!SH) { await lit('l5'); await wait(2200); }
   mark('lcdEnd');
   // F. the app
-  show('s-phone'); cap('c1'); prog(1); await wait(1800);
-  await smooth(W(), 260, 1100); await wait(500);
-  await tapApp('a[href="#/plant/tomato"]', { click: false }); await nav('#/plant/tomato', 900); await wait(3600);
-  cap('c2'); prog(2); await nav('#/'); await wait(2000);
+  show('s-phone'); cap('c1'); prog(1); await wait(h(1800, 1500));
+  if (!SH) { await smooth(W(), 260, 1100); await wait(500); }
+  await tapApp('a[href="#/plant/tomato"]', { click: false }); await nav('#/plant/tomato', 900); await wait(h(3600, 2800));
+  cap('c2'); prog(2); if (!SH) { await nav('#/'); await wait(2000); }
   await nav('#/snap'); await wait(900);
-  await tapApp('label[for="photo-lib"]', { click: false }); await photo(); await wait(3000);
+  await tapApp('label[for="photo-lib"]', { click: false }); await photo(); await wait(h(3000, 2600));
   const next = await until(() => A().querySelector('.cele button'));
-  if (next) { await tapApp('.cele button'); await wait(2800); }
-  for (let i = 0; i < 6; i++) { const b = [...A().querySelectorAll('.cele button')].pop(); if (!b) break; b.click(); await wait(400); }
-  cap('c3'); prog(3); await nav('#/plant/tomato', 900, '.twin3'); await wait(700);
+  if (next) { await tapApp('.cele button'); await wait(h(2800, 2300)); }
+  cap('c3'); prog(3); $('#veil').classList.add('on'); await wait(320); // the celebration closes behind the fade, the next caption already in
+  for (let i = 0; i < 6; i++) { const b = [...A().querySelectorAll('.cele button')].pop(); if (!b) break; b.click(); await wait(220); }
+  await nav('#/plant/tomato', 500, '.twin3'); await wait(500);
   const tw = await until(() => A().querySelector('.twin3'));
   const mapY = tw ? topOf('.twin3') - 70 : 0;
-  if (tw) await smooth(W(), mapY, 1800);
-  await wait(2400);
+  if (tw) await smooth(W(), mapY, h(1800, 1400));
+  await wait(h(2400, 1800));
   if (A().querySelector('[data-pick="250"]')) await smooth(W(), topOf('[data-pick="250"]') - 560, 1200);
   await wait(400); await tapApp('[data-pick="250"]');
-  await smooth(W(), mapY, 900); await wait(4300);
+  await smooth(W(), mapY, 900); await wait(h(4300, 3800));
   // G. the end card
-  show('s-end'); await wait(5200);
+  show('s-end'); await wait(h(5200, 4200));
   mark('end');
   return Object.fromEntries(Object.entries(window.marks).map(([k, v]) => [k, +((v - t0) / 1000).toFixed(2)]));
 };

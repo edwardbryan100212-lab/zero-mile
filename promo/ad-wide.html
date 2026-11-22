@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <title>Zero Mile advert, landscape</title>
 <meta name="viewport" content="width=1920">
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Nunito:wght@600;700;800&family=Pixelify+Sans:wght@500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../css/journey.css?v=3">
 <style>
 /* A 1920x1080 advert, played by script and recorded (~/.cache/ecoapp-tools/ad/record.mjs). The pieces of the ad site
@@ -76,21 +76,24 @@ html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; backgro
 .trips-odo { position: absolute; left: 140px; bottom: 120px; font-size: 150px; }
 .trips-odo small { display: block; font: 800 30px/1.2 var(--f-ui); color: var(--leaf-d); margin-top: 18px; }
 
-/* E. trees, kept honest: the green and black slideshow */
-#s-trees { background: var(--ink); color: #fffdf7; }
-#s-trees .txt { position: absolute; left: 140px; top: 140px; width: 700px; }
-#s-trees .txt p { font: 700 36px/1.35 var(--f-ui); color: #b9d8c3; margin: 30px 0 0; }
-.slides { position: absolute; right: 200px; top: 90px; width: 720px; height: 900px; }
-.slide { position: absolute; inset: 0; opacity: 0; transition: opacity .9s var(--e); }
-.slide.on { opacity: 1; }
-.slide .ph { position: absolute; inset: 0 0 150px; overflow: hidden; background: var(--leaf); }
-.slide .ph img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(1) contrast(1.2); mix-blend-mode: multiply; transform: scale(1.1); transition: transform 3.2s linear; }
-.slide.on .ph img { transform: scale(1); }
-.slide b { position: absolute; left: 0; bottom: 70px; font: 800 64px/1 var(--f-head); letter-spacing: -.02em; }
-.slide span { position: absolute; left: 0; bottom: 18px; font: 700 32px/1 var(--f-ui); color: #b9d8c3; }
-.dots { position: absolute; left: 140px; bottom: 120px; display: flex; gap: 12px; }
-.dots i { width: 48px; height: 8px; border-radius: 99px; background: rgba(255,253,247,.22); transition: background .4s; }
-.dots i.on { background: #7fd19f; }
+/* E. how it works on Pip's LCD (from the 18 Nov ad site): black screen, green pixels, steps that light up in pixel steps */
+#s-lcd { --lcd: #0c110d; --px: #62f27e; --pxdim: #1f5a2b; color: var(--px); font-family: 'Pixelify Sans', ui-monospace, monospace;
+  background: var(--lcd) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Crect width='8' height='8' fill='%23080b09'/%3E%3Crect width='7' height='7' fill='%230c110d'/%3E%3C/svg%3E"); }
+#s-lcd::after { content: ''; position: absolute; inset: 0; box-shadow: inset 0 0 220px rgba(98,242,126,.08); pointer-events: none; }
+.pxi .on, .pxn .on { fill: currentColor; } .pxi .off, .pxn .off { fill: var(--pxdim); opacity: .3; }
+.lstep { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; text-align: center; opacity: 0; transition: opacity .45s steps(4, end); }
+.lstep.lit { opacity: 1; }
+.lstep .row { display: flex; align-items: center; gap: 60px; height: 260px; }
+.lstep .row .pxi { width: 240px; height: 240px; }
+.lstep .row .pxn { height: 210px; width: auto; }
+.lstep h3 { font: 700 96px/1 'Pixelify Sans', monospace; margin: 56px 0 0; letter-spacing: .01em; }
+.lstep p { font: 500 40px/1.3 'Pixelify Sans', monospace; margin: 24px 0 0; opacity: .8; }
+.lstep.intro h3 { font-size: 132px; margin: 0; }
+.pxdots { display: flex; gap: 22px; margin-top: 44px; }
+.pxdots i { width: 34px; height: 34px; background: var(--pxdim); }
+.pxdots i.on { background: var(--px); }
+.pxbtn { margin-top: 60px; font: 700 48px/1 'Pixelify Sans', monospace; border: 6px solid var(--px); padding: 26px 44px; }
+.pxi.dim .on { fill: var(--pxdim); opacity: .6; }
 
 /* F. the app steps: caption left, phone right */
 .cap { position: absolute; left: 140px; width: 860px; top: 0; bottom: 0; }
@@ -156,10 +159,13 @@ html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; backgro
   <div class="trips-odo" id="trips-odo"></div>
 </section>
 
-<section class="scene" id="s-trees">
-  <div class="txt"><h2><span class="mask"><span>Trees, kept</span></span><span class="mask"><span>honest</span></span></h2><p class="fade">Woodland trees cancel no trip. Zero Mile counts them by the carbon a grown tree takes up instead.</p></div>
-  <div class="slides" id="slides"></div>
-  <div class="dots" id="dots"></div>
+<section class="scene" id="s-lcd">
+  <div class="lstep intro" id="l0"><h3>How it works</h3><p>Every day, on Pip’s screen.</p></div>
+  <div class="lstep" id="l1"><div class="row" id="l1-row"></div><h3>Snap your plant</h3><p>One photo a day. It never leaves your phone.</p></div>
+  <div class="lstep" id="l2"><div class="row"><span id="l2-sun"></span><span id="l2-num"></span></div><div class="pxdots" id="l2-dots"></div><h3>Keep your streak</h3><p>Snap every day and the sun stays up.</p></div>
+  <div class="lstep" id="l3"><div class="row" id="l3-plant"></div><h3>Watch it grow</h3><p>From a seed to something you can pick.</p></div>
+  <div class="lstep" id="l4"><div class="row"><span id="l4-truck"></span><span id="l4-num"></span></div><h3>Pick it. Cancel the trip.</h3><p>Every harvest is one shop journey that never happens.</p></div>
+  <div class="lstep" id="l5"><h3>Start your streak</h3><span class="pxbtn">Open Zero Mile</span></div>
 </section>
 
 <section class="scene" id="s-phone">
@@ -226,11 +232,39 @@ $('#trips-line').textContent = `${ALL.length} shop twins travel to Dublin.`;
 const arcs = () => [...document.querySelectorAll('#trips-map .rt-arc')].sort((a, b) => b.querySelector('.rt-line').getTotalLength() - a.querySelector('.rt-line').getTotalLength());
 const say = (txt) => { const l = $('#trips-line'); l.textContent = txt; l.classList.remove('swap'); void l.offsetWidth; l.classList.add('swap'); };
 
-// ---------- E. trees ----------
-const TREES = [['oak-1', 'English oak', '20 to 40 m'], ['birch-1', 'Silver birch', 'Up to 30 m'], ['scots-pine-1', 'Scots pine', 'Up to 35 m'], ['beech-1', 'Beech', 'Up to 40 m'], ['rowan-1', 'Rowan', 'Up to 15 m'], ['holly-1', 'Holly', '9 to 15 m']];
-$('#slides').innerHTML = TREES.map(([f, n, h]) => `<div class="slide"><div class="ph"><img src="../img/real/${f}.webp" alt=""></div><b>${n}</b><span>${h}, no shop twin</span></div>`).join('');
-$('#dots').innerHTML = TREES.map(() => '<i></i>').join('');
-const slide = (i) => { document.querySelectorAll('.slide').forEach((s, k) => s.classList.toggle('on', k === i)); document.querySelectorAll('#dots i').forEach((d, k) => d.classList.toggle('on', k === i)); };
+// ---------- E. Pip's LCD: pixel digits (5x7) and icons (12x12), lit pixels over dim ones (from the 18 Nov ad site) ----------
+const DIG = {
+  0: '01110100011001110101110011000101110', 1: '00100011000010000100001000010001110', 2: '01110100010000100010001000100011111',
+  3: '11110000010000101110000010000111110', 4: '00010001100101010010111110001000010', 5: '11111100001111000001000011000101110',
+  6: '00110010001000011110100011000101110', 7: '11111000010001000100010000100001000', 8: '01110100011000101110100011000101110',
+  9: '01110100011000101111000010001001100',
+};
+function pxNum(str, h = 200) {
+  str = String(str); const cols = str.length * 6 - 1, lit = [], off = [];
+  [...str].forEach((ch, i) => { const g = DIG[ch] || DIG[0]; for (let k = 0; k < 35; k++) (g[k] === '1' ? lit : off).push(`<rect x="${i * 6 + (k % 5)}" y="${Math.floor(k / 5)}" width=".86" height=".86"/>`); });
+  return `<svg class="pxn" width="${Math.round(h * cols / 7)}" height="${h}" viewBox="0 0 ${cols} 7"><g class="off">${off.join('')}</g><g class="on">${lit.join('')}</g></svg>`;
+}
+const POT = ['############', '.##########.', '..########..', '..########..', '...######...'];
+const ICONS = {
+  camera: ['............', '....####....', '############', '#....##....#', '#...####...#', '#..##..##..#', '#..##..##..#', '#...####...#', '#....##....#', '############', '............', '............'],
+  sun: ['.....##.....', '.#...##...#.', '..#......#..', '....####....', '...######...', '##.######.##', '##.######.##', '...######...', '....####....', '..#......#..', '.#...##...#.', '.....##.....'],
+  truck: ['............', '............', '#######.....', '#######.##..', '#######.###.', '#######.####', '############', '############', '############', '.##.....##..', '#..#...#..#.', '.##.....##..'],
+  g0: ['............', '............', '............', '............', '............', '............', '.....##.....', ...POT],
+  g1: ['............', '............', '............', '............', '............', '....#..#....', '.....##.....', ...POT],
+  g2: ['............', '............', '............', '..###..###..', '...##..##...', '.....##.....', '.....##.....', ...POT],
+  g3: ['.##......##.', '####....####', '#####..#####', '.####..####.', '...##..##...', '.....##.....', '.....##.....', ...POT],
+};
+function pxIcon(name, size = 240, cls = '') {
+  const on = [], off = [];
+  ICONS[name].forEach((row, y) => [...row].forEach((ch, x) => (ch === '#' ? on : off).push(`<rect x="${x}" y="${y}" width=".86" height=".86"/>`)));
+  return `<svg class="pxi ${cls}" width="${size}" height="${size}" viewBox="0 0 12 12"><g class="off">${off.join('')}</g><g class="on">${on.join('')}</g></svg>`;
+}
+$('#l1-row').innerHTML = pxIcon('camera');
+$('#l2-sun').innerHTML = pxIcon('sun'); $('#l2-num').innerHTML = pxNum(1);
+$('#l2-dots').innerHTML = Array.from({ length: 7 }, () => '<i></i>').join('');
+$('#l3-plant').innerHTML = pxIcon('g0');
+$('#l4-truck').innerHTML = pxIcon('truck'); $('#l4-num').innerHTML = pxNum(721);
+const lit = (id) => document.querySelectorAll('.lstep').forEach((s) => s.classList.toggle('lit', s.id === id));
 
 // ---------- F. the app ----------
 const app = $('#app'), A = () => app.contentDocument, W = () => app.contentWindow;
@@ -279,10 +313,22 @@ window.play = async () => {
   as.forEach((g, i) => setTimeout(() => routeAnimate(g, { progress: 1, cancel: [0, 1], ms: 1300 }), i * 70));
   await wait(as.length * 70 + 1500);
   say(`All ${ALL.length} cancelled. One dot is left: home.`); await wait(2600);
-  // E. trees: the green and black slideshow (the music drops its drums here)
-  mark('trees'); show('s-trees'); await wait(700);
-  for (let i = 0; i < TREES.length; i++) { slide(i); await wait(1500); }
-  await wait(500); mark('treesEnd');
+  // E. how it works on Pip's LCD; everything moves in pixel steps (the music drops its drums here)
+  mark('lcd'); show('s-lcd'); await wait(700);
+  lit('l0'); await wait(2200);
+  lit('l1'); await wait(2600);
+  lit('l2'); await wait(600);
+  const dts = document.querySelectorAll('#l2-dots i');
+  for (let d = 1; d <= 7; d++) { $('#l2-num').innerHTML = pxNum(d); dts.forEach((x, k) => x.classList.toggle('on', k < d)); await wait(260); }
+  await wait(1500);
+  lit('l3'); await wait(700);
+  for (const g of ['g1', 'g2', 'g3']) { $('#l3-plant').innerHTML = pxIcon(g); await wait(650); }
+  await wait(1300);
+  lit('l4'); await wait(1300);
+  for (const v of [600, 480, 350, 220, 100, 0]) { $('#l4-num').innerHTML = pxNum(v); await wait(170); }
+  $('#l4-truck').innerHTML = pxIcon('truck', 240, 'dim'); await wait(2000);
+  lit('l5'); await wait(2200);
+  mark('lcdEnd');
   // F. the app
   show('s-phone'); cap('c1'); prog(1); await wait(1800);
   await smooth(W(), 260, 1100); await wait(500);

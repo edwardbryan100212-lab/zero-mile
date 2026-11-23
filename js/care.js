@@ -221,6 +221,14 @@ const getWx = (force) => {
   }
   return wxPromise;
 };
+// today's due jobs and weather lines, for Today's "Up next" (js/upnext.js); same rules as Care today
+export async function todayJobs() {
+  await data();
+  const garden = state.garden.map((e) => ({ e, p: plantById(e.id) })).filter((x) => x.p);
+  let fc = null; try { fc = await getWx(); } catch { fc = null; }
+  const wx = conditions(fc);
+  return { jobs: garden.flatMap(({ e, p }) => jobsFor(e, p, wx)).filter((j) => j.due), lines: wxLines(wx, garden) };
+}
 export async function mountCare(el) {
   if (!el) return;
   try {

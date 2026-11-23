@@ -1,5 +1,5 @@
 // Offline support for the ad site (/) and the app (/app/): files are cached on first visit so Zero Mile works without a connection.
-const V = 'zeromile-v18';
+const V = 'zeromile-v19';
 const SHELL = [
   // ad site
   './', 'index.html', 'css/site.css?v=13', 'css/scene.css?v=11', 'js/site.js?v=12', 'js/scene.js?v=11', 'css/journey.css?v=3', 'js/journey.js?v=1', 'data/land.json?v=2',
@@ -15,7 +15,7 @@ const SHELL = [
   'bg/fluted.html', 'bg/base.png', 'models/manifest.json?v=6', 'models/tomato-harvest.glb', 'img/real/credits.json',
   'vendor/three/three.module.min.js', 'vendor/three/addons/controls/OrbitControls.js', 'vendor/three/addons/environments/RoomEnvironment.js',
   'vendor/three/addons/loaders/GLTFLoader.js', 'vendor/three/addons/utils/BufferGeometryUtils.js',
-  'data/data.json?v=9', 'manifest.webmanifest', 'icons/icon.svg', 'icons/icon-192.png', 'icons/icon-512.png',
+  'data/data.json?v=9', 'manifest.webmanifest', 'icons/favicon-48.png', 'icons/icon-180.png', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/icon-maskable-512.png',
   'img/plants/tomato.webp', 'img/plants/basil.webp', 'img/plants/lettuce.webp', 'img/plants/strawberry.webp',
 ];
 self.addEventListener('install', (e) => e.waitUntil(caches.open(V).then((c) => Promise.all(SHELL.map((u) => c.add(u).catch(() => {})))).then(() => self.skipWaiting())));

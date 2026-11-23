@@ -6,8 +6,9 @@
 // - Streak at risk: after 6pm, with a streak and no photo yet today, Today's hero turns into an evening sky.
 // - Welcome back: after 2 or more days away, Pip says hello once.
 import { $, $$, esc, data, state, save, today, dayDiff, addToGarden, plantById, overallStreak, photoDays, bestTrees, toast } from './core.js?v=9';
-import { EASE, reduced, pip, haptic, stickOn } from './fun.js?v=10';
-import { stickerSvg } from './journey.js?v=1';
+import { EASE, reduced, pip, haptic, stickOn, sheet } from './fun.js?v=10';
+import { stickerSvg, journeyOf, routeSvg, routeAnimate, odometer, odometerRoll, modeWord } from './journey.js?v=1';
+import { placeShort } from './rewards.js?v=9';
 import { produceIcon } from './produce.js?v=9';
 
 // ---------- streak at risk (used by the Today hero in js/garden.js) ----------
@@ -26,6 +27,8 @@ const LINE = {
   x: '<svg class="li" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>',
 };
 
+const fmtN = (n) => Number(n).toLocaleString('en-IE');
+
 // ---------- goals ----------
 export const GOALS = [
   { id: 'casual', label: 'Casual', sub: 'Photo most days', lcd: '5 PHOTOS/WK' },
@@ -35,6 +38,7 @@ export const GOALS = [
 
 // ---------- the reminder: a daily calendar event ----------
 const pad = (n) => String(n).padStart(2, '0');
+const showTime = (t) => String(t).replace(/^0(?=\d)/, ''); // 8:00, not 08:00
 const stamp = (d) => `${d.getUTCFullYear()}${pad(d.getUTCMonth() + 1)}${pad(d.getUTCDate())}T${pad(d.getUTCHours())}${pad(d.getUTCMinutes())}${pad(d.getUTCSeconds())}Z`;
 const local = (d) => `${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}T${pad(d.getHours())}${pad(d.getMinutes())}00`;
 export const photoURL = () => location.href.split('#')[0] + '#/snap';
@@ -70,7 +74,7 @@ export function downloadReminder(time) {
   toast('Open the file to add it to your calendar');
 }
 const timeOpts = (sel) => Array.from({ length: 15 }, (_, i) => `${pad(i + 7)}:00`)
-  .map((t) => `<option value="${t}"${t === sel ? ' selected' : ''}>${t}</option>`).join('');
+  .map((t) => `<option value="${t}"${t === sel ? ' selected' : ''}>${showTime(t)}</option>`).join(''); // 8:00, not 08:00
 export function reminderBlock(id = 'rem') {
   const t = state.reminder || '18:00';
   return `<div class="rem3" data-rem>
@@ -112,7 +116,7 @@ export async function onboard() {
     pics[c.key] = ph?.src || '';
   }));
   const pick = { grow: null, goal: state.goal || 'regular', region: state.region }; // a sensible goal is ready, so Next is live
-  const STEPS = ['hi', 'grow', 'goal', 'where', 'done'];
+  const STEPS = ['hi', 'grow', 'goal', 'where', 'twin', 'done']; // twin is skipped for plants with no shop route (woodland trees)
   let i = 0;
 
   const ob = document.createElement('div');
@@ -156,7 +160,26 @@ export async function onboard() {
       <div class="ob-foot"><button class="obtn obtn-xl" type="button" data-next${pick.goal ? '' : ' aria-disabled="true"'}>Next</button></div>`,
     where: () => `<div class="ob-head"><h1 id="ob-t" tabindex="-1">Where do you live?</h1></div>
       <div class="ob-regs">${Object.entries(D.regions).map(regionBtn).join('')}</div>
-      <div class="ob-foot"><button class="obtn obtn-xl" type="button" data-plant>Plant it</button></div>`,
+      <div class="ob-foot"><button class="obtn obtn-xl" type="button" data-next>Next</button></div>`,
+    // the shop twin: where the shop version of this plant really comes from, for the country you picked
+    twin: () => {
+      const id = plantId(), p = plantById(id), j = journeyOf(id, pick.region);
+      state.region = pick.region; // the shop sticker reads the region
+      const name = (p?.name || 'plant').toLowerCase();
+      return `<div class="ob-head"><h1 id="ob-t" tabindex="-1">Meet its shop twin</h1>
+        <p class="ob-lead">In ${esc(D.regions[pick.region]?.name || 'your country')}, a shop ${esc(name)} comes from <b>${esc(placeShort(j.from.place))}, ${esc(j.from.country)}</b>, ${esc(modeWord(j.mode))}.</p></div>
+      <div class="ob-twin">
+        <div class="ob-tw-map" aria-hidden="true">${routeSvg(id, { w: 320, h: 168, region: pick.region, crop: 'auto', progress: 0 })}</div>
+        <p class="ob-tw-km" role="img" aria-label="${fmtN(j.km)} km">${odometer(0, { digits: Math.max(3, String(j.km).length) })}</p>
+        <div class="ob-tw-pair">
+          <figure>${stickerSvg(id, { kind: 'shop', size: 108, tilt: true })}<figcaption>The shop one</figcaption></figure>
+          <span class="ob-vs" aria-hidden="true">vs</span>
+          <figure>${stickerSvg(id, { kind: 'home', size: 108, day: 1, tilt: true })}<figcaption>Yours, 0 km</figcaption></figure>
+        </div>
+        <p class="ob-tw-note">Every harvest you log cancels one of those trips.</p>
+      </div>
+      <div class="ob-foot"><button class="obtn obtn-xl" type="button" data-plant>Plant it</button></div>`;
+    },
     done: () => {
       const p = plantById(plantId());
       return `<div class="ob-done">
@@ -187,9 +210,21 @@ export async function onboard() {
     } else old?.remove();
     bind(el);
     const stk = $('.ob-stk', el); if (stk) stickOn(stk, { delay: 380 }); // the first sticker is pressed on
+    if (name === 'twin') { // the route draws in from the origin while the km roll up to the real distance
+      const j = journeyOf(plantId(), pick.region);
+      setTimeout(() => { routeAnimate($('.ob-tw-map svg', el), { progress: [0, 1], ms: 1400 }); odometerRoll($('.ob-tw-km .odo', el), 0, j.km); }, reduced() ? 0 : 300);
+      $('.ob-tw-km .odo', el)?.removeAttribute('role'); $('.ob-tw-km .odo', el)?.setAttribute('aria-hidden', 'true');
+    }
     $('#ob-t', el)?.focus({ preventScroll: true });
   }
-  const go = (d) => { i = Math.max(0, Math.min(STEPS.length - 1, i + d)); show(d); };
+  const go = (d) => {
+    let k = Math.max(0, Math.min(STEPS.length - 1, i + d));
+    if (STEPS[k] === 'twin' && !journeyOf(plantId(), pick.region)) { // no shop route: plant straight from "where"
+      if (d > 0) { i = k; plant(); return; }
+      k = Math.max(0, k - 1);
+    }
+    i = k; show(d);
+  };
 
   function bind(el) {
     $('[data-next]', el)?.addEventListener('click', (e) => {
@@ -287,6 +322,22 @@ export function todayNudge(main) {
   $('[data-rem-go]', box).addEventListener('click', () => setTimeout(() => box.remove(), 1400));
   $('.nudge3-x', box).addEventListener('click', () => {
     state.remNudgeOff = state.remNudgeSeen ? 'never' : today(); state.remNudgeSeen = true; save(); box.remove();
+  });
+}
+
+// ---------- Today: one line in the hero with your photo time (8:00, not 08:00) and a way to change it ----------
+// Hidden while the nudge card above is still asking; after that it says "No photo time yet · Set one".
+export function reminderLine(el) {
+  if (!el || !state.garden.length) return;
+  const nudging = !state.reminder && state.remNudgeOff !== today() && state.remNudgeOff !== 'never';
+  if (nudging) { el.hidden = true; return; }
+  const t = state.reminder;
+  el.innerHTML = `${LINE.cal}<span>${t ? `Photo time <b>${esc(showTime(t))}</b>` : 'No photo time yet'}</span><button class="th-rem-b" type="button">${t ? 'Change' : 'Set one'}<span class="vh"> the daily photo time</span></button>`;
+  el.hidden = false;
+  $('button', el).addEventListener('click', () => {
+    const s = sheet({ title: 'Photo time', body: `<p class="rem-lead">Pick a time. Zero Mile makes a daily calendar event that opens the photo screen.</p>${reminderBlock('rl')}` });
+    $('[data-rem-go]', s.el)?.addEventListener('click', () => setTimeout(() => { reminderLine(el); s.close(); }, 900));
+    bindReminder(s.el);
   });
 }
 

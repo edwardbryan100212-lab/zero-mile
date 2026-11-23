@@ -47,3 +47,50 @@
 @media (min-width: 1000px) {
   .pp3 .pp-left .stage-card { height: min(calc(100dvh - 56px), 720px); }
 }
+
+/* ---------- 2026-11-23: Up next, photo time line, shop-twin onboarding step ---------- */
+
+/* Today hero: "Up next" strip (js/upnext.js), once today's photo is in */
+.th-up { grid-column: 1 / -1; display: grid; gap: 8px; margin-top: 8px; padding-top: 14px; border-top: 1px dashed var(--line-d); }
+.th-up[hidden] { display: none; }
+.un-k { margin: 0; font: 800 .75rem/1.2 var(--f-ui); letter-spacing: .12em; text-transform: uppercase; color: var(--ink-2); }
+.un-row { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 12px; }
+.un-row > svg, .un-gl { width: 36px; height: 36px; flex: none; }
+.un-gl { display: grid; place-items: center; border-radius: 50%; background: var(--paper-2); color: var(--ink-2); }
+.un-gl.un-ok { background: var(--leaf-t); color: var(--leaf-d); }
+.un-t { margin: 0; display: grid; gap: 2px; min-width: 0; }
+.un-t b { font-weight: 800; line-height: 1.25; }
+.un-t span { font-size: .875rem; font-weight: 600; color: var(--ink-2); line-height: 1.35; }
+.un-row .b3 { min-height: 44px; white-space: nowrap; }
+@media (max-width: 380px) { .un-row { grid-template-columns: auto minmax(0, 1fr); } .un-row .b3 { grid-column: 1 / -1; } }
+
+/* Today hero: photo time line (js/onboard.js reminderLine) */
+.th-rem { grid-column: 1 / -1; display: flex; align-items: center; gap: 8px; margin: 2px 0 0; font-size: .9375rem; font-weight: 600; color: var(--ink-2); }
+.th-rem[hidden] { display: none; }
+.th-rem .li { width: 18px; height: 18px; flex: none; }
+.th-rem b { color: var(--ink); font-weight: 800; }
+.th-rem-b { margin-left: auto; min-height: 44px; padding: 0 4px; border: 0; background: none; font: 800 .9375rem/1 var(--f-ui); color: var(--leaf-d); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+.rem-lead { margin: 0 0 16px; color: var(--ink-2); font-weight: 600; }
+@media (min-width: 1000px) { .t-hero .th-rem, .t-hero .th-up { grid-column: 2 / -1; } }
+
+/* Onboarding: Meet its shop twin */
+.ob-twin { display: grid; gap: 14px; justify-items: center; }
+.ob-tw-map { width: 100%; border-radius: 16px; overflow: hidden; background: var(--card); border: 1px solid var(--line); }
+.ob-tw-map svg { display: block; width: 100%; height: auto; }
+.ob-tw-km { display: flex; align-items: baseline; gap: 8px; margin: 0; font: 800 1rem/1 var(--f-ui); color: var(--ink-2); }
+.ob-tw-km .odo { font-size: 2rem; color: var(--ink); }
+.ob-tw-pair { display: flex; align-items: center; justify-content: center; gap: 12px; }
+.ob-tw-pair figure { margin: 0; display: grid; justify-items: center; gap: 4px; }
+.ob-tw-pair figcaption { font-size: .875rem; font-weight: 700; color: var(--ink-2); }
+.ob-vs { font: 800 .875rem/1 var(--f-ui); color: var(--ink-2); }
+.ob-tw-note { margin: 0; text-align: center; font-weight: 700; color: var(--leaf-d); }
+@media (max-height: 700px) { .ob-tw-map svg { max-height: 130px; } .ob-tw-pair svg { width: 88px; height: auto; } }
+
+/* the reminder block inside a sheet (Today's photo time line): it needs the onboarding colours that
+   onboard.css only declares on .ob, .nudge3, .rem3-set and .wb */
+.sheet .rem3 {
+  --o-paper: var(--paper); --o-card: var(--card); --o-line: var(--line);
+  --o-ink: var(--ink); --o-ink2: var(--ink-2); --o-leaf: var(--leaf); --o-leaf-d: var(--leaf-d); --o-tint: var(--leaf-t);
+  --o-head: var(--f-head); }
+.sheet .rem3-row { display: flex; gap: 12px; flex-wrap: wrap; }
+.sheet .rem3-row .obtn { flex: 1; }

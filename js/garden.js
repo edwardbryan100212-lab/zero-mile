@@ -11,7 +11,7 @@ import { kmCancelled, nextJourney, journeyOf, odometer, routeSvg, stickerSvg } f
 import { stampDay } from './rewards-view.js?v=9';
 import * as Face from './face.js?v=9';
 import { produceIcon } from './produce.js?v=9';
-import { streakRisk, riskLine } from './onboard.js?v=9';
+import { streakRisk, riskLine, reminderLine } from './onboard.js?v=9';
 const WORDS = { thriving: 'Thriving', happy: 'Happy', okay: 'Doing okay', thirsty: 'A bit droopy', poorly: 'Needs help', sleepy: 'Waiting for a photo', new: 'Just planted' };
 const moodWord = (m) => Face.moodWord?.(m) || WORDS[m] || WORDS.okay;
 const RV = () => import('./rewards-view.js?v=9');
@@ -173,6 +173,8 @@ export default async function garden(main) {
 
   // the one score: km of shop trips cancelled by your harvests, and the next real journey to cancel
   const km = kmCancelled(), nx = nextJourney(km);
+  // once today's photo is in (or only trees grow here), the hero also names the one next thing to do (js/upnext.js)
+  const showUp = !fresh && (allDone || !daily.length);
   const hero = `
     <section class="t-hero c3${risk ? ' at-risk' : ''}" id="hero" aria-labelledby="odo-t">
       <div class="th-pip">${pipPot(mood, 'th-pot')}<p class="th-say">${esc(say)}</p></div>
@@ -183,7 +185,9 @@ export default async function garden(main) {
         ${fresh ? '<p class="th-lead">Every harvest cancels a real shop trip.</p>' : `
         <div class="th-streak"><button class="th-k th-sk" type="button" data-sheet="streak" aria-label="${n} day streak. What is this?">${n ? `${n}-day streak` : "Start your streak"}</button><div class="ds-row" role="group" aria-label="This week" id="dots"></div></div>`}
         <div class="th-row">${cta}</div>
+        ${fresh ? '' : '<p class="th-rem" id="th-rem" hidden></p>'}
       </div>
+      ${showUp ? '<div class="th-up" id="up-next" hidden aria-live="polite"></div>' : ''}
     </section>`;
 
   // the next trip to cancel: the growing plant closest to its first harvest
@@ -236,6 +240,8 @@ export default async function garden(main) {
     </div>
   </div>`;
   const stopHero = runFaces($('#hero', main));
+  reminderLine($('#th-rem', main));
+  if (showUp) import('./upnext.js?v=1').then((m) => m.mountUpNext($('#up-next', main))).catch(() => {});
   // a slot under the hero for other features (care help, weather): they listen for zm:today
   dispatchEvent(new CustomEvent('zm:today', { detail: { slot: $("#care-slot", main), main } }));
 

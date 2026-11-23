@@ -1,15 +1,15 @@
 // Offline support for the ad site (/) and the app (/app/): files are cached on first visit so Zero Mile works without a connection.
-const V = 'zeromile-v17';
+const V = 'zeromile-v18';
 const SHELL = [
   // ad site
   './', 'index.html', 'css/site.css?v=13', 'css/scene.css?v=11', 'js/site.js?v=12', 'js/scene.js?v=11', 'css/journey.css?v=3', 'js/journey.js?v=1', 'data/land.json?v=2',
   // app shell and styles
   'app/', 'app/index.html', 'css/tokens.css?v=12', 'css/app-ui.css?v=12', 'css/screens.css?v=12', 'css/dash.css?v=12', 'css/features.css?v=12', 'css/onboard.css?v=12',
-  'css/plantpics.css?v=12', 'css/polish-today.css?v=3', 'css/polish-plant.css?v=2', 'css/polish-more.css?v=2', 'css/polish-ui.css?v=1',
+  'css/plantpics.css?v=12', 'css/polish-today.css?v=3', 'css/polish-plant.css?v=2', 'css/polish-more.css?v=2', 'css/polish-ui.css?v=2',
   // every screen's code (the router imports these on demand, so offline they must already be here)
   'js/app.js?v=12', 'js/core.js?v=9', 'js/core.js?v=5', 'js/fun.js?v=10', 'js/sound.js?v=10', 'js/art.js?v=9', 'js/face.js', 'js/face.js?v=9', 'js/produce.js?v=9',
   'js/rewards.js?v=9', 'js/rewards-view.js?v=9', 'js/onboard.js?v=9', 'js/garden.js?v=10', 'js/find.js?v=10', 'js/impact.js?v=10', 'js/sources.js?v=9',
-  'js/admin.js?v=9', 'js/sow.js?v=9', 'js/timelapse.js?v=9', 'js/care.js?v=10', 'js/weather.js?v=10', 'js/photos.js?v=9', 'js/analyze.js?v=2',
+  'js/admin.js?v=9', 'js/sow.js?v=9', 'js/timelapse.js?v=9', 'js/care.js?v=10', 'js/upnext.js?v=1', 'js/weather.js?v=10', 'js/photos.js?v=9', 'js/analyze.js?v=2',
   'js/viewer.js?v=9', 'js/models.js?v=9', 'js/trees3d.js?v=9', 'js/fluted.js?v=9', 'js/herbs3d.js?v=6', 'js/pot3d.js?v=2', 'js/ascii.js?v=2',
   'js/plants3d.js', 'js/plants3d-rng.js', 'js/textures.js', 'js/fruit3d.js',
   'bg/fluted.html', 'bg/base.png', 'models/manifest.json?v=6', 'models/tomato-harvest.glb', 'img/real/credits.json',

@@ -42,12 +42,26 @@ function photoChart() {
 }
 
 // your plants as a list with their photos and what each has saved
+// CO2 a tree has taken up since it was planted: a rough model, not a measurement. A young tree starts near zero
+// and is assumed to reach its grown-tree rate (the middle of its cited range) over its first RAMP years.
+const RAMP = 10;
+function treeSoFar(e, p) {
+  const c = treeCO2(p); if (!c) return 0;
+  const r = (c[0] + c[1]) / 2, t = Math.max(0, dayDiff(e.planted, today())) / 365;
+  return t <= RAMP ? (r * t * t) / (2 * RAMP) : r * (t - RAMP / 2);
+}
+function co2Words(kg) {
+  if (kg >= 10) return `${fmt(kg)} kg`;
+  if (kg >= 1) return `${fmt(kg, 1)} kg`;
+  const g = kg * 1000;
+  return g >= 10 ? `${fmt(g)} g` : g >= 0.1 ? `${fmt(g, 1)} g` : 'under 0.1 g';
+}
 function plantList(rows, real) {
   const mine = state.garden.map((e) => ({ e, p: plantById(e.id), r: rows.find((x) => x.p.id === e.id) })).filter((x) => x.p);
   const head = `<div class="h3row"><h2 id="gm-t">Your plants</h2><span class="muted3">${mine.length}</span></div>`;
   if (!mine.length) return `<section class="c3 gm3" aria-labelledby="gm-t">${head}<p class="gm3-none">Nothing growing yet.</p><a class="b3 b3-white" href="#/find">Find a plant</a></section>`;
   return `<section class="c3 gm3" aria-labelledby="gm-t">${head}
-    <ul class="pl3">${mine.map(({ e, p, r }) => { const h = isTree(p) ? lastHeight(e) : null; const sub = isTree(p) ? esc(treeAge(e)) + (h ? `, ${fmt(h.cm)} cm` : '') : `Day ${Math.max(0, dayDiff(e.planted, today()))}`; return `<li><a href="#/plant/${p.id}">${produceIcon(p.id, { size: 48, cls: 'pl3-sym', group: p.group })}<span class="pl3-n"><b>${esc(p.name)}</b><small>${sub}</small></span><span class="pl3-v">${r?.picks ? `<b>${fmt(r.kg, 2)} kg</b><small>${fmt(r.miles)} km cancelled</small>` : '<small>No pick yet</small>'}</span></a></li>`; }).join('')}</ul>
+    <ul class="pl3">${mine.map(({ e, p, r }) => { const h = isTree(p) ? lastHeight(e) : null; const sub = isTree(p) ? esc(treeAge(e)) + (h ? `, ${fmt(h.cm)} cm` : '') + (treeSoFar(e, p) > 0 ? `, ${co2Words(treeSoFar(e, p))} CO2 so far` : '') : `Day ${Math.max(0, dayDiff(e.planted, today()))}`; return `<li><a href="#/plant/${p.id}">${produceIcon(p.id, { size: 48, cls: 'pl3-sym', group: p.group })}<span class="pl3-n"><b>${esc(p.name)}</b><small>${sub}</small></span><span class="pl3-v">${r?.picks ? `<b>${fmt(r.kg, 2)} kg</b><small>${fmt(r.miles)} km cancelled</small>` : '<small>No pick yet</small>'}</span></a></li>`; }).join('')}</ul>
   </section>`;
 }
 
@@ -95,6 +109,7 @@ export default async function impact(main) {
   const trees = state.garden.map((e) => ({ e, p: plantById(e.id) })).filter((x) => x.p && isTree(x.p));
   const tLo = trees.reduce((s, x) => s + (treeCO2(x.p)?.[0] || 0), 0), tHi = trees.reduce((s, x) => s + (treeCO2(x.p)?.[1] || 0), 0);
   const tKg = tLo === tHi ? fmt(tLo) : `${fmt(tLo)}–${fmt(tHi)}`;
+  const soFar = trees.reduce((s, x) => s + treeSoFar(x.e, x.p), 0);
 
   const real = await import('./photos.js?v=9').then((m) => m.photoThumbs()).catch(() => ({}));
   const treePic = real.oak || real.beech || '';
@@ -112,7 +127,7 @@ export default async function impact(main) {
     </section>
     ${tot.picks ? '' : '<p class="i3-hint">Log a harvest from Today and these fill in. <a href="#/">Go to Today</a></p>'}
     ${cancelledMap(rows, city)}
-    ${trees.length ? `<p class="i3-co2">${icon('co2')}<span>Your trees could take up about <b>${tKg} kg of CO2</b> a year once grown.</span></p>` : `<a class="c3 i3-tree" href="#/find/trees">${treePic ? `<img src="${treePic}" alt="" width="320" height="200" loading="lazy" decoding="async">` : ''}<span class="i3-tree-t"><b>Plant a tree</b><small>A grown tree takes up about ${fmt(ref)} kg of CO2 a year.</small></span><span class="b3 b3-white">Find a tree</span></a>`}
+    ${trees.length ? `<p class="i3-co2">${icon('co2')}<span>${soFar > 0 ? `Your ${trees.length === 1 ? 'tree has' : 'trees have'} taken up about <b>${co2Words(soFar)} of CO2</b> so far. Once grown, about ${tKg} kg a year.` : `Your ${trees.length === 1 ? 'tree starts' : 'trees start'} counting CO2 from tomorrow. Once grown, about <b>${tKg} kg</b> a year.`}</span></p>` : `<a class="c3 i3-tree" href="#/find/trees">${treePic ? `<img src="${treePic}" alt="" width="320" height="200" loading="lazy" decoding="async">` : ''}<span class="i3-tree-t"><b>Plant a tree</b><small>A grown tree takes up about ${fmt(ref)} kg of CO2 a year.</small></span><span class="b3 b3-white">Find a tree</span></a>`}
     <div class="i3-two">
       ${photoChart()}
       ${plantList(rows, real)}
@@ -135,7 +150,7 @@ export default async function impact(main) {
       <p>${icon('apple')}<span><b>Food you grew</b>: the amounts you tap when you pick some.</span></p>
       <p>${icon('camera')}<span><b>Photos a week</b>: the days you snapped a plant, Monday to Sunday.</span></p></div>
       <p><a class="b3 b3-white" href="#/sources">All sources</a></p>` },
-    trees: { title: 'The tree estimate', body: `<p>A mature tree takes up about ${fmt(ref)} kg of CO2 a year${eea ? ` (${srcLinks([eea])})` : ''}. Young trees take up less, so this is what your trees could do once grown.</p><p><a class="b3 b3-white" href="#/sources">All sources</a></p>` },
+    trees: { title: 'The tree estimate', body: `<p>A mature tree takes up about ${fmt(ref)} kg of CO2 a year${eea ? ` (${srcLinks([eea])})` : ''}. Young trees take up less, so this is what your trees could do once grown.</p><p><b>So far</b> counts from the day you planted each tree. We assume a young tree starts near zero and reaches the grown-tree rate over its first ${RAMP} years, using the middle of each tree's range. It is a rough estimate, not a measurement.</p><p><a class="b3 b3-white" href="#/sources">All sources</a></p>` },
     facts: { title: 'Good to know', body: `<ul class="facts-list">${facts.map((f) => `<li>${esc(f.text)}<small>${srcLinks(f.sources)}</small></li>`).join('')}</ul>` },
   });
   countAll(main);

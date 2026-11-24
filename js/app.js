@@ -15,7 +15,7 @@ const routes = {
   find: () => import('./find.js?v=10'),
   plant: () => import('./find.js?v=10'),
   rewards: () => import('./rewards-view.js?v=9'),
-  impact: () => import('./impact.js?v=10'),
+  impact: () => import('./impact.js?v=11'),
   sources: () => import('./sources.js?v=9'),
   admin: () => import('./admin.js?v=9'),
   sow: () => import('./sow.js?v=9'),

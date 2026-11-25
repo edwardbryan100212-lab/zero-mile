@@ -241,7 +241,7 @@ export default async function garden(main) {
     </div>
   </div>`;
   const stopHero = runFaces($('#hero', main));
-  $('#t-tour', main)?.addEventListener('click', () => import('./tour.js?v=1').then((m) => m.startTour()));
+  $('#t-tour', main)?.addEventListener('click', () => import('./tour.js?v=3').then((m) => m.startTour()));
   reminderLine($('#th-rem', main));
   if (showUp) import('./upnext.js?v=1').then((m) => m.mountUpNext($('#up-next', main))).catch(() => {});
   // a slot under the hero for other features (care help, weather): they listen for zm:today

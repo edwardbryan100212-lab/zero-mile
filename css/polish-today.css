@@ -94,3 +94,13 @@
 /* Photo: Take a photo, with Choose a photo (from the phone's photos) under it */
 .snap-actions { display: grid; gap: 8px; }
 .snap-actions .snap-lib { min-height: 48px; }
+
+/* Quick tour button, beside the greeting */
+.t-greet { grid-template-columns: 1fr auto; column-gap: 12px; }
+.t-greet > h1, .t-greet > .t-date { grid-column: 1; }
+.t-tour { grid-column: 2; grid-row: 1 / span 2; align-self: center; display: inline-flex; align-items: center; gap: 6px;
+  min-height: 44px; padding: 0 14px; border: 0; border-radius: 999px; background: var(--o-mint, #dff0e4); color: var(--leaf, #23774a);
+  font: 700 .9375rem var(--f-ui); cursor: pointer; touch-action: manipulation; -webkit-user-select: none; user-select: none; white-space: nowrap; }
+.t-tour:active { transform: scale(.97); }
+.t-tour:focus-visible { outline: 3px solid var(--leaf, #23774a); outline-offset: 2px; }
+@media (hover: hover) and (pointer: fine) { .t-tour:hover { background: #cfe8d6; } }

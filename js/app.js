@@ -9,9 +9,9 @@ import { award, check, onReward } from './rewards.js?v=9';
 import { needsOnboarding, onboard, welcomeBack, todayNudge, settingsRow, photoTimeNudge } from './onboard.js?v=9';
 
 const routes = {
-  '': () => import('./garden.js?v=10'),
-  garden: () => import('./garden.js?v=10'),
-  snap: () => import('./garden.js?v=10'),
+  '': () => import('./garden.js?v=11'),
+  garden: () => import('./garden.js?v=11'),
+  snap: () => import('./garden.js?v=11'),
   find: () => import('./find.js?v=10'),
   plant: () => import('./find.js?v=10'),
   rewards: () => import('./rewards-view.js?v=9'),

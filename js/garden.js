@@ -210,6 +210,7 @@ export default async function garden(main) {
     <header class="t-greet">
       <h1>${hr < 12 ? 'Good morning' : hr < 18 ? 'Good afternoon' : 'Good evening'}</h1>
       <p class="t-date">${new Date().toLocaleDateString('en-IE', { weekday: 'long', day: 'numeric', month: 'long' })}</p>
+      <button class="t-tour" type="button" id="t-tour">${icon('info', { size: 18 })}Quick tour</button>
     </header>`;
   const month = new Date().toLocaleDateString('en-IE', { month: 'long' });
   const links = `
@@ -240,6 +241,7 @@ export default async function garden(main) {
     </div>
   </div>`;
   const stopHero = runFaces($('#hero', main));
+  $('#t-tour', main)?.addEventListener('click', () => import('./tour.js?v=1').then((m) => m.startTour()));
   reminderLine($('#th-rem', main));
   if (showUp) import('./upnext.js?v=1').then((m) => m.mountUpNext($('#up-next', main))).catch(() => {});
   // a slot under the hero for other features (care help, weather): they listen for zm:today

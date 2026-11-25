@@ -9,11 +9,13 @@ import { award, check, onReward } from './rewards.js?v=9';
 import { needsOnboarding, onboard, welcomeBack, todayNudge, settingsRow, photoTimeNudge } from './onboard.js?v=9';
 // a link to share: app/?skip opens straight on Today with no welcome questions (the country is guessed and can be
 // changed in About); app/?tour does the same and then plays the Quick tour. The ?part is removed from the address.
+// For someone new, ?tour plays the tour first and then the usual welcome (country, first plant), so they finish
+// set up to use the app; the welcome waits while the tour runs.
 const QS = new URLSearchParams(location.search);
-const SKIP = QS.has('skip') || QS.has('tour');
 let autoTour = QS.has('tour');
-if (SKIP && needsOnboarding()) { state.onboarded = today(); state.goal ||= 'regular'; save(); }
-if (SKIP) history.replaceState(null, '', location.pathname + location.hash);
+let tourFirst = autoTour && needsOnboarding();
+if (QS.has('skip') && !autoTour && needsOnboarding()) { state.onboarded = today(); state.goal ||= 'regular'; save(); }
+if (QS.has('skip') || autoTour) history.replaceState(null, '', location.pathname + location.hash);
 
 const routes = {
   '': () => import('./garden.js?v=11'),
@@ -108,8 +110,12 @@ async function route() {
     else a.removeAttribute('aria-current');
   });
   current = await mod[VIEW[key] || 'default'](main, decodeURIComponent(arg || ''));
-  if (!key || key === 'garden') { if (needsOnboarding()) onboard(); else { todayNudge(main); const nb = $('.nudge3', main), cs = $('#care-slot', main) || $('.t-plants', main); if (nb && cs) cs.after(nb); } } // first run, or the reminder card (js/onboard.js)
-  if (autoTour && (!key || key === 'garden')) { autoTour = false; setTimeout(() => import('./tour.js?v=3').then((m) => m.startTour()).catch(() => {}), 1200); }
+  if (!key || key === 'garden') { if (needsOnboarding()) { if (!tourFirst) onboard(); } else { todayNudge(main); const nb = $('.nudge3', main), cs = $('#care-slot', main) || $('.t-plants', main); if (nb && cs) cs.after(nb); } } // first run, or the reminder card (js/onboard.js)
+  if (autoTour && (!key || key === 'garden')) {
+    autoTour = false;
+    const done = (moving) => { if (!tourFirst) return; tourFirst = false; if (!moving && needsOnboarding() && /^#?\/?$/.test(location.hash)) onboard(); };
+    setTimeout(() => import('./tour.js?v=5').then((m) => m.startTour({ onEnd: done })).catch(() => done(false)), 1200);
+  }
   if (key === 'sources') settingsRow(main); // the reminder row in Settings
   import('./care.js?v=10').then((c) => { if (my === seq) c.autoMount(main, key, decodeURIComponent(arg || '')); }).catch(() => {}); // care today, plant care (js/care.js)
   enter(main.firstElementChild);

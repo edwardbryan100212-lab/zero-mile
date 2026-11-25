@@ -57,11 +57,21 @@ async function flipHarvest(sig) {
   find('[data-mode="plant"]')?.click();
 }
 
+// open a care tip (why and how, with its source), let it be read, then close it again
+async function openTip(sel, sig) {
+  const b = find(sel); if (!b) return;
+  await wait(700, sig); if (sig.aborted || b.getAttribute('aria-expanded') === 'true') return;
+  b.click(); await wait(3400, sig);
+  if (b.isConnected && b.getAttribute('aria-expanded') === 'true') b.click();
+}
+
 // page: the label at the top of the card; route: the page to show first; ms: how long the step stays (when playing)
 const STEPS = [
   { page: 'Today', route: '#/', sel: '#hero', title: 'Km cancelled', text: 'Each harvest you log cancels the trip shop food would make. This adds up the kilometres.' },
   { page: 'Today', route: '#/', sel: '#hero .th-streak', title: 'Your streak', text: 'Snap your plant once a day to keep the streak going. Each box is one day.' },
-  { page: 'Today', route: '#/', sel: '#care-slot > *', title: 'Care today', text: 'The weather and today’s jobs. Tick each one when it’s done; tap the arrow for how.' },
+  { page: 'Today', route: '#/', sel: '#care-slot .wx-strip', title: 'Your weather', text: 'Three days of local weather. It changes your jobs: rain means skip watering, frost means cover tender plants.' },
+  { page: 'Today', route: '#/', sel: '#care-slot .care-row.wx', title: 'Weather tips', text: 'When the weather matters, a tip shows up. Watch: it opens to say why.', ms: 5200, demo: (sig) => openTip('#care-slot .care-row.wx .care-main', sig) },
+  { page: 'Today', route: '#/', sel: '#care-slot .care-row:not(.wx)', title: 'Today’s jobs', text: 'Tick a job when it’s done. Tap its name for how and why, with the source.', ms: 5200, demo: (sig) => openTip('#care-slot .care-row:not(.wx) .care-main', sig) },
   { page: 'Today', route: '#/', sel: '.t-plants', title: 'Your plants', text: 'Everything you grow lives here. When it’s ready, pick some to cancel its trip.' },
   { page: 'Find', route: '#/find', sel: '.f3-search', title: 'Search', text: 'Type a name or a kind of plant. Watch: we’ll look for berries.', ms: 4200, demo: (sig) => typeSearch('berr', sig) },
   { page: 'Find', route: '#/find', sel: '.f3-grid > *:first-child, #list', title: 'Pick a plant', text: 'Each card says how easy it is. Tap one to see it grow in 3D.' },
@@ -69,6 +79,7 @@ const STEPS = [
   { page: 'Plant', route: '#/plant/tomato', sel: '#stage-box', title: 'Plant or harvest', text: 'Switch to Harvest to see what you’ll pick.', ms: 4200, demo: flipHarvest },
   { page: 'Plant', route: '#/plant/tomato', sel: '.twin3', title: 'Its shop twin', text: 'Where the shop version is grown, and the road it takes to reach you.' },
   { page: 'Photo', route: '#/snap', sel: '#frame', title: 'Fill the frame', text: 'Line up your plant here. Last time’s photo shows faintly so each one matches.' },
+  { page: 'Photo', route: '#/snap', sel: '.snap-tips', title: 'Good photo tips', text: 'Daylight with no flash, leaves filling the frame, the same spot each time.' },
   { page: 'Photo', route: '#/snap', sel: '#snap-btn', title: 'Take a photo', text: 'The check runs on your phone: green, yellowing, dry edges. Nothing is uploaded.' },
   { page: 'Stickers', route: '#/rewards', sel: '.sb-odo', title: 'Trips on a map', text: 'Every harvest cancels one trip. The next one is shown with how far it has to go.' },
   { page: 'Stickers', route: '#/rewards', sel: '.sb-book', title: 'Your sticker book', text: 'Each plant you grow and each streak you keep earns a sticker.' },
@@ -80,7 +91,8 @@ const STEPS = [
 
 let open = null;
 
-export function startTour() {
+// onEnd(goingHome): called once when the tour ends, before it takes you back to the page it started on
+export function startTour({ onEnd } = {}) {
   if (open) return;
   if (!document.getElementById('tour-css')) { const st = document.createElement('style'); st.id = 'tour-css'; st.textContent = CSS; document.head.appendChild(st); }
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -187,7 +199,9 @@ export function startTour() {
     ctl?.abort(); stopTimer(); barAnim?.cancel();
     removeEventListener('resize', tick); removeEventListener('scroll', tick, true); removeEventListener('keydown', key); removeEventListener('hashchange', onHash);
     cancelAnimationFrame(raf); clearInterval(follow); root.remove();
-    if (goHome && (location.hash || '#/') !== home) location.hash = home; else opener?.focus?.({ preventScroll: true });
+    const moving = goHome && (location.hash || '#/') !== home;
+    try { onEnd?.(moving); } catch { /* the tour still closes */ }
+    if (moving) location.hash = home; else opener?.focus?.({ preventScroll: true });
   }
   next.addEventListener('click', () => go(1));
   back.addEventListener('click', () => go(-1));

@@ -1,12 +1,19 @@
 // Zero Mile app: the router for the daily-use screens (Today, Find, Photo, Stickers (#/rewards), and Impact, About
 // and Admin under More), the top bar of stats on a phone, the Mac/iPad sidebar, and the stickers that pop up anywhere.
-import { $, $$, esc, fmt, data, rise, ROOT, state, plantById, overallStreak, today, thumb, useSaverIfNeeded, toast, photoDays, isTree } from './core.js?v=9';
+import { $, $$, esc, fmt, data, rise, ROOT, state, plantById, overallStreak, today, thumb, useSaverIfNeeded, toast, photoDays, isTree, save } from './core.js?v=9';
 import { initPress, enter, sheet, celebration } from './fun.js?v=10';
 import { kmCancelled, odometer } from './journey.js?v=1';
 import { icon } from './art.js?v=9';
 import { produceIcon } from './produce.js?v=9';
 import { award, check, onReward } from './rewards.js?v=9';
 import { needsOnboarding, onboard, welcomeBack, todayNudge, settingsRow, photoTimeNudge } from './onboard.js?v=9';
+// a link to share: app/?skip opens straight on Today with no welcome questions (the country is guessed and can be
+// changed in About); app/?tour does the same and then plays the Quick tour. The ?part is removed from the address.
+const QS = new URLSearchParams(location.search);
+const SKIP = QS.has('skip') || QS.has('tour');
+let autoTour = QS.has('tour');
+if (SKIP && needsOnboarding()) { state.onboarded = today(); state.goal ||= 'regular'; save(); }
+if (SKIP) history.replaceState(null, '', location.pathname + location.hash);
 
 const routes = {
   '': () => import('./garden.js?v=11'),
@@ -102,6 +109,7 @@ async function route() {
   });
   current = await mod[VIEW[key] || 'default'](main, decodeURIComponent(arg || ''));
   if (!key || key === 'garden') { if (needsOnboarding()) onboard(); else { todayNudge(main); const nb = $('.nudge3', main), cs = $('#care-slot', main) || $('.t-plants', main); if (nb && cs) cs.after(nb); } } // first run, or the reminder card (js/onboard.js)
+  if (autoTour && (!key || key === 'garden')) { autoTour = false; setTimeout(() => import('./tour.js?v=3').then((m) => m.startTour()).catch(() => {}), 1200); }
   if (key === 'sources') settingsRow(main); // the reminder row in Settings
   import('./care.js?v=10').then((c) => { if (my === seq) c.autoMount(main, key, decodeURIComponent(arg || '')); }).catch(() => {}); // care today, plant care (js/care.js)
   enter(main.firstElementChild);
